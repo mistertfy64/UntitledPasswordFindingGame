@@ -4,7 +4,7 @@ interface ProblemInterface {
 	problemName: string;
 	problemStatement: string;
 	number: number;
-	correctAnswer: string;
+	correctPassword: string;
 }
 
 interface ProblemModel extends Model<ProblemInterface, ProblemModel> {
@@ -15,12 +15,12 @@ const problemSchema = new Schema({
 	problemName: String,
 	problemStatement: String,
 	number: Number,
-	correctAnswer: String;
+	correctPassword: String,
 });
 
 problemSchema.static("findProblemWithNumber", async function (number: number) {
 	return await this.findOne({ number: number }).select({
-		"password": 0,
+		"correctPassword": 0,
 	});
 });
 
