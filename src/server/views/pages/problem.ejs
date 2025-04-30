@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>UntitledPasswordFindingGame</title>
+  <link rel="stylesheet" type="text/css" href="/assets/css/global.css" />
+</head>
+
+<body>
+  <div id="container">
+    <header>
+      <%- include("../partials/header.ejs") %>
+    </header>
+    <main>
+      <h1><%- problemName %></h1>
+      <hr>
+      <%- problemStatement %>
+      <hr>
+      <form action="POST">
+        <input type="text" name="password" placeholder="Password">
+        <input type="submit">
+      </form>
+    </main>
+    <footer>
+      <%- include("../partials/footer.ejs") %>
+    </footer>
+  </div>
+</body>

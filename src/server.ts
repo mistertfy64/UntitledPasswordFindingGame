@@ -2,6 +2,8 @@ import express, { NextFunction, Request, Response } from "express";
 import ejs from "ejs";
 import { log } from "./server/utilities/log";
 import path from "path";
+import mongoose from "mongoose";
+require("dotenv").config();
 
 const app = express();
 app.set("trust proxy", 2);
@@ -9,9 +11,6 @@ app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "server/views"));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(__dirname + "/public"));
-
-// TODO: move port to .env file
-const PORT = 12345;
 
 // Routes
 require("fs")
@@ -26,6 +25,7 @@ app.get("*splat", function (request: Request, response: Response) {
 	response.status(404).render(__dirname + "/server/views/pages/404");
 });
 
-app.listen(PORT, () => {
-	log.info(`App listening at http://localhost:${PORT}`);
+app.listen(process.env.PORT, () => {
+	mongoose.connect(process.env.DATABASE_URI as string);
+	log.info(`App listening at http://localhost:${process.env.PORT}`);
 });

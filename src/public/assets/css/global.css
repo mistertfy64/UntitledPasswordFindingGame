@@ -8,6 +8,10 @@ body {
 	margin: 0 auto;
 }
 
+h1 {
+	margin: 2px 0;
+}
+
 footer {
 	text-align: center;
 	margin: 0 auto;
