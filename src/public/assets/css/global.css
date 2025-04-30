@@ -5,7 +5,8 @@ body {
 
 #container {
 	max-width: 1024px;
-	margin: 8px auto;
+	margin: 0 auto;
+	padding: 8px;
 }
 
 h1 {
