@@ -5,10 +5,11 @@ interface ProblemInterface {
 	problemStatement: string;
 	problemID: string;
 	correctPassword: string;
+	number: number;
 }
 
 interface ProblemModel extends Model<ProblemInterface, ProblemModel> {
-	findProblemWithNumber(problemID: string): Promise<ProblemInterface>;
+	findProblemWithProblemID(problemID: string): Promise<ProblemInterface>;
 }
 
 const problemSchema = new Schema({
@@ -16,10 +17,11 @@ const problemSchema = new Schema({
 	problemStatement: String,
 	problemID: String,
 	correctPassword: String,
+	number: Number,
 });
 
 problemSchema.static(
-	"findProblemWithNumber",
+	"findProblemWithProblemID",
 	async function (problemID: string) {
 		return await this.findOne({ problemID: problemID }).select({
 			"correctPassword": 0,
