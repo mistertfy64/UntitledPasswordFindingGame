@@ -1,0 +1,9 @@
+body {
+	font-family: sans-serif;
+	margin: 8px 0;
+}
+
+#container {
+	max-width: 1024px;
+	margin: 0 auto;
+}
