@@ -1,0 +1,8 @@
+<a href="/">Home</a> |
+<a href="/problemset">Problemset</a> |
+<% if (typeof authentication == "undefined" || !authentication.ok){ %>
+<a href="/account">Account</a>
+<% }else{%>
+<a href="/account">Account (<%- authentication.username%>)</a>
+<%} %>
+<hr>
