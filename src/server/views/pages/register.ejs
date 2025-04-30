@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>UntitledPasswordFindingGame</title>
+  <link rel="stylesheet" type="text/css" href="/assets/css/global.css" />
+</head>
+
+<body>
+  <div id="container">
+    <header>
+      <%- include("../partials/header.ejs") %>
+    </header>
+    <main>
+      <h1>Register</h1>
+      <form action="" method="POST">
+        <input type="text" name="username" placeholder="Username">
+        <br>
+        <input type="password" name="password" placeholder="Password">
+        <br>
+        <input type="password" name="confirm-password" placeholder="Confirm Password">
+        <br>
+        <div class="g-recaptcha" data-sitekey=<%-recaptchaSiteKey%>></div>
+        <% if (diagnosticMessage) { %>
+        <div class="message--error">
+          <%= diagnosticMessage %>
+        </div>
+        <% } %>
+        <input type="submit" value="Register">
+      </form>
+      Already have an account? <a href="/login">Log In</a>
+    </main>
+    <footer>
+      <%- include("../partials/footer.ejs") %>
+    </footer>
+  </div>
+  <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+</body>
+
+</html>

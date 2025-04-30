@@ -27,11 +27,14 @@
     "typescript": "^5.8.3"
   },
   "dependencies": {
+    "bcrypt": "^5.1.1",
     "body-parser": "^2.2.0",
+    "cookie-parser": "^1.4.7",
     "copyfiles": "^2.4.1",
     "dotenv": "^16.5.0",
     "ejs": "^3.1.10",
     "express": "^5.1.0",
+    "express-mongo-sanitize": "^2.2.0",
     "markdown-it": "^14.1.0",
     "mongoose": "^8.14.1"
   }

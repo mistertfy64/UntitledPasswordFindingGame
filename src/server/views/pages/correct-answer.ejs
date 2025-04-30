@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>UntitledPasswordFindingGame</title>
+  <link rel="stylesheet" type="text/css" href="/assets/css/global.css" />
+</head>
+
+<body>
+  <div id="container">
+    <header>
+      <%- include("../partials/header.ejs") %>
+    </header>
+    <main>
+      <h1>Correct Answer</h1>
+      Congratulations! Your answer of "<%= answer %>" to Problem number <%= number %> is correct!
+      <br>
+      <div class="navigation-button-container">
+        <form action="/problem/<%=number%>">
+          <input type="submit" value="Go to Problem">
+        </form>
+        &nbsp;
+        <form action="/problemset">
+          <input type="submit" value="Go to Problemset">
+        </form>
+      </div>
+    </main>
+    <footer>
+      <%- include("../partials/footer.ejs") %>
+    </footer>
+  </div>
+</body>
+
+</html>

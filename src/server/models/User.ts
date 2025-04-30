@@ -1,4 +1,5 @@
 import { Model, Schema, model } from "mongoose";
+const bcrypt = require("bcrypt");
 
 interface UserInterface {
 	username: string;
@@ -8,7 +9,10 @@ interface UserInterface {
 	tokens: Array<string>;
 }
 
-interface UserModel extends Model<UserInterface, UserModel> {
+interface UserMethods {
+	addToken(token: string): void;
+}
+interface UserModel extends Model<UserInterface, UserModel, UserMethods> {
 	findUserWithNumber(number: number): Promise<UserInterface>;
 }
 
@@ -18,6 +22,11 @@ const userSchema = new Schema({
 	passwordHash: String,
 	solved: Object,
 	tokens: Array<String>,
+});
+
+userSchema.method("addToken", async function addToken(token) {
+	const hashedToken: string = await bcrypt.hash(token, 8);
+	await this.updateOne({ tokens: [hashedToken] });
 });
 
 const User = model<UserInterface, UserModel>("User", userSchema, "users");

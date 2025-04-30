@@ -1,16 +1,18 @@
 import express from "express";
 import { User } from "../models/User";
 import { log } from "../utilities/log";
+import mongoSanitize from "express-mongo-sanitize";
 const bcrypt = require("bcrypt");
 const router = express.Router();
 const SALT_ROUNDS = 12;
 
-router.get("/register", async (request, response) => {
+router.get("/register", async (request: express.Request, response) => {
 	if (!loggedIn()) {
 		if (process.env.ENVIRONMENT !== "production") {
 			// testing credentials
 			response.render("pages/register", {
 				recaptchaSiteKey: process.env.TESTING_RECAPTCHA_SITE_KEY,
+				authentication: request.authentication,
 				diagnosticMessage: "",
 			});
 		} else {
@@ -18,6 +20,7 @@ router.get("/register", async (request, response) => {
 			response.render("pages/register", {
 				recaptchaSiteKey: process.env.RECAPTCHA_SITE_KEY,
 				diagnosticMessage: "",
+				authentication: request.authentication,
 			});
 		}
 		return;
@@ -25,7 +28,7 @@ router.get("/register", async (request, response) => {
 	response.redirect("/account");
 });
 
-router.post("/register", async (request, response) => {
+router.post("/register", async (request: express.Request, response) => {
 	// validate credentials
 	const username = request.body["username"];
 	const password = request.body["password"];
@@ -45,12 +48,14 @@ router.post("/register", async (request, response) => {
 			response.render("pages/register", {
 				recaptchaSiteKey: process.env.TESTING_RECAPTCHA_SITE_KEY,
 				diagnosticMessage: result.reason,
+				authentication: request.authentication,
 			});
 		} else {
 			// real credentials
 			response.render("pages/register", {
 				recaptchaSiteKey: process.env.RECAPTCHA_SITE_KEY,
 				diagnosticMessage: result.reason,
+				authentication: request.authentication,
 			});
 		}
 		return;
@@ -66,6 +71,7 @@ router.post("/register", async (request, response) => {
 				recaptchaSiteKey: process.env.TESTING_RECAPTCHA_SITE_KEY,
 				diagnosticMessage:
 					"Unable to create user account due to an internal error. If this persists, please contact mistertfy64.",
+				authentication: request.authentication,
 			});
 		} else {
 			// real credentials
@@ -73,6 +79,7 @@ router.post("/register", async (request, response) => {
 				recaptchaSiteKey: process.env.RECAPTCHA_SITE_KEY,
 				diagnosticMessage:
 					"Unable to create user account due to an internal error. If this persists, please contact mistertfy64.",
+				authentication: request.authentication,
 			});
 		}
 		return;
@@ -92,6 +99,15 @@ async function validateRegistration(
 		return {
 			ok: false,
 			reason: "reCAPTCHA not completed.",
+		};
+	}
+
+	// sanitize data
+	const sanitizedUsername = mongoSanitize.sanitize(username as any);
+	if (sanitizedUsername !== username) {
+		return {
+			ok: false,
+			reason: "Username is invalid.",
 		};
 	}
 

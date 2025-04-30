@@ -6,7 +6,7 @@ import markdownit from "markdown-it";
 const md = markdownit();
 const router = express.Router();
 
-router.get("/problem", async (request, response) => {
+router.get("/problem", async (request: express.Request, response) => {
 	response.redirect("/problemset");
 });
 
@@ -16,7 +16,9 @@ router.get("/problem/:number", async (request: express.Request, response) => {
 	const problem = await Problem.findProblemWithNumber(number);
 
 	if (!problem) {
-		response.render("pages/404");
+		response.render("pages/404", {
+			authentication: request.authentication,
+		});
 		return;
 	}
 
@@ -26,6 +28,41 @@ router.get("/problem/:number", async (request: express.Request, response) => {
 	response.render("pages/problem", {
 		problemName: name,
 		problemStatement: statement,
+		authentication: request.authentication,
+	});
+});
+
+router.post("/problem/:number", async (request: express.Request, response) => {
+	const answer = request.body["password"];
+
+	const number = parseInt(request.params.number);
+
+	const problem = await Problem.findOne({ number: number });
+
+	if (!problem) {
+		response.render("pages/404", {
+			authentication: request.authentication,
+		});
+		return;
+	}
+
+	const correctAnswer = problem.correctPassword;
+
+	if (correctAnswer !== answer) {
+		// wrong answer
+		response.render("pages/wrong-answer", {
+			answer: answer,
+			number: number,
+			authentication: request.authentication,
+		});
+		return;
+	}
+
+	// correct answer + passed all checks
+	response.render("pages/correct-answer", {
+		answer: answer,
+		number: number,
+		authentication: request.authentication,
 	});
 });
 

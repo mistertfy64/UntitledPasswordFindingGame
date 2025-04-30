@@ -16,3 +16,21 @@ footer {
 	text-align: center;
 	margin: 0 auto;
 }
+
+button,
+input[type="submit"] {
+	cursor: pointer;
+}
+
+.navigation-button-container {
+	display: flex;
+	flex-direction: row;
+}
+
+input {
+	margin: 2px 0;
+}
+
+.message--error {
+	color: #ff0000;
+}
