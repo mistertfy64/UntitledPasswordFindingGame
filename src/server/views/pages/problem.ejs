@@ -17,13 +17,38 @@
       <h1><%- problemName %></h1>
       <%- problemStatement %>
       <hr>
+      <% if (authentication.ok) { %>
       <form action="" method="POST">
         <input type="text" name="password" placeholder="Password">
         <input type="submit">
       </form>
+      <% } else { %>
+      Please log in to submit answers.
+      <% } %>
+      <hr>
+      <h2>Correct Answers</h2>
+      <% if (correctAnswers.length > 0) { %>
+      <table id="correct-answers">
+        <th>#</th>
+        <th>Username</th>
+        <th>Timestamp</th>
+
+        <% let order = 1 %>
+        <% for (const correctAnswer of correctAnswers) { %>
+        <tr>
+          <td><%= order %></td>
+          <td><%= correctAnswer.username %></td>
+          <td><%= correctAnswer.timestamp.toISOString() %></td>
+        </tr>
+        <% } %>
+      </table>
+      <% } else {%>
+      No one has solved this problem yet! Will you be the first?
+      <%}%>
+      </table>
     </main>
     <footer>
       <%- include("../partials/footer.ejs") %>
-    </footer>
+      </footer>
   </div>
 </body>

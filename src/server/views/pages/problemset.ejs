@@ -14,9 +14,23 @@
       <%- include("../partials/header.ejs") %>
     </header>
     <main>
-      Problemset goes here
+      <table id="problemset">
+        <tr>
+          <th>#</th>
+          <th>Name</th>
+          <th>ID</th>
+          <th>Solved</th>
+        </tr>
+        <% for (const problem of problems) { %>
+        <tr>
+          <td><%= problem.problemNumber %></td>
+          <td><a href="/problem/<%= problem.problemID %>"><%= problem.problemName %></a></td>
+          <td><%= problem.problemID %></td>
+          <td><%= problem.correctAnswers.length %></td>
+        </tr>
+        <% } %>
+      </table>
     </main>
-    <br>
     <footer>
       <%- include("../partials/footer.ejs") %>
     </footer>

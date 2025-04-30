@@ -14,18 +14,8 @@
       <%- include("../partials/header.ejs") %>
     </header>
     <main>
-      <h1>Wrong Answer</h1>
-      Unfortunately, your answer of "<%= answer %>" to "<%=problemID%>" (Problem #<%= number %>) is incorrect.
-      <br>
-      <div class="navigation-button-container">
-        <form action="/problem/<%=problemID%>">
-          <input type="submit" value="Go to Problem">
-        </form>
-        &nbsp;
-        <form action="/problemset">
-          <input type="submit" value="Go to Problemset">
-        </form>
-      </div>
+      <h1><%= username %></h1>
+      Correct Answers: <%= data?.correctAnswers?.length || "0" %>
     </main>
     <footer>
       <%- include("../partials/footer.ejs") %>

@@ -9,7 +9,8 @@ body {
 	padding: 8px;
 }
 
-h1 {
+h1,
+h2 {
 	margin: 2px 0;
 }
 
@@ -34,4 +35,78 @@ input {
 
 .message--error {
 	color: #ff0000;
+}
+
+table {
+	width: 100%;
+	border-collapse: collapse;
+}
+
+table,
+th,
+td {
+	border: 1px solid;
+}
+
+#problemset {
+	table-layout: fixed;
+}
+
+#problemset th:nth-child(1) {
+	width: 5%;
+	text-align: center;
+}
+
+#problemset th:nth-child(2) {
+	width: 62.5%;
+	text-align: center;
+}
+
+#problemset th:nth-child(3) {
+	width: 25%;
+	text-align: center;
+}
+
+#problemset th:nth-child(4) {
+	width: 7.5%;
+	text-align: center;
+}
+
+#problemset td:nth-child(1) {
+	width: 5%;
+	text-align: center;
+}
+
+#problemset td:nth-child(2) {
+	width: 62.5%;
+}
+
+#problemset td:nth-child(3) {
+	width: 25%;
+}
+
+#problemset td:nth-child(4) {
+	width: 7.5%;
+	text-align: center;
+}
+
+#correct-answers {
+	table-layout: fixed;
+}
+
+#correct-answers th:nth-child(1) {
+	width: 5%;
+	text-align: center;
+}
+
+#correct-answers th:nth-child(2) {
+	width: 62.5%;
+}
+
+#correct-answers th:nth-child(3) {
+	width: 22.5%;
+}
+
+#correct-answers {
+	text-align: center;
 }

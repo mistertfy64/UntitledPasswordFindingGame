@@ -15,10 +15,10 @@
     </header>
     <main>
       <h1>Correct Answer</h1>
-      Congratulations! Your answer of "<%= answer %>" to Problem number <%= number %> is correct!
+      Congratulations! Your answer of "<%= answer %>" to "<%=problemID%>" (Problem #<%= number %>) is correct!
       <br>
       <div class="navigation-button-container">
-        <form action="/problem/<%=number%>">
+        <form action="/problem/<%=problemID%>">
           <input type="submit" value="Go to Problem">
         </form>
         &nbsp;

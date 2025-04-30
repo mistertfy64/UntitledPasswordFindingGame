@@ -7,7 +7,7 @@ const router = express.Router();
 const SALT_ROUNDS = 12;
 
 router.get("/register", async (request: express.Request, response) => {
-	if (!loggedIn()) {
+	if (!request.authentication.ok) {
 		if (process.env.ENVIRONMENT !== "production") {
 			// testing credentials
 			response.render("pages/register", {
@@ -198,7 +198,7 @@ async function createNewUser(username: string, password: string) {
 	const user = new User();
 	user.username = username;
 	user.lowercasedUsername = username.toLowerCase();
-	user.solved = {};
+	user.correctAnswers = [];
 	user.passwordHash = await bcrypt.hash(password, SALT_ROUNDS);
 
 	try {
@@ -214,11 +214,6 @@ async function createNewUser(username: string, password: string) {
 
 	log.info(`New user with username ${username} created.`);
 	return true;
-}
-
-// TODO: implement this
-function loggedIn() {
-	return false;
 }
 
 export { router };
