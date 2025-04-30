@@ -24,6 +24,7 @@
   },
   "dependencies": {
     "copyfiles": "^2.4.1",
+    "express": "^5.1.0",
     "mongoose": "^8.14.1"
   }
 }
