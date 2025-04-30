@@ -1,0 +1,25 @@
+{
+  "name": "untitled-password-finding-game",
+  "version": "0.1.0",
+  "description": "fun password finding game",
+  "main": "index.js",
+  "private": true,
+  "scripts": {
+    "compile": "tsc",
+    "copyStaticFiles": "copyfiles --up 1 \"src/**/*\" -e \"**/*.ts\" dist",
+    "start": "npm run compile && npm run copyStaticFiles && node ./dist/server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mistertfy64/UntitledPasswordFindingGame.git"
+  },
+  "author": "mistertfy64",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mistertfy64/UntitledPasswordFindingGame/issues"
+  },
+  "homepage": "https://github.com/mistertfy64/UntitledPasswordFindingGame#readme",
+  "devDependencies": {
+    "typescript": "^5.8.3"
+  }
+}
