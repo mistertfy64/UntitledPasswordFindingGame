@@ -4,6 +4,7 @@ interface ProblemInterface {
 	problemName: string;
 	problemStatement: string;
 	number: number;
+	correctAnswer: string;
 }
 
 interface ProblemModel extends Model<ProblemInterface, ProblemModel> {
@@ -14,6 +15,7 @@ const problemSchema = new Schema({
 	problemName: String,
 	problemStatement: String,
 	number: Number,
+	correctAnswer: String;
 });
 
 problemSchema.static("findProblemWithNumber", async function (number: number) {
