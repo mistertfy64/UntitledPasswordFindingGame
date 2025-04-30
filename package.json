@@ -21,5 +21,9 @@
   "homepage": "https://github.com/mistertfy64/UntitledPasswordFindingGame#readme",
   "devDependencies": {
     "typescript": "^5.8.3"
+  },
+  "dependencies": {
+    "copyfiles": "^2.4.1",
+    "mongoose": "^8.14.1"
   }
 }
