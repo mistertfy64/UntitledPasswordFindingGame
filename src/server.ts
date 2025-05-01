@@ -22,7 +22,7 @@ declare global {
 				ok: boolean;
 				username: string;
 			};
-			sessionID: string;
+			session: string;
 			generatedCSRFToken: string;
 		}
 	}
@@ -35,7 +35,7 @@ const {
 	doubleCsrfProtection,
 } = doubleCsrf({
 	getSecret: () => process.env.CSRF_SECRET as string,
-	getSessionIdentifier: (request: express.Request) => request.sessionID,
+	getSessionIdentifier: (request: express.Request) => request.session,
 	cookieName:
 		process.env.ENVIRONMENT === "production"
 			? "__Host-psifi.x-csrf-token"
