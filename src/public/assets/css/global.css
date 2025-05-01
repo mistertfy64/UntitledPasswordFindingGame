@@ -117,3 +117,7 @@ td {
 #correct-answers {
 	text-align: center;
 }
+
+.version-text {
+	font-size: 10px;
+}
