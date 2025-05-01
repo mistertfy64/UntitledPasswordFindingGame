@@ -5,8 +5,9 @@ import path from "path";
 import mongoose from "mongoose";
 import bodyParser from "body-parser";
 import { isAuthenticated } from "./server/utilities/authentication";
-import { doubleCsrf } from "csrf-csrf";
+import { CsrfTokenGeneratorRequestUtil, doubleCsrf } from "csrf-csrf";
 
+const session = require("express-session");
 require("dotenv").config();
 
 declare global {
@@ -16,6 +17,8 @@ declare global {
 				ok: boolean;
 				username: string;
 			};
+			sessionID: string;
+			generatedCSRFToken: string;
 		}
 	}
 }
@@ -26,10 +29,44 @@ const {
 	validateRequest,
 	doubleCsrfProtection,
 } = doubleCsrf({
-	getSecret: (req) => crypto.randomBytes(32).toString("hex"),
-	getSessionIdentifier: (request: express.Request) =>
-		request.body["csrf-token"],
+	getSecret: () => process.env.CSRF_SECRET as string,
+	getSessionIdentifier: (request: express.Request) => request.sessionID,
+	cookieName:
+		process.env.ENVIRONMENT === "production"
+			? "__Host-psifi.x-csrf-token"
+			: "testing",
+	getCsrfTokenFromRequest: (request) => request.body?.["x-csrf-token"],
 });
+
+const loggedIn = async function (
+	request: express.Request,
+	response: express.Response,
+	next: NextFunction
+) {
+	const username = request?.cookies?.["username"];
+	const token = request?.cookies?.["token"];
+	request.authentication = await isAuthenticated(username, token);
+	next();
+};
+
+const setSessionID = async function (
+	request: express.Request,
+	response: express.Response,
+	next: NextFunction
+) {
+	request.sessionID = crypto.randomBytes(32).toString("hex");
+	next();
+};
+
+const setCSRFToken = async function (
+	request: express.Request,
+	response: express.Response,
+	next: NextFunction
+) {
+	const csrfToken = generateCsrfToken(request, response);
+	request.generatedCSRFToken = csrfToken;
+	next();
+};
 
 const app = express();
 const cookieParser = require("cookie-parser");
@@ -38,22 +75,19 @@ app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "server/views"));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(__dirname + "/public"));
-app.use(cookieParser());
-app.use(doubleCsrfProtection);
-app.use(bodyParser.json());
-
-const loggedIn = async function (
-	request: express.Request,
-	response: express.Response,
-	next: NextFunction
-) {
-	const username = request.cookies["username"];
-	const token = request.cookies["token"];
-	request.authentication = await isAuthenticated(username, token);
-	next();
-};
-
 app.use(loggedIn);
+app.use(
+	session({
+		secret: crypto.randomBytes(32).toString("hex"),
+		resave: false,
+		saveUninitialized: true,
+		cookie: { secure: process.env.ENVIRONMENT === "production" },
+	})
+);
+app.use(cookieParser());
+app.use(bodyParser.json());
+app.use(setCSRFToken);
+app.use(doubleCsrfProtection);
 
 // Routes
 require("fs")
