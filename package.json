@@ -31,6 +31,7 @@
     "body-parser": "^2.2.0",
     "cookie-parser": "^1.4.7",
     "copyfiles": "^2.4.1",
+    "csrf-csrf": "^4.0.0",
     "dotenv": "^16.5.0",
     "ejs": "^3.1.10",
     "express": "^5.1.0",
