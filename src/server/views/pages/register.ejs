@@ -28,6 +28,7 @@
           <%= diagnosticMessage %>
         </div>
         <% } %>
+        <%- include("../partials/csrf.ejs",{sessionID:sessionID,csrfToken:csrfToken}) %>
         <input type="submit" value="Register">
       </form>
       Already have an account? <a href="/login">Log In</a>

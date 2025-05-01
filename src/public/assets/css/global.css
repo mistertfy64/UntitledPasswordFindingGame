@@ -12,6 +12,7 @@ body {
 h1,
 h2 {
 	margin: 2px 0;
+	word-wrap: break-word;
 }
 
 footer {
@@ -58,18 +59,21 @@ td {
 }
 
 #problemset th:nth-child(2) {
-	width: 62.5%;
+	width: 55%;
 	text-align: center;
+	word-wrap: break-word;
 }
 
 #problemset th:nth-child(3) {
 	width: 25%;
 	text-align: center;
+	word-wrap: break-word;
 }
 
 #problemset th:nth-child(4) {
-	width: 7.5%;
+	width: 15%;
 	text-align: center;
+	word-wrap: break-word;
 }
 
 #problemset td:nth-child(1) {
@@ -78,15 +82,17 @@ td {
 }
 
 #problemset td:nth-child(2) {
-	width: 62.5%;
+	width: 55%;
+	word-wrap: break-word;
 }
 
 #problemset td:nth-child(3) {
 	width: 25%;
+	word-wrap: break-word;
 }
 
 #problemset td:nth-child(4) {
-	width: 7.5%;
+	width: 15%;
 	text-align: center;
 }
 
@@ -100,13 +106,18 @@ td {
 }
 
 #correct-answers th:nth-child(2) {
-	width: 62.5%;
+	width: 55%;
 }
 
 #correct-answers th:nth-child(3) {
-	width: 22.5%;
+	width: 30%;
+	word-wrap: break-word;
 }
 
 #correct-answers {
 	text-align: center;
+}
+
+.version-text {
+	font-size: 10px;
 }

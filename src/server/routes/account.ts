@@ -8,6 +8,7 @@ const router = express.Router();
 router.get("/account", async (request: express.Request, response) => {
 	if (!request.authentication.ok) {
 		response.redirect("/login");
+		return;
 	}
 
 	const username = request.authentication.username;
@@ -16,12 +17,15 @@ router.get("/account", async (request: express.Request, response) => {
 
 	if (!user) {
 		response.redirect("/login");
+		return;
 	}
 
 	response.render("pages/account", {
 		username: sanitizedUsername,
 		data: user,
 		authentication: request.authentication,
+		csrfToken: request.generatedCSRFToken,
+		sessionID: request.sessionID,
 	});
 });
 

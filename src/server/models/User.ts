@@ -14,7 +14,7 @@ interface UserInterface {
 }
 
 interface UserMethods {
-	addToken(token: string): void;
+	setToken(token: string): void;
 	addCorrectAnswer(problemID: string, timestamp: Date): void;
 }
 
@@ -37,7 +37,7 @@ userSchema.static("safeFindByUsername", async function (username: string) {
 	});
 });
 
-userSchema.method("addToken", async function addToken(token) {
+userSchema.method("setToken", async function addToken(token) {
 	const hashedToken: string = await bcrypt.hash(token, 8);
 	await this.updateOne({ tokens: [hashedToken] });
 });

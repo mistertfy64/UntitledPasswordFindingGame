@@ -43,6 +43,8 @@ router.get(
 			problemStatement: statement,
 			authentication: request.authentication,
 			correctAnswers: problem.correctAnswers,
+			csrfToken: request.generatedCSRFToken,
+			sessionID: request.sessionID,
 		});
 	}
 );
@@ -73,6 +75,9 @@ router.post(
 
 		const number = problem?.problemNumber;
 		const correctAnswer = problem.correctPassword;
+		const sanitizedUsername = mongoSanitize.sanitize(
+			request.authentication.username as any
+		);
 
 		if (correctAnswer !== answer) {
 			// wrong answer
@@ -81,14 +86,17 @@ router.post(
 				number: number,
 				problemID: sanitizedProblemID,
 				authentication: request.authentication,
+				csrfToken: request.generatedCSRFToken,
+				sessionID: request.sessionID,
 			});
+			log.info(
+				`${sanitizedUsername} incorrectly answered ${answer} to problem with ID ${sanitizedProblemID}.`
+			);
 			return;
 		}
 
 		// correct answer + passed all checks
-		const sanitizedUsername = mongoSanitize.sanitize(
-			request.authentication.username as any
-		);
+
 		const user = await User.findOne({ username: sanitizedUsername });
 
 		if (!user) {
@@ -118,6 +126,8 @@ router.post(
 			number: number,
 			problemID: sanitizedProblemID,
 			authentication: request.authentication,
+			csrfToken: request.generatedCSRFToken,
+			sessionID: request.sessionID,
 		});
 	}
 );

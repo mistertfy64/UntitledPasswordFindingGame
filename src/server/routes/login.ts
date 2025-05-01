@@ -10,6 +10,8 @@ router.get("/login", async (request: express.Request, response) => {
 		response.render("pages/login", {
 			diagnosticMessage: "",
 			authentication: request.authentication,
+			csrfToken: request.generatedCSRFToken,
+			sessionID: request.sessionID,
 		});
 	}
 });
@@ -22,6 +24,8 @@ router.post("/login", async (request: express.Request, response) => {
 		response.render("pages/login", {
 			diagnosticMessage: "Username field is empty.",
 			authentication: request.authentication,
+			csrfToken: request.generatedCSRFToken,
+			sessionID: request.sessionID,
 		});
 		return;
 	}
@@ -30,6 +34,8 @@ router.post("/login", async (request: express.Request, response) => {
 		response.render("pages/login", {
 			diagnosticMessage: "Password field is empty.",
 			authentication: request.authentication,
+			csrfToken: request.generatedCSRFToken,
+			sessionID: request.sessionID,
 		});
 		return;
 	}
@@ -41,6 +47,8 @@ router.post("/login", async (request: express.Request, response) => {
 		response.render("pages/login", {
 			diagnosticMessage: "Username or password is incorrect.",
 			authentication: request.authentication,
+			csrfToken: request.generatedCSRFToken,
+			sessionID: request.sessionID,
 		});
 		return;
 	}
@@ -50,6 +58,8 @@ router.post("/login", async (request: express.Request, response) => {
 		response.render("pages/login", {
 			diagnosticMessage: "Username or password is incorrect.",
 			authentication: request.authentication,
+			csrfToken: request.generatedCSRFToken,
+			sessionID: request.sessionID,
 		});
 		return;
 	}
@@ -58,7 +68,7 @@ router.post("/login", async (request: express.Request, response) => {
 	const token = await crypto.randomBytes(40).toString("hex");
 	response.cookie("username", username);
 	response.cookie("token", token);
-	await user.addToken(token);
+	await user.setToken(token);
 	response.redirect("/");
 });
 

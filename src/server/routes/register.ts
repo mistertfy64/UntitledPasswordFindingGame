@@ -2,6 +2,7 @@ import express from "express";
 import { User } from "../models/User";
 import { log } from "../utilities/log";
 import mongoSanitize from "express-mongo-sanitize";
+import { CsrfTokenGeneratorRequestUtil } from "csrf-csrf";
 const bcrypt = require("bcrypt");
 const router = express.Router();
 const SALT_ROUNDS = 12;
@@ -14,6 +15,8 @@ router.get("/register", async (request: express.Request, response) => {
 				recaptchaSiteKey: process.env.TESTING_RECAPTCHA_SITE_KEY,
 				authentication: request.authentication,
 				diagnosticMessage: "",
+				csrfToken: request.generatedCSRFToken,
+				sessionID: request.sessionID,
 			});
 		} else {
 			// real credentials
@@ -21,6 +24,8 @@ router.get("/register", async (request: express.Request, response) => {
 				recaptchaSiteKey: process.env.RECAPTCHA_SITE_KEY,
 				diagnosticMessage: "",
 				authentication: request.authentication,
+				csrfToken: request.generatedCSRFToken,
+				sessionID: request.sessionID,
 			});
 		}
 		return;
@@ -49,6 +54,8 @@ router.post("/register", async (request: express.Request, response) => {
 				recaptchaSiteKey: process.env.TESTING_RECAPTCHA_SITE_KEY,
 				diagnosticMessage: result.reason,
 				authentication: request.authentication,
+				csrfToken: request.generatedCSRFToken,
+				sessionID: request.sessionID,
 			});
 		} else {
 			// real credentials
@@ -56,6 +63,8 @@ router.post("/register", async (request: express.Request, response) => {
 				recaptchaSiteKey: process.env.RECAPTCHA_SITE_KEY,
 				diagnosticMessage: result.reason,
 				authentication: request.authentication,
+				csrfToken: request.generatedCSRFToken,
+				sessionID: request.sessionID,
 			});
 		}
 		return;
@@ -72,6 +81,8 @@ router.post("/register", async (request: express.Request, response) => {
 				diagnosticMessage:
 					"Unable to create user account due to an internal error. If this persists, please contact mistertfy64.",
 				authentication: request.authentication,
+				csrfToken: request.generatedCSRFToken,
+				sessionID: request.sessionID,
 			});
 		} else {
 			// real credentials
@@ -80,6 +91,8 @@ router.post("/register", async (request: express.Request, response) => {
 				diagnosticMessage:
 					"Unable to create user account due to an internal error. If this persists, please contact mistertfy64.",
 				authentication: request.authentication,
+				csrfToken: request.generatedCSRFToken,
+				sessionID: request.sessionID,
 			});
 		}
 		return;
