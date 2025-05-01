@@ -75,6 +75,9 @@ router.post(
 
 		const number = problem?.problemNumber;
 		const correctAnswer = problem.correctPassword;
+		const sanitizedUsername = mongoSanitize.sanitize(
+			request.authentication.username as any
+		);
 
 		if (correctAnswer !== answer) {
 			// wrong answer
@@ -86,13 +89,14 @@ router.post(
 				csrfToken: request.generatedCSRFToken,
 				sessionID: request.sessionID,
 			});
+			log.info(
+				`${sanitizedUsername} incorrectly answered ${answer} to problem with ID ${sanitizedProblemID}.`
+			);
 			return;
 		}
 
 		// correct answer + passed all checks
-		const sanitizedUsername = mongoSanitize.sanitize(
-			request.authentication.username as any
-		);
+
 		const user = await User.findOne({ username: sanitizedUsername });
 
 		if (!user) {
