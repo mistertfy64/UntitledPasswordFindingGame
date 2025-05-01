@@ -75,7 +75,6 @@ app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "server/views"));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(__dirname + "/public"));
-app.use(loggedIn);
 app.use(
 	session({
 		secret: crypto.randomBytes(32).toString("hex"),
@@ -87,6 +86,7 @@ app.use(
 app.use(cookieParser());
 app.use(bodyParser.json());
 app.use(setCSRFToken);
+app.use(loggedIn);
 app.use(doubleCsrfProtection);
 
 // Routes

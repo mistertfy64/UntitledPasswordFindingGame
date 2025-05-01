@@ -43,6 +43,8 @@ router.get(
 			problemStatement: statement,
 			authentication: request.authentication,
 			correctAnswers: problem.correctAnswers,
+			csrfToken: request.generatedCSRFToken,
+			sessionID: request.sessionID,
 		});
 	}
 );
@@ -81,6 +83,8 @@ router.post(
 				number: number,
 				problemID: sanitizedProblemID,
 				authentication: request.authentication,
+				csrfToken: request.generatedCSRFToken,
+				sessionID: request.sessionID,
 			});
 			return;
 		}
@@ -118,6 +122,8 @@ router.post(
 			number: number,
 			problemID: sanitizedProblemID,
 			authentication: request.authentication,
+			csrfToken: request.generatedCSRFToken,
+			sessionID: request.sessionID,
 		});
 	}
 );

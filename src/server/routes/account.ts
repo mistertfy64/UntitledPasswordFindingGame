@@ -24,6 +24,8 @@ router.get("/account", async (request: express.Request, response) => {
 		username: sanitizedUsername,
 		data: user,
 		authentication: request.authentication,
+		csrfToken: request.generatedCSRFToken,
+		sessionID: request.sessionID,
 	});
 });
 

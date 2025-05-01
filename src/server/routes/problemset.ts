@@ -9,6 +9,8 @@ router.get("/problemset", async (request: express.Request, response) => {
 	response.render("pages/problemset", {
 		authentication: request.authentication,
 		problems: problems,
+		csrfToken: request.generatedCSRFToken,
+		sessionID: request.sessionID,
 	});
 });
 
