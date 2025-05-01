@@ -1,4 +1,9 @@
-import express, { NextFunction, Request, Response } from "express";
+import express, {
+	ErrorRequestHandler,
+	NextFunction,
+	Request,
+	Response,
+} from "express";
 import crypto from "crypto";
 import { log } from "./server/utilities/log";
 import path from "path";
@@ -68,6 +73,32 @@ const setCSRFToken = async function (
 	next();
 };
 
+const errorHandling: ErrorRequestHandler = async function (
+	error,
+	request: express.Request,
+	response: express.Response,
+	next: NextFunction
+) {
+	log.error(error.stack);
+	if (error.status === 400) {
+		response.status(400).render(__dirname + "/server/views/pages/400");
+		return;
+	}
+	if (error.status === 403) {
+		response.status(403).render(__dirname + "/server/views/pages/403");
+		return;
+	}
+	if (error.status === 404) {
+		response.status(404).render(__dirname + "/server/views/pages/404");
+		return;
+	}
+	if (error.status === 500) {
+		response.status(500).render(__dirname + "/server/views/pages/500");
+		return;
+	}
+	response.status(500).render(__dirname + "/server/views/pages/500");
+};
+
 const app = express();
 const cookieParser = require("cookie-parser");
 app.set("trust proxy", 2);
@@ -88,6 +119,7 @@ app.use(bodyParser.json());
 app.use(setCSRFToken);
 app.use(loggedIn);
 app.use(doubleCsrfProtection);
+app.use(errorHandling);
 
 // Routes
 require("fs")
