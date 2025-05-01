@@ -1,10 +1,11 @@
 import express, { NextFunction, Request, Response } from "express";
-import ejs from "ejs";
+import crypto from "crypto";
 import { log } from "./server/utilities/log";
 import path from "path";
 import mongoose from "mongoose";
 import bodyParser from "body-parser";
 import { isAuthenticated } from "./server/utilities/authentication";
+import { doubleCsrf } from "csrf-csrf";
 
 require("dotenv").config();
 
@@ -19,6 +20,17 @@ declare global {
 	}
 }
 
+const {
+	invalidCsrfTokenError,
+	generateCsrfToken,
+	validateRequest,
+	doubleCsrfProtection,
+} = doubleCsrf({
+	getSecret: (req) => crypto.randomBytes(32).toString("hex"),
+	getSessionIdentifier: (request: express.Request) =>
+		request.body["csrf-token"],
+});
+
 const app = express();
 const cookieParser = require("cookie-parser");
 app.set("trust proxy", 2);
@@ -27,6 +39,7 @@ app.set("views", path.join(__dirname, "server/views"));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(__dirname + "/public"));
 app.use(cookieParser());
+app.use(doubleCsrfProtection);
 app.use(bodyParser.json());
 
 const loggedIn = async function (
