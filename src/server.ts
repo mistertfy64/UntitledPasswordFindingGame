@@ -55,6 +55,10 @@ app.get("*splat", function (request: Request, response: Response) {
 	response.status(404).render(__dirname + "/server/views/pages/404");
 });
 
+app.all("*splat", function (request: Request, response: Response) {
+	response.status(404).render(__dirname + "/server/views/pages/404");
+});
+
 app.listen(process.env.PORT, () => {
 	mongoose.connect(process.env.DATABASE_URI as string);
 	log.info(`App listening at http://localhost:${process.env.PORT}`);
