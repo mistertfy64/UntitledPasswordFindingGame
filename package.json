@@ -1,6 +1,6 @@
 {
   "name": "untitled-password-finding-game",
-  "version": "0.1.0-alpha.1",
+  "version": "0.1.0-alpha.2",
   "description": "fun password finding game",
   "main": "index.js",
   "private": true,
@@ -31,6 +31,7 @@
     "bcrypt": "^5.1.1",
     "body-parser": "^2.2.0",
     "cookie-parser": "^1.4.7",
+    "cookie-session": "^2.1.0",
     "copyfiles": "^2.4.1",
     "csrf-csrf": "^4.0.0",
     "dotenv": "^16.5.0",
@@ -39,6 +40,7 @@
     "express-mongo-sanitize": "^2.2.0",
     "express-session": "^1.18.1",
     "markdown-it": "^14.1.0",
+    "markdown-it-sub": "^2.0.0",
     "mongoose": "^8.14.1"
   }
 }
