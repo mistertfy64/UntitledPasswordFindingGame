@@ -6,7 +6,7 @@ import mongoSanitize from "express-mongo-sanitize";
 import { User } from "../models/User";
 import { log } from "../utilities/log";
 
-const md = markdownit();
+const md = markdownit().use(require("markdown-it-sub"));
 const router = express.Router();
 
 router.get("/problem", async (request: express.Request, response) => {
