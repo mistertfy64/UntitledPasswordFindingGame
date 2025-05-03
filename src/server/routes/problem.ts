@@ -59,6 +59,12 @@ router.post(
 
 		const answer = request.body["password"];
 
+		// Ignore answers with more than 64 characters
+		if (answer.length > 64) {
+			response.redirect(`/problem/${request.params.problemID}`);
+			return;
+		}
+
 		const sanitizedProblemID = mongoSanitize.sanitize(
 			request.params.problemID as any
 		);
