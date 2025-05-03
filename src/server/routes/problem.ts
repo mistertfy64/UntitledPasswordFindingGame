@@ -171,6 +171,9 @@ router.post(
 				log.error(error);
 			}
 		}
+		log.info(
+			`${sanitizedUsername} correctly answered ${answer} to problem with ID ${sanitizedProblemID}.`
+		);
 	}
 );
 
