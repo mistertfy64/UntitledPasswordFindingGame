@@ -3,9 +3,10 @@ import { Model, Schema, model } from "mongoose";
 interface SubmissionInterface {
 	username: string;
 	answer: string;
-	verdict: "accepted" | "wrong answer" | "ignored";
+	verdict: "correct answer" | "wrong answer" | "ignored";
 	problemNumber: number;
 	problemID: string;
+	timestamp: Date;
 }
 
 interface SubmissionModel extends Model<SubmissionInterface, SubmissionModel> {}
@@ -16,6 +17,7 @@ const submissionSchema = new Schema({
 	verdict: String,
 	problemNumber: Number,
 	problemID: String,
+	timestamp: Date,
 });
 
 const Submission = model<SubmissionModel, SubmissionModel>(
