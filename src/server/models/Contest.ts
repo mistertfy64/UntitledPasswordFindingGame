@@ -50,4 +50,4 @@ const Contest = model<ContestModel, ContestModel>(
 	"contests"
 );
 
-export { Contest };
+export { Contest, ContestInterface };
