@@ -1,0 +1,22 @@
+<h2>Contest Leaderboards</h2>
+<p>
+<table id="contest-leaderboards">
+  <tr>
+    <th>#</th>
+    <th>Username</th>
+    <th>Σ</th>
+    <% for (const problem of contestData.problems) { %>
+    <th><%=problem.problemID%></th>
+    <% } %>
+  </tr>
+  <% for (let order = 0; order < contestData.scores.length; order++){ %><tr>
+    <td><%=order+1%></td>
+    <td><%=contestData.scores[order].username%></td>
+    <td><%=contestData.scores[order].totalScore%></td>
+    <% for (const problem of contestData.problems) { %>
+    <td><%=contestData.scores[order].detailed[problem.problemID].score%></td>
+    <% } %>
+  </tr>
+  <% } %>
+</table>
+</p>

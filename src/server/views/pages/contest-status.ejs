@@ -29,6 +29,10 @@
       </ul>
       Regardless of how many points are deducted, you can not earn less than <%=contestData.rules.minimumPointsPerProblem %> points per problem once you solved it.
       </p>
+      <% if (contestData.startDateAndTime <= new Date()){ %>
+      <hr>
+      <%- include("../partials/contest-leaderboards.ejs", {contestData:contestData}) %>
+      <% } %>
       <footer>
         <%- include("../partials/footer.ejs") %>
       </footer>
