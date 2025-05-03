@@ -213,6 +213,7 @@ async function createNewUser(username: string, password: string) {
 	user.lowercasedUsername = username.toLowerCase();
 	user.correctAnswers = [];
 	user.passwordHash = await bcrypt.hash(password, SALT_ROUNDS);
+	user.creationDateAndTime = new Date();
 
 	try {
 		user.save();
