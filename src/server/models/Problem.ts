@@ -13,6 +13,7 @@ interface ProblemInterface {
 	correctAnswers: Array<ProblemCorrectAnswerInterface>;
 	creationDateAndTime: Date;
 	releaseDateAndTime: Date;
+	hidden: boolean;
 }
 
 interface ProblemMethods {
@@ -34,6 +35,7 @@ const problemSchema = new Schema({
 	correctAnswers: Array<ProblemCorrectAnswerInterface>,
 	creationDateAndTime: Date,
 	releaseDateAndTime: Date,
+	hidden: Boolean,
 });
 
 problemSchema.static(
