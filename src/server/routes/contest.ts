@@ -26,7 +26,7 @@ router.get(
 			return;
 		}
 
-		response.render("pages/contest-standings", {
+		response.render("pages/contest-status", {
 			authentication: request.authentication,
 			csrfToken: request.generatedCSRFToken,
 			sessionID: request.sessionID,
