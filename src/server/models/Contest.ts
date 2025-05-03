@@ -26,11 +26,10 @@ interface ContestInterface {
 interface ContestModel extends Model<ContestInterface, ContestModel> {}
 
 const contestSchema = new Schema({
-	username: String,
-	answer: String,
-	verdict: String,
-	problemNumber: Number,
-	problemID: String,
+	contestID: String,
+	contestName: String,
+	startDateAndTime: Date,
+	endDateAndTime: Date,
 	timestamp: Date,
 	rules: {
 		pointsLostPer: {
