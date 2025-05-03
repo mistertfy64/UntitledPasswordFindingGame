@@ -48,7 +48,19 @@ problemSchema.static(
 );
 
 problemSchema.static("getVisibleProblems", async function (problemID: string) {
-	return await this.find({}).select({
+	const currentTime = Date.now();
+	return await this.find({
+		$and: [
+			{ $nor: [{ hidden: true }] },
+			{
+				$or: [
+					{ releaseDateAndTime: { $lte: currentTime } },
+					{ releaseDateAndTime: undefined },
+					{ releaseDateAndTime: null },
+				],
+			},
+		],
+	}).select({
 		"correctPassword": 0,
 	});
 });
