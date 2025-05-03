@@ -150,6 +150,15 @@ router.post(
 			);
 		}
 
+		response.render("pages/correct-answer", {
+			answer: answer,
+			number: number,
+			problemID: sanitizedProblemID,
+			authentication: request.authentication,
+			csrfToken: request.generatedCSRFToken,
+			sessionID: request.sessionID,
+		});
+
 		// add submission
 		submission.verdict = "correct answer";
 		try {
@@ -162,15 +171,6 @@ router.post(
 				log.error(error);
 			}
 		}
-
-		response.render("pages/correct-answer", {
-			answer: answer,
-			number: number,
-			problemID: sanitizedProblemID,
-			authentication: request.authentication,
-			csrfToken: request.generatedCSRFToken,
-			sessionID: request.sessionID,
-		});
 	}
 );
 
