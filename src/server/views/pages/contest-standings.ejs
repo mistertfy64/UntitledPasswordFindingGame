@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>UntitledPasswordFindingGame</title>
+  <link rel="stylesheet" type="text/css" href="/assets/css/global.css" />
+</head>
+
+<body>
+  <div id="container">
+    <header>
+      <%- include("../partials/header.ejs", {authentication: authentication}) %>
+    </header>
+    <main>
+      <h1><%= contestData.contestName %></h1>
+      <p>
+        This contest starts on
+        <%=contestData.startDateAndTime.toISOString() %>
+        and ends on
+        <%=contestData.endDateAndTime.toISOString() %>.
+        <br>
+        Points are awarded when you solve a problem.
+        From the maximum amount of points for a problem, you will lose
+      <ul>
+        <li><%=contestData.rules.pointsLostPer.intervalAmount%> points every <%=contestData.rules.pointsLostPer.interval%> millisecond(s).</li>
+        <li><%=contestData.rules.pointsLostPer.wrongAnswersAmount%> points for every <%=contestData.rules.pointsLostPer.wrongAnswers%> wrong answer(s).</li>
+      </ul>
+      Regardless of how many points are deducted, you can not earn less than <%=contestData.rules.minimumPointsPer %> points per problem.
+      </p>
+      <footer>
+        <%- include("../partials/footer.ejs") %>
+      </footer>
+  </div>
+</body>
