@@ -11,6 +11,7 @@ interface UserInterface {
 	passwordHash: string;
 	correctAnswers: Array<UserCorrectAnswerInterface>;
 	tokens: Array<string>;
+	email: string;
 }
 
 interface UserMethods {
@@ -28,6 +29,7 @@ const userSchema = new Schema({
 	passwordHash: String,
 	correctAnswers: Array<UserCorrectAnswerInterface>,
 	tokens: Array<String>,
+	email: String,
 });
 
 userSchema.static("safeFindByUsername", async function (username: string) {
