@@ -17,6 +17,7 @@ interface UserInterface {
 interface UserMethods {
 	setToken(token: string): void;
 	addCorrectAnswer(problemID: string, timestamp: Date): void;
+	setNewEmail(newEmail: string): void;
 }
 
 interface UserModel extends Model<UserInterface, UserModel, UserMethods> {
@@ -66,6 +67,10 @@ userSchema.method(
 		});
 	}
 );
+
+userSchema.method("setNewEmail", async function setNewEmail(newEmail) {
+	await this.updateOne({ email: newEmail });
+});
 
 const User = model<UserInterface, UserModel>("User", userSchema, "users");
 

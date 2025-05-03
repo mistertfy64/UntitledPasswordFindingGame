@@ -16,6 +16,10 @@
     <main>
       <h1><%= username %></h1>
       Correct Answers: <%= data?.correctAnswers?.length || "0" %>
+      <br>
+      <form action="/account/settings">
+        <input type="submit" value="Go to Account Settings">
+      </form>
     </main>
     <footer>
       <%- include("../partials/footer.ejs") %>
