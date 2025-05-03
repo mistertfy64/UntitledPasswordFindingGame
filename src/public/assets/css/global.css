@@ -130,3 +130,7 @@ td {
 .disclaimer-text {
 	font-size: 10px;
 }
+
+#contest-leaderboards {
+	text-align: center;
+}
