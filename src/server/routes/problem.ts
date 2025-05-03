@@ -112,7 +112,16 @@ router.post(
 
 			// add submission
 			submission.verdict = "wrong answer";
-			submission.save();
+			try {
+				submission.save();
+			} catch (error: unknown) {
+				log.error("Unable to save submission.");
+				if (error instanceof Error) {
+					log.error(error.stack);
+				} else {
+					log.error(error);
+				}
+			}
 			return;
 		}
 
@@ -143,7 +152,16 @@ router.post(
 
 		// add submission
 		submission.verdict = "correct answer";
-		submission.save();
+		try {
+			submission.save();
+		} catch (error: unknown) {
+			log.error("Unable to save submission.");
+			if (error instanceof Error) {
+				log.error(error.stack);
+			} else {
+				log.error(error);
+			}
+		}
 
 		response.render("pages/correct-answer", {
 			answer: answer,
