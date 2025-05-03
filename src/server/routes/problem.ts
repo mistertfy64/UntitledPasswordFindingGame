@@ -5,6 +5,7 @@ import markdownit from "markdown-it";
 import mongoSanitize from "express-mongo-sanitize";
 import { User } from "../models/User";
 import { log } from "../utilities/log";
+import { Submission } from "../models/Submission";
 
 const md = markdownit().use(require("markdown-it-sub"));
 const router = express.Router();
@@ -79,11 +80,21 @@ router.post(
 			return;
 		}
 
+		// create submission object
+		const submission = new Submission();
+
+		const timestamp = new Date();
 		const number = problem?.problemNumber;
 		const correctAnswer = problem.correctPassword;
 		const sanitizedUsername = mongoSanitize.sanitize(
 			request.authentication.username as any
 		);
+
+		submission.problemNumber = number;
+		submission.problemID = problem.problemID;
+		submission.username = sanitizedUsername;
+		submission.answer = answer;
+		submission.timestamp = new Date();
 
 		if (correctAnswer !== answer) {
 			// wrong answer
@@ -98,6 +109,10 @@ router.post(
 			log.info(
 				`${sanitizedUsername} incorrectly answered ${answer} to problem with ID ${sanitizedProblemID}.`
 			);
+
+			// add submission
+			submission.verdict = "wrong answer";
+			submission.save();
 			return;
 		}
 
@@ -119,13 +134,16 @@ router.post(
 				(e) => e.username === sanitizedUsername
 			)
 		) {
-			const timestamp = new Date();
 			user.addCorrectAnswer(sanitizedProblemID, timestamp);
 			problem.addCorrectAnswer(sanitizedUsername, timestamp);
 			log.info(
 				`${sanitizedUsername} solved problem with ID ${sanitizedProblemID} on ${timestamp.toISOString()}.`
 			);
 		}
+
+		// add submission
+		submission.verdict = "correct answer";
+		submission.save();
 
 		response.render("pages/correct-answer", {
 			answer: answer,
