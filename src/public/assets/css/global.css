@@ -38,6 +38,10 @@ input {
 	color: #ff0000;
 }
 
+.message--success {
+	color: #007f00;
+}
+
 table {
 	width: 100%;
 	border-collapse: collapse;
@@ -120,5 +124,9 @@ td {
 }
 
 .version-text {
+	font-size: 10px;
+}
+
+.disclaimer-text {
 	font-size: 10px;
 }

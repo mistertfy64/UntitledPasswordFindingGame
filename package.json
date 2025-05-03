@@ -1,6 +1,6 @@
 {
   "name": "untitled-password-finding-game",
-  "version": "0.1.0-alpha.2",
+  "version": "0.1.0-alpha.3",
   "description": "fun password finding game",
   "main": "index.js",
   "private": true,
@@ -14,7 +14,7 @@
     "url": "git+https://github.com/mistertfy64/UntitledPasswordFindingGame.git"
   },
   "author": "mistertfy64",
-  "license": "ISC",
+  "license": "AGPL-3.0-or-later",
   "bugs": {
     "url": "https://github.com/mistertfy64/UntitledPasswordFindingGame/issues"
   },
@@ -38,7 +38,6 @@
     "ejs": "^3.1.10",
     "express": "^5.1.0",
     "express-mongo-sanitize": "^2.2.0",
-    "express-session": "^1.18.1",
     "markdown-it": "^14.1.0",
     "markdown-it-sub": "^2.0.0",
     "mongoose": "^8.14.1"

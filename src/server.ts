@@ -12,7 +12,7 @@ import bodyParser from "body-parser";
 import { isAuthenticated } from "./server/utilities/authentication";
 import { CsrfTokenGeneratorRequestUtil, doubleCsrf } from "csrf-csrf";
 
-const session = require("express-session");
+const session = require("cookie-session");
 require("dotenv").config();
 
 declare global {

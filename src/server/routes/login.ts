@@ -6,7 +6,7 @@ const crypto = require("crypto");
 const router = express.Router();
 
 router.get("/login", async (request: express.Request, response) => {
-	if (!loggedIn()) {
+	if (!request.authentication.ok) {
 		response.render("pages/login", {
 			diagnosticMessage: "",
 			authentication: request.authentication,
@@ -71,10 +71,5 @@ router.post("/login", async (request: express.Request, response) => {
 	await user.setToken(token);
 	response.redirect("/");
 });
-
-// TODO: implement this
-function loggedIn() {
-	return false;
-}
 
 export { router };
