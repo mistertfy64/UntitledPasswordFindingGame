@@ -22,7 +22,7 @@ interface ProblemMethods {
 interface ProblemModel
 	extends Model<ProblemInterface, ProblemModel, ProblemMethods> {
 	findProblemWithProblemID(problemID: string): Promise<ProblemInterface>;
-	getProblems(): Promise<Array<ProblemInterface>>;
+	getVisibleProblems(): Promise<Array<ProblemInterface>>;
 }
 
 const problemSchema = new Schema({
@@ -45,7 +45,7 @@ problemSchema.static(
 	}
 );
 
-problemSchema.static("getProblems", async function (problemID: string) {
+problemSchema.static("getVisibleProblems", async function (problemID: string) {
 	return await this.find({}).select({
 		"correctPassword": 0,
 	});
