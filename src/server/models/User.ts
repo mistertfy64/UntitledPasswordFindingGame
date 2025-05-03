@@ -11,15 +11,18 @@ interface UserInterface {
 	passwordHash: string;
 	correctAnswers: Array<UserCorrectAnswerInterface>;
 	tokens: Array<string>;
+	email: string;
 }
 
 interface UserMethods {
 	setToken(token: string): void;
 	addCorrectAnswer(problemID: string, timestamp: Date): void;
+	setNewEmail(newEmail: string): void;
 }
 
 interface UserModel extends Model<UserInterface, UserModel, UserMethods> {
 	safeFindByUsername(username: string): Promise<UserInterface>;
+	safeFindByUsernameWithEmail(username: string): Promise<UserInterface>;
 }
 
 const userSchema = new Schema({
@@ -28,14 +31,26 @@ const userSchema = new Schema({
 	passwordHash: String,
 	correctAnswers: Array<UserCorrectAnswerInterface>,
 	tokens: Array<String>,
+	email: String,
 });
 
 userSchema.static("safeFindByUsername", async function (username: string) {
 	return await this.findOne({ username: username }).select({
 		"passwordHash": 0,
 		"tokens": 0,
+		"email": 0,
 	});
 });
+
+userSchema.static(
+	"safeFindByUsernameWithEmail",
+	async function (username: string) {
+		return await this.findOne({ username: username }).select({
+			"passwordHash": 0,
+			"tokens": 0,
+		});
+	}
+);
 
 userSchema.method("setToken", async function addToken(token) {
 	const hashedToken: string = await bcrypt.hash(token, 8);
@@ -52,6 +67,10 @@ userSchema.method(
 		});
 	}
 );
+
+userSchema.method("setNewEmail", async function setNewEmail(newEmail) {
+	await this.updateOne({ email: newEmail });
+});
 
 const User = model<UserInterface, UserModel>("User", userSchema, "users");
 

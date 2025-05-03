@@ -15,12 +15,15 @@
     </header>
     <main>
       <h1><%= username %></h1>
-      Correct Answers: <%= data?.correctAnswers?.length || "0" %>
-      <br>
-      <form action="/account/settings">
-        <input type="submit" value="Go to Account Settings">
-      </form>
     </main>
+    <form action="" method="POST">
+      <input type="email" name="email" placeholder="E-mail address" value="<%-email || ""%>">
+      <br>
+      <span class="disclaimer-text">An e-mail address is NOT required to submit answers, however, it may be required for identity verification, such as when claiming prizes or resetting a forgotten password.</span>
+      <%- include("../partials/csrf.ejs",{sessionID:sessionID,csrfToken:csrfToken}) %>
+      <br>
+      <input type="submit" value="Update">
+    </form>
     <footer>
       <%- include("../partials/footer.ejs") %>
     </footer>
