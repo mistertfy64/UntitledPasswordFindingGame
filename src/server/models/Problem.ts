@@ -11,7 +11,8 @@ interface ProblemInterface {
 	correctPassword: string;
 	problemNumber: number;
 	correctAnswers: Array<ProblemCorrectAnswerInterface>;
-	creationDate: Date;
+	creationDateAndTime: Date;
+	releaseDateAndTime: Date;
 }
 
 interface ProblemMethods {
@@ -31,7 +32,8 @@ const problemSchema = new Schema({
 	correctPassword: String,
 	problemNumber: Number,
 	correctAnswers: Array<ProblemCorrectAnswerInterface>,
-	creationDate: Date,
+	creationDateAndTime: Date,
+	releaseDateAndTime: Date,
 });
 
 problemSchema.static(
