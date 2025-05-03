@@ -32,6 +32,13 @@ router.get(
 			return;
 		}
 
+		if (
+			problem.releaseDateAndTime != null &&
+			problem.releaseDateAndTime < new Date()
+		) {
+			response.redirect("/problemset");
+			return;
+		}
 		const name = problem.problemName;
 		const statement = md.render(problem.problemStatement);
 
@@ -77,6 +84,14 @@ router.post(
 			response.render("pages/404", {
 				authentication: request.authentication,
 			});
+			return;
+		}
+
+		if (
+			problem.releaseDateAndTime != null &&
+			problem.releaseDateAndTime < new Date()
+		) {
+			response.redirect("/problemset");
 			return;
 		}
 
