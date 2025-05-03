@@ -21,6 +21,7 @@ interface UserMethods {
 
 interface UserModel extends Model<UserInterface, UserModel, UserMethods> {
 	safeFindByUsername(username: string): Promise<UserInterface>;
+	safeFindByUsernameWithEmail(username: string): Promise<UserInterface>;
 }
 
 const userSchema = new Schema({
@@ -36,8 +37,19 @@ userSchema.static("safeFindByUsername", async function (username: string) {
 	return await this.findOne({ username: username }).select({
 		"passwordHash": 0,
 		"tokens": 0,
+		"email": 0,
 	});
 });
+
+userSchema.static(
+	"safeFindByUsernameWithEmail",
+	async function (username: string) {
+		return await this.findOne({ username: username }).select({
+			"passwordHash": 0,
+			"tokens": 0,
+		});
+	}
+);
 
 userSchema.method("setToken", async function addToken(token) {
 	const hashedToken: string = await bcrypt.hash(token, 8);
