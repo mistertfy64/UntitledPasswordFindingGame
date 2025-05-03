@@ -3,7 +3,7 @@ import { Model, Schema, model } from "mongoose";
 interface SubmissionInterface {
 	username: string;
 	answer: string;
-	verdict: "accepted" | "wrong answer";
+	verdict: "accepted" | "wrong answer" | "ignored";
 }
 
 interface SubmissionModel extends Model<SubmissionInterface, SubmissionModel> {}
