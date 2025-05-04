@@ -1,6 +1,6 @@
 <h2>Contest Leaderboards</h2>
 <p>
-  <% if (contestData.endDateAndTime <= Date.now()){ %>
+  <% if (new Date(contestData.endDateAndTime) <= Date.now()){ %>
   This contest has ended. Submissions are still accepted but will not be included in the contest leaderboards.
   <br>
   <% } %>
