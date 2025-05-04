@@ -21,6 +21,7 @@ interface ContestInterface {
 	};
 	participants: Array<string>;
 	problems: Array<ContestProblemInterface>;
+	timestamp: Date;
 }
 
 interface ContestModel extends Model<ContestInterface, ContestModel> {}
