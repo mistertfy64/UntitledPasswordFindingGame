@@ -19,11 +19,15 @@
     <td><span class="score--total"><%=contestData.scores[order].totalScore%></span></td>
     <% for (const problem of contestData.problems) { %>
     <% if (contestData.scores[order].detailed[problem.problemID].solved) { %>
-    <td><span class="score--correct-answer"><%=contestData.scores[order].detailed[problem.problemID].score%></span></td>
+    <td>
+      <span title="Solved after <%=contestData.scores[order].detailed[problem.problemID].timeTaken%> milliseconds and <%=contestData.scores[order].detailed[problem.problemID].wrongAnswers%> wrong answer(s)" class="score--correct-answer">
+        <%=contestData.scores[order].detailed[problem.problemID].score%>
+      </span>
+    </td>
     <% }else if (contestData.scores[order].detailed[problem.problemID].wrongAnswers > 0) {%>
-    <td><span class="score--wrong-answer">-<%=contestData.scores[order].detailed[problem.problemID].wrongAnswers%></span></td>
+    <td><span title="<%=contestData.scores[order].detailed[problem.problemID].wrongAnswers%> wrong answer(s) so far." class="score--wrong-answer">-<%=contestData.scores[order].detailed[problem.problemID].wrongAnswers%></span></td>
     <%}else{%>
-    <td></td>
+    <td><span title="Did not attempt yet."></span></td>
     <%}%>
         <% } %>
   </tr>
