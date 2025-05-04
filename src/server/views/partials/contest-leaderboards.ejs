@@ -1,5 +1,9 @@
 <h2>Contest Leaderboards</h2>
 <p>
+  <% if (contestData.endDateAndTime <= Date.now()){ %>
+  This contest has ended. Submissions are still accepted but will not be included in the contest leaderboards.
+  <br>
+  <% } %>
   <% if (contestData.scores.length === 0) { %>
   No submissions have been made yet.
   <%}else{%>
