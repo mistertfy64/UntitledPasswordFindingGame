@@ -141,4 +141,9 @@ td {
 
 .score--correct-answer {
 	color: #00cc00;
+	font-weight: bold;
+}
+
+.score--total {
+	font-weight: bold;
 }
