@@ -31,6 +31,8 @@
       </p>
       <% if (contestData.startDateAndTime <= new Date()){ %>
       <hr>
+      <%- include("../partials/contest-problems.ejs", {contestData:contestData}) %>
+      <hr>
       <%- include("../partials/contest-leaderboards.ejs", {contestData:contestData}) %>
       <% } %>
       <footer>
