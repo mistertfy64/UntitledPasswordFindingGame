@@ -34,6 +34,10 @@
       <%- include("../partials/contest-problems.ejs", {contestData:contestData}) %>
       <hr>
       <%- include("../partials/contest-leaderboards.ejs", {contestData:contestData}) %>
+      <% } else { %>
+      <hr>
+      This contest hasn't started yet. Once it starts, reload the page and contest problems will be automatically shown here.
+      You do not need to register for a contest. Once you make a submission on a contest problem, you will automatically be included in the contest leaderboards.
       <% } %>
       <footer>
         <%- include("../partials/footer.ejs") %>
