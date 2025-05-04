@@ -147,3 +147,7 @@ td {
 .score--total {
 	font-weight: bold;
 }
+
+p {
+	margin: 4px 0;
+}
