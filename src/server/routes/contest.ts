@@ -172,13 +172,14 @@ function formatScores(
 
 			const lostFromTime = Math.round(
 				Math.floor(
-					penalty.timeTaken / contest.rules.pointsLostPer.interval
+					penalty.timeTaken /
+						(contest.rules.pointsLostPer.interval || Infinity)
 				) * contest.rules.pointsLostPer.intervalAmount
 			);
 			const lostFromWrongAnswers = Math.round(
 				Math.floor(
 					penalty.wrongAnswers /
-						contest.rules.pointsLostPer.wrongAnswers
+						(contest.rules.pointsLostPer.wrongAnswers || Infinity)
 				) * contest.rules.pointsLostPer.wrongAnswersAmount
 			);
 
