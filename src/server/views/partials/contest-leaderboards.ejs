@@ -9,7 +9,8 @@
     <th><%=problem.problemID%></th>
     <% } %>
   </tr>
-  <% for (let order = 0; order < contestData.scores.length; order++){ %><tr>
+  <% for (let order = 0; order < contestData.scores.length; order++){ %>
+  <tr>
     <td><%=order+1%></td>
     <td><%=contestData.scores[order].username%></td>
     <td><%=contestData.scores[order].totalScore%></td>
