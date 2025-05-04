@@ -41,9 +41,11 @@ const problemSchema = new Schema({
 problemSchema.static(
 	"findProblemWithProblemID",
 	async function (problemID: string) {
-		return await this.findOne({ problemID: problemID }).select({
-			"correctPassword": 0,
-		});
+		return await this.findOne({ problemID: problemID })
+			.select({
+				"correctPassword": 0,
+			})
+			.lean();
 	}
 );
 
@@ -60,9 +62,11 @@ problemSchema.static("getVisibleProblems", async function (problemID: string) {
 				],
 			},
 		],
-	}).select({
-		"correctPassword": 0,
-	});
+	})
+		.select({
+			"correctPassword": 0,
+		})
+		.lean();
 });
 
 problemSchema.method(
