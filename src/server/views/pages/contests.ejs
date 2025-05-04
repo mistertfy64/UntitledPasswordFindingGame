@@ -29,7 +29,7 @@
         <% for (const contest of contests){ %>
         <tr>
           <td><%=contest.contestID%></td>
-          <td><%=contest.contestName%></td>
+          <td><a href="/contests/<%=contest.contestID%>"><%=contest.contestName%></a></td>
           <td><%=contest.startDateAndTime.toISOString()%></td>
           <td><%=contest.endDateAndTime.toISOString()%></td>
         </tr>
