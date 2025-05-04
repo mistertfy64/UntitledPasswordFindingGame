@@ -39,6 +39,14 @@ router.get(
 		const sanitizedContestID = mongoSanitize.sanitize(
 			request.params.contestID as any
 		);
+
+		const contestRegex = /^[A-Za-z0-9_\-]{3,64}$/;
+
+		if (!contestRegex.test(sanitizedContestID)) {
+			response.redirect("/contests");
+			return;
+		}
+
 		const contest = (await Contest.findOne({
 			contestID: sanitizedContestID,
 		})) as ExtendedContestInterface;
