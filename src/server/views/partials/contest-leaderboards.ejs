@@ -1,5 +1,8 @@
 <h2>Contest Leaderboards</h2>
 <p>
+  <% if (contestData.scores.length === 0) { %>
+  No submissions have been made yet.
+  <%}else{%>
 <table id="contest-leaderboards">
   <tr>
     <th>#</th>
@@ -13,11 +16,18 @@
   <tr>
     <td><%=order+1%></td>
     <td><%=contestData.scores[order].username%></td>
-    <td><%=contestData.scores[order].totalScore%></td>
+    <td><span class="score--total"><%=contestData.scores[order].totalScore%></span></td>
     <% for (const problem of contestData.problems) { %>
-    <td><%=contestData.scores[order].detailed[problem.problemID].score%></td>
-    <% } %>
+    <% if (contestData.scores[order].detailed[problem.problemID].solved) { %>
+    <td><span class="score--correct-answer"><%=contestData.scores[order].detailed[problem.problemID].score%></span></td>
+    <% }else if (contestData.scores[order].detailed[problem.problemID].wrongAnswers > 0) {%>
+    <td><span class="score--wrong-answer">-<%=contestData.scores[order].detailed[problem.problemID].wrongAnswers%></span></td>
+    <%}else{%>
+    <td></td>
+    <%}%>
+        <% } %>
   </tr>
   <% } %>
 </table>
+<%}%>
 </p>
