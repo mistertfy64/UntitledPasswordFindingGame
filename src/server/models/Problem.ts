@@ -11,6 +11,9 @@ interface ProblemInterface {
 	correctPassword: string;
 	problemNumber: number;
 	correctAnswers: Array<ProblemCorrectAnswerInterface>;
+	creationDateAndTime: Date;
+	releaseDateAndTime: Date;
+	hidden: boolean;
 }
 
 interface ProblemMethods {
@@ -20,7 +23,7 @@ interface ProblemMethods {
 interface ProblemModel
 	extends Model<ProblemInterface, ProblemModel, ProblemMethods> {
 	findProblemWithProblemID(problemID: string): Promise<ProblemInterface>;
-	getProblems(): Promise<Array<ProblemInterface>>;
+	getVisibleProblems(): Promise<Array<ProblemInterface>>;
 }
 
 const problemSchema = new Schema({
@@ -30,21 +33,40 @@ const problemSchema = new Schema({
 	correctPassword: String,
 	problemNumber: Number,
 	correctAnswers: Array<ProblemCorrectAnswerInterface>,
+	creationDateAndTime: Date,
+	releaseDateAndTime: Date,
+	hidden: Boolean,
 });
 
 problemSchema.static(
 	"findProblemWithProblemID",
 	async function (problemID: string) {
-		return await this.findOne({ problemID: problemID }).select({
-			"correctPassword": 0,
-		});
+		return await this.findOne({ problemID: problemID })
+			.select({
+				"correctPassword": 0,
+			})
+			.lean();
 	}
 );
 
-problemSchema.static("getProblems", async function (problemID: string) {
-	return await this.find({}).select({
-		"correctPassword": 0,
-	});
+problemSchema.static("getVisibleProblems", async function (problemID: string) {
+	const currentTime = Date.now();
+	return await this.find({
+		$and: [
+			{ $nor: [{ hidden: true }] },
+			{
+				$or: [
+					{ releaseDateAndTime: { $lte: currentTime } },
+					{ releaseDateAndTime: undefined },
+					{ releaseDateAndTime: null },
+				],
+			},
+		],
+	})
+		.select({
+			"correctPassword": 0,
+		})
+		.lean();
 });
 
 problemSchema.method(
@@ -64,4 +86,4 @@ const Problem = model<ProblemInterface, ProblemModel>(
 	"problems"
 );
 
-export { Problem };
+export { Problem, ProblemInterface };

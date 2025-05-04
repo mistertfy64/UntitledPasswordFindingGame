@@ -4,7 +4,7 @@ import { Problem } from "../models/Problem";
 const router = express.Router();
 
 router.get("/problemset", async (request: express.Request, response) => {
-	const problems = await Problem.getProblems();
+	const problems = await Problem.getVisibleProblems();
 	problems.sort((a, b) => a.problemNumber - b.problemNumber);
 	response.render("pages/problemset", {
 		authentication: request.authentication,

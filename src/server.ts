@@ -11,6 +11,7 @@ import mongoose from "mongoose";
 import bodyParser from "body-parser";
 import { isAuthenticated } from "./server/utilities/authentication";
 import { CsrfTokenGeneratorRequestUtil, doubleCsrf } from "csrf-csrf";
+import { rateLimit } from "express-rate-limit";
 
 const session = require("cookie-session");
 require("dotenv").config();
@@ -27,6 +28,13 @@ declare global {
 		}
 	}
 }
+
+const limiter = rateLimit({
+	windowMs: 10 * 60 * 1000,
+	limit: 100,
+	standardHeaders: "draft-8",
+	legacyHeaders: false, // Disable the `X-RateLimit-*` headers.
+});
 
 const {
 	invalidCsrfTokenError,
@@ -120,6 +128,7 @@ app.use(setCSRFToken);
 app.use(loggedIn);
 app.use(doubleCsrfProtection);
 app.use(errorHandling);
+app.use(limiter);
 
 // Routes
 require("fs")

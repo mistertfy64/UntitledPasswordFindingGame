@@ -5,6 +5,7 @@ import markdownit from "markdown-it";
 import mongoSanitize from "express-mongo-sanitize";
 import { User } from "../models/User";
 import { log } from "../utilities/log";
+import { Submission } from "../models/Submission";
 
 const md = markdownit().use(require("markdown-it-sub"));
 const router = express.Router();
@@ -31,6 +32,13 @@ router.get(
 			return;
 		}
 
+		if (
+			problem.releaseDateAndTime != null &&
+			problem.releaseDateAndTime > new Date()
+		) {
+			response.redirect("/problemset");
+			return;
+		}
 		const name = problem.problemName;
 		const statement = md.render(problem.problemStatement);
 
@@ -59,6 +67,12 @@ router.post(
 
 		const answer = request.body["password"];
 
+		// Ignore empty answers or answers with more than 64 characters
+		if (!answer || answer.length > 64) {
+			response.redirect(`/problem/${request.params.problemID}`);
+			return;
+		}
+
 		const sanitizedProblemID = mongoSanitize.sanitize(
 			request.params.problemID as any
 		);
@@ -73,11 +87,29 @@ router.post(
 			return;
 		}
 
+		if (
+			problem.releaseDateAndTime != null &&
+			problem.releaseDateAndTime > new Date()
+		) {
+			response.redirect("/problemset");
+			return;
+		}
+
+		// create submission object
+		const submission = new Submission();
+
+		const timestamp = new Date();
 		const number = problem?.problemNumber;
 		const correctAnswer = problem.correctPassword;
 		const sanitizedUsername = mongoSanitize.sanitize(
 			request.authentication.username as any
 		);
+
+		submission.problemNumber = number;
+		submission.problemID = problem.problemID;
+		submission.username = sanitizedUsername;
+		submission.answer = answer;
+		submission.timestamp = new Date();
 
 		if (correctAnswer !== answer) {
 			// wrong answer
@@ -92,6 +124,19 @@ router.post(
 			log.info(
 				`${sanitizedUsername} incorrectly answered ${answer} to problem with ID ${sanitizedProblemID}.`
 			);
+
+			// add submission
+			submission.verdict = "wrong answer";
+			try {
+				submission.save();
+			} catch (error: unknown) {
+				log.error("Unable to save submission.");
+				if (error instanceof Error) {
+					log.error(error.stack);
+				} else {
+					log.error(error);
+				}
+			}
 			return;
 		}
 
@@ -113,7 +158,6 @@ router.post(
 				(e) => e.username === sanitizedUsername
 			)
 		) {
-			const timestamp = new Date();
 			user.addCorrectAnswer(sanitizedProblemID, timestamp);
 			problem.addCorrectAnswer(sanitizedUsername, timestamp);
 			log.info(
@@ -129,6 +173,22 @@ router.post(
 			csrfToken: request.generatedCSRFToken,
 			sessionID: request.sessionID,
 		});
+
+		// add submission
+		submission.verdict = "correct answer";
+		try {
+			submission.save();
+		} catch (error: unknown) {
+			log.error("Unable to save submission.");
+			if (error instanceof Error) {
+				log.error(error.stack);
+			} else {
+				log.error(error);
+			}
+		}
+		log.info(
+			`${sanitizedUsername} correctly answered ${answer} to problem with ID ${sanitizedProblemID}.`
+		);
 	}
 );
 
