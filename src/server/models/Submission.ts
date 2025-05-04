@@ -26,4 +26,4 @@ const Submission = model<SubmissionModel, SubmissionModel>(
 	"submissions"
 );
 
-export { Submission };
+export { Submission, SubmissionInterface };

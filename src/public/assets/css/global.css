@@ -130,3 +130,28 @@ td {
 .disclaimer-text {
 	font-size: 10px;
 }
+
+#contest-leaderboards {
+	text-align: center;
+}
+
+#contest-list {
+	text-align: center;
+}
+
+.score--wrong-answer {
+	color: #ff0000;
+}
+
+.score--correct-answer {
+	color: #00cc00;
+	font-weight: bold;
+}
+
+.score--total {
+	font-weight: bold;
+}
+
+p {
+	margin: 4px 0;
+}
