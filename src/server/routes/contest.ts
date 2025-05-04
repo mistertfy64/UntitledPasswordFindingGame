@@ -51,14 +51,10 @@ router.get(
 		if (contest.startDateAndTime <= new Date()) {
 			// contest has already started, get data as well
 			contest.scores = await getContestScores(contest);
-			contest.contestProblems = [];
-			for (const contestProblem of contest.problems) {
-				const contestProblemData =
-					await Problem.findProblemWithProblemID(
-						contestProblem.problemID
-					);
-				contest.contestProblems.push(contestProblemData);
-			}
+			const problemIDs = contest.problems.map((e) => e.problemID);
+			contest.contestProblems = await Problem.find({
+				problemID: { $in: problemIDs },
+			}).lean();
 		}
 
 		response.render("pages/contest-status", {
