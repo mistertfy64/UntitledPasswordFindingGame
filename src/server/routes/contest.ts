@@ -2,6 +2,7 @@ import express from "express";
 import mongoSanitize from "express-mongo-sanitize";
 import { Contest, ContestInterface } from "../models/Contest";
 import { Submission, SubmissionInterface } from "../models/Submission";
+import { Problem, ProblemInterface } from "../models/Problem";
 const router = express.Router();
 
 type LeaderboardsScore = {
@@ -19,6 +20,7 @@ type TotalScoreInterface = {
 
 interface ExtendedContestInterface extends ContestInterface {
 	scores: Array<LeaderboardsScore>;
+	contestProblems: Array<ProblemInterface>;
 }
 
 router.get("/contests", async (request: express.Request, response) => {
@@ -47,6 +49,14 @@ router.get(
 		if (contest.startDateAndTime <= new Date()) {
 			// contest has already started, get data as well
 			contest.scores = await getContestScores(contest);
+			contest.contestProblems = [];
+			for (const contestProblem of contest.problems) {
+				const contestProblemData =
+					await Problem.findProblemWithProblemID(
+						contestProblem.problemID
+					);
+				contest.contestProblems.push(contestProblemData);
+			}
 		}
 
 		response.render("pages/contest-status", {
