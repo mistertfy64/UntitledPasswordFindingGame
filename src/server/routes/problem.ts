@@ -89,7 +89,7 @@ router.post(
 
 		if (
 			problem.releaseDateAndTime != null &&
-			problem.releaseDateAndTime < new Date()
+			problem.releaseDateAndTime > new Date()
 		) {
 			response.redirect("/problemset");
 			return;
