@@ -24,10 +24,12 @@ interface ExtendedContestInterface extends ContestInterface {
 }
 
 router.get("/contests", async (request: express.Request, response) => {
+	const contest = await Contest.find({});
 	response.render("pages/contests", {
 		authentication: request.authentication,
 		csrfToken: request.generatedCSRFToken,
 		sessionID: request.sessionID,
+		contests: contest,
 	});
 });
 
