@@ -134,3 +134,11 @@ td {
 #contest-leaderboards {
 	text-align: center;
 }
+
+.score--wrong-answer {
+	color: #ff0000;
+}
+
+.score--correct-answer {
+	color: #00cc00;
+}
