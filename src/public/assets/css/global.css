@@ -135,6 +135,10 @@ td {
 	text-align: center;
 }
 
+#contest-list {
+	text-align: center;
+}
+
 .score--wrong-answer {
 	color: #ff0000;
 }
