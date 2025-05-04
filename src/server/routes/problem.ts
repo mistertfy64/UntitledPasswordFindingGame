@@ -67,8 +67,8 @@ router.post(
 
 		const answer = request.body["password"];
 
-		// Ignore answers with more than 64 characters
-		if (answer.length > 64) {
+		// Ignore empty answers or answers with more than 64 characters
+		if (!answer || answer.length > 64) {
 			response.redirect(`/problem/${request.params.problemID}`);
 			return;
 		}
