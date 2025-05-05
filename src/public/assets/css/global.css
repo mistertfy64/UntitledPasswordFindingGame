@@ -51,12 +51,11 @@ table,
 th,
 td {
   border: 1px solid;
-  word-wrap: break-word;
 }
 
-#problemset {
+/* #problemset {
   table-layout: fixed;
-}
+} */
 
 #problemset th:nth-child(1) {
   width: 5%;
@@ -66,19 +65,16 @@ td {
 #problemset th:nth-child(2) {
   width: 55%;
   text-align: center;
-  word-wrap: break-word;
 }
 
 #problemset th:nth-child(3) {
   width: 25%;
   text-align: center;
-  word-wrap: break-word;
 }
 
 #problemset th:nth-child(4) {
   width: 15%;
   text-align: center;
-  word-wrap: break-word;
 }
 
 #problemset td:nth-child(1) {
@@ -88,12 +84,12 @@ td {
 
 #problemset td:nth-child(2) {
   width: 55%;
-  word-wrap: break-word;
+  white-space: nowrap;
 }
 
 #problemset td:nth-child(3) {
   width: 25%;
-  word-wrap: break-word;
+  white-space: nowrap;
 }
 
 #problemset td:nth-child(4) {
@@ -101,9 +97,9 @@ td {
   text-align: center;
 }
 
-#correct-answers {
+/* #correct-answers {
   table-layout: fixed;
-}
+} */
 
 #correct-answers th:nth-child(1) {
   width: 5%;
@@ -112,11 +108,12 @@ td {
 
 #correct-answers th:nth-child(2) {
   width: 55%;
+  white-space: nowrap;
 }
 
 #correct-answers th:nth-child(3) {
   width: 30%;
-  word-wrap: break-word;
+  white-space: nowrap;
 }
 
 #correct-answers {
@@ -157,6 +154,16 @@ p {
   margin: 4px 0;
 }
 
-#contest-leaderboards__wrapper {
+#contest-leaderboards__wrapper,
+#contest-list__wrapper,
+#problemset__wrapper,
+#contest-problemset__wrapper {
   overflow-x: auto;
+}
+
+.cell--number {
+  padding: 0 4px;
+  text-wrap: nowrap;
+  white-space: nowrap;
+  text-align: center;
 }
