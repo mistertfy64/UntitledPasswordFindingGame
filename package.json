@@ -41,6 +41,7 @@
     "express-rate-limit": "^7.5.0",
     "markdown-it": "^14.1.0",
     "markdown-it-sub": "^2.0.0",
-    "mongoose": "^8.14.1"
+    "mongoose": "^8.14.1",
+    "serve-favicon": "^2.5.0"
   }
 }
