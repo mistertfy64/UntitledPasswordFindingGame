@@ -2,9 +2,9 @@
 <html lang="en">
 
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
   <title>UntitledPasswordFindingGame</title>
+  <%- include("../partials/head.ejs")>
   <link rel="stylesheet" type="text/css" href="/assets/css/global.css" />
 </head>
 
@@ -12,35 +12,35 @@
   <div id="container">
     <header>
       <%- include("../partials/header.ejs", {authentication: authentication}) %>
-    </header>
-    <main>
-      <h1><%= contestData.contestName %></h1>
-      <p>
-        This contest starts on
-        <%=contestData.startDateAndTime.toISOString() %>
-        and ends on
-        <%=contestData.endDateAndTime.toISOString() %>.
-        <br>
-        Points are awarded when you solve a problem.
-        From the maximum amount of points for a problem per problem, you will lose:
-      <ul>
-        <li><%=contestData.rules.pointsLostPer.intervalAmount%> point(s) every <%=contestData.rules.pointsLostPer.interval%> millisecond(s) since the start time.</li>
-        <li><%=contestData.rules.pointsLostPer.wrongAnswersAmount%> point(s) for every <%=contestData.rules.pointsLostPer.wrongAnswers%> wrong answer(s).</li>
-      </ul>
-      Regardless of how many points are deducted, you can not earn less than <%=contestData.rules.minimumPointsPerProblem %> points per problem once you solved it.
-      </p>
-      <% if (new Date(contestData.startDateAndTime) <= new Date()){ %>
-      <hr>
-      <%- include("../partials/contest-problems.ejs", {contestData:contestData}) %>
-      <hr>
-      <%- include("../partials/contest-leaderboards.ejs", {contestData:contestData}) %>
-      <% } else { %>
-      <hr>
-      This contest hasn't started yet. Once it starts, reload the page and contest problems will be automatically shown here.
-      You do not need to register for a contest. Once you make a submission on a contest problem (during a contest), you will automatically be included in the contest leaderboards.
-      <% } %>
-      <footer>
-        <%- include("../partials/footer.ejs") %>
-      </footer>
-  </div>
-</body>
+  </header>
+  <main>
+    <h1><%= contestData.contestName %></h1>
+    <p>
+      This contest starts on
+      <%=contestData.startDateAndTime.toISOString() %>
+      and ends on
+      <%=contestData.endDateAndTime.toISOString() %>.
+      <br>
+      Points are awarded when you solve a problem.
+      From the maximum amount of points for a problem per problem, you will lose:
+    <ul>
+      <li><%=contestData.rules.pointsLostPer.intervalAmount%> point(s) every <%=contestData.rules.pointsLostPer.interval%> millisecond(s) since the start time.</li>
+      <li><%=contestData.rules.pointsLostPer.wrongAnswersAmount%> point(s) for every <%=contestData.rules.pointsLostPer.wrongAnswers%> wrong answer(s).</li>
+    </ul>
+    Regardless of how many points are deducted, you can not earn less than <%=contestData.rules.minimumPointsPerProblem %> points per problem once you solved it.
+    </p>
+    <% if (new Date(contestData.startDateAndTime) <= new Date()){ %>
+    <hr>
+    <%- include("../partials/contest-problems.ejs", {contestData:contestData}) %>
+    <hr>
+    <%- include("../partials/contest-leaderboards.ejs", {contestData:contestData}) %>
+    <% } else { %>
+    <hr>
+    This contest hasn't started yet. Once it starts, reload the page and contest problems will be automatically shown here.
+    You do not need to register for a contest. Once you make a submission on a contest problem (during a contest), you will automatically be included in the contest leaderboards.
+    <% } %>
+    <footer>
+      <%- include("../partials/footer.ejs") %>
+    </footer>
+    </div>
+    </body>

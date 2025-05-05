@@ -2,9 +2,9 @@
 <html lang="en">
 
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
   <title>UntitledPasswordFindingGame</title>
+  <%- include("../partials/head.ejs")>
   <link rel="stylesheet" type="text/css" href="/assets/css/global.css" />
 </head>
 
@@ -12,45 +12,45 @@
   <div id="container">
     <header>
       <%- include("../partials/header.ejs") %>
-    </header>
-    <main>
-      <h1><%- problemName %></h1>
-      <%- problemStatement %>
-      <hr>
-      <% if (authentication.ok) { %>
-      <form action="" method="POST">
-        <%- include("../partials/csrf.ejs",{sessionID:sessionID,csrfToken:csrfToken}) %>
-        <input type="text" name="password" placeholder="Password">
-        <input type="submit">
-      </form>
-      <% } else { %>
-      Please log in to submit answers.
-      <% } %>
-      <hr>
-      <h2>Correct Answers</h2>
-      <% if (correctAnswers.length > 0) { %>
-      <table id="correct-answers">
-        <th>#</th>
-        <th>Username</th>
-        <th>Timestamp</th>
+  </header>
+  <main>
+    <h1><%- problemName %></h1>
+    <%- problemStatement %>
+    <hr>
+    <% if (authentication.ok) { %>
+    <form action="" method="POST">
+      <%- include("../partials/csrf.ejs",{sessionID:sessionID,csrfToken:csrfToken}) %>
+      <input type="text" name="password" placeholder="Password">
+      <input type="submit">
+    </form>
+    <% } else { %>
+    Please log in to submit answers.
+    <% } %>
+    <hr>
+    <h2>Correct Answers</h2>
+    <% if (correctAnswers.length > 0) { %>
+    <table id="correct-answers">
+      <th>#</th>
+      <th>Username</th>
+      <th>Timestamp</th>
 
-        <% let order = 1 %>
-        <% for (const correctAnswer of correctAnswers) { %>
-        <tr>
-          <td><%= order %></td>
-          <td><%= correctAnswer.username %></td>
-          <td><%= correctAnswer.timestamp.toISOString() %></td>
-        </tr>
-        <% order++ %>
-        <% } %>
-      </table>
-      <% } else {%>
-      No one has solved this problem yet! Will you be the first?
-      <%}%>
+      <% let order = 1 %>
+      <% for (const correctAnswer of correctAnswers) { %>
+      <tr>
+        <td><%= order %></td>
+        <td><%= correctAnswer.username %></td>
+        <td><%= correctAnswer.timestamp.toISOString() %></td>
+      </tr>
+      <% order++ %>
+      <% } %>
+    </table>
+    <% } else {%>
+    No one has solved this problem yet! Will you be the first?
+    <%}%>
       </table>
     </main>
     <footer>
       <%- include("../partials/footer.ejs") %>
-      </footer>
-  </div>
-</body>
+    </footer>
+    </div>
+    </body>

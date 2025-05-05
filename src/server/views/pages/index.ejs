@@ -2,9 +2,8 @@
 <html lang="en">
 
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>UntitledPasswordFindingGame</title>
+  <%- include("../partials/head.ejs")>
   <link rel="stylesheet" type="text/css" href="/assets/css/global.css" />
 </head>
 
@@ -12,27 +11,27 @@
   <div id="container">
     <header>
       <%- include("../partials/header.ejs", {authentication: authentication}) %>
-    </header>
-    <main>
-      <h1>Welcome to UntitledPasswordFindingGame!</h1>
-      UntitledPasswordFindingGame is a website where you have to find out hidden passwords.
-      <br>
-      Here's how it works:
-      <ul>
-        <li>The problem statement will tell you what you need to do to find the hidden password for each question.</li>
-        <li>If you think you have the password, enter the password to see if you're correct.</li>
-      </ul>
-      That's it!
-      <br>
-      If this feels similar to a cybersecurity capture-the-flag website, then you're on to something!
-      However, unlike capture-the-flag websites, this is more of a "puzzle-game" website, but there may be CTF-elements hidden in some puzzles.
-      <br>
-      You can start to solve the puzzles in the "Problemset" section of this website.
-      <br>
-      Good luck!
-    </main>
-    <footer>
-      <%- include("../partials/footer.ejs") %>
-    </footer>
+  </header>
+  <main>
+    <h1>Welcome to UntitledPasswordFindingGame!</h1>
+    UntitledPasswordFindingGame is a website where you have to find out hidden passwords.
+    <br>
+    Here's how it works:
+    <ul>
+      <li>The problem statement will tell you what you need to do to find the hidden password for each question.</li>
+      <li>If you think you have the password, enter the password to see if you're correct.</li>
+    </ul>
+    That's it!
+    <br>
+    If this feels similar to a cybersecurity capture-the-flag website, then you're on to something!
+    However, unlike capture-the-flag websites, this is more of a "puzzle-game" website, but there may be CTF-elements hidden in some puzzles.
+    <br>
+    You can start to solve the puzzles in the "Problemset" section of this website.
+    <br>
+    Good luck!
+  </main>
+  <footer>
+    <%- include("../partials/footer.ejs") %>
+  </footer>
   </div>
-</body>
+  </body>

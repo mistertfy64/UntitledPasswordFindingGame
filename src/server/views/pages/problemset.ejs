@@ -2,9 +2,9 @@
 <html lang="en">
 
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
   <title>UntitledPasswordFindingGame</title>
+  <%- include("../partials/head.ejs")>
   <link rel="stylesheet" type="text/css" href="/assets/css/global.css" />
 </head>
 
@@ -12,27 +12,27 @@
   <div id="container">
     <header>
       <%- include("../partials/header.ejs") %>
-    </header>
-    <main>
-      <table id="problemset">
-        <tr>
-          <th>#</th>
-          <th>Name</th>
-          <th>ID</th>
-          <th>Solved</th>
-        </tr>
-        <% for (const problem of problems) { %>
-        <tr>
-          <td><%= problem.problemNumber %></td>
-          <td><a href="/problem/<%= problem.problemID %>"><%= problem.problemName %></a></td>
-          <td><%= problem.problemID %></td>
-          <td><%= problem.correctAnswers.length %></td>
-        </tr>
-        <% } %>
-      </table>
-    </main>
-    <footer>
-      <%- include("../partials/footer.ejs") %>
-    </footer>
+  </header>
+  <main>
+    <table id="problemset">
+      <tr>
+        <th>#</th>
+        <th>Name</th>
+        <th>ID</th>
+        <th>Solved</th>
+      </tr>
+      <% for (const problem of problems) { %>
+      <tr>
+        <td><%= problem.problemNumber %></td>
+        <td><a href="/problem/<%= problem.problemID %>"><%= problem.problemName %></a></td>
+        <td><%= problem.problemID %></td>
+        <td><%= problem.correctAnswers.length %></td>
+      </tr>
+      <% } %>
+    </table>
+  </main>
+  <footer>
+    <%- include("../partials/footer.ejs") %>
+  </footer>
   </div>
-</body>
+  </body>

@@ -2,9 +2,10 @@
 <html lang="en">
 
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
   <title>UntitledPasswordFindingGame</title>
+  <%- include("../partials/head.ejs")>
+
   <link rel="stylesheet" type="text/css" href="/assets/css/global.css" />
 </head>
 
@@ -12,22 +13,22 @@
   <div id="container">
     <header>
       <%- include("../partials/header.ejs") %>
-    </header>
-    <main>
-      <h1><%= username %></h1>
-    </main>
-    <form action="" method="POST">
-      <input type="email" name="email" placeholder="E-mail address" value="<%-email || ""%>">
-      <br>
-      <span class="disclaimer-text">An e-mail address is NOT required to submit answers, however, it may be required for identity verification, such as when claiming prizes or resetting a forgotten password.</span>
-      <%- include("../partials/csrf.ejs",{sessionID:sessionID,csrfToken:csrfToken}) %>
-      <br>
-      <input type="submit" value="Update">
-    </form>
-    <footer>
-      <%- include("../partials/footer.ejs") %>
-    </footer>
+  </header>
+  <main>
+    <h1><%= username %></h1>
+  </main>
+  <form action="" method="POST">
+    <input type="email" name="email" placeholder="E-mail address" value="<%-email || ""%>">
+    <br>
+    <span class="disclaimer-text">An e-mail address is NOT required to submit answers, however, it may be required for identity verification, such as when claiming prizes or resetting a forgotten password.</span>
+    <%- include("../partials/csrf.ejs",{sessionID:sessionID,csrfToken:csrfToken}) %>
+    <br>
+    <input type="submit" value="Update">
+  </form>
+  <footer>
+    <%- include("../partials/footer.ejs") %>
+  </footer>
   </div>
-</body>
+  </body>
 
 </html>
