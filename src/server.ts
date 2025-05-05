@@ -129,7 +129,7 @@ app.use(loggedIn);
 app.use(doubleCsrfProtection);
 app.use(errorHandling);
 app.use(limiter);
-app.use(favicon(path.join(__dirname, "public", "favicon.ico")));
+app.use(favicon(path.join(__dirname, "public", "assets", "favicon.png")));
 
 // Routes
 require("fs")
