@@ -23,7 +23,11 @@
             <th>Solved</th>
           </tr>
           <% for (const problem of problems) { %>
+          <% if (authentication.ok && problem.correctAnswers.find((e)=>e.username===authentication.username) ) { %>
+          <tr class="cell--solved">
+            <% } else { %>
           <tr>
+            <% } %>
             <td class="cell--number"><%= problem.problemNumber %></td>
             <td><a href="/problem/<%= problem.problemID %>"><%= problem.problemName %></a></td>
             <td><%= problem.problemID %></td>
