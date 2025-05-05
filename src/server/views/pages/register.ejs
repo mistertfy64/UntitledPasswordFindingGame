@@ -4,7 +4,7 @@
 <head>
 
   <title>UntitledPasswordFindingGame</title>
-  <%- include("../partials/head.ejs")>
+  <%- include("../partials/head.ejs")%>
   <link rel="stylesheet" type="text/css" href="/assets/css/global.css" />
 </head>
 
@@ -12,32 +12,32 @@
   <div id="container">
     <header>
       <%- include("../partials/header.ejs") %>
-  </header>
-  <main>
-    <h1>Register</h1>
-    <form action="" method="POST">
-      <input type="text" name="username" placeholder="Username">
-      <br>
-      <input type="password" name="password" placeholder="Password">
-      <br>
-      <input type="password" name="confirm-password" placeholder="Confirm Password">
-      <br>
-      <div class="g-recaptcha" data-sitekey=<%-recaptchaSiteKey%>></div>
-      <% if (diagnosticMessage) { %>
-      <div class="message--error">
-        <%= diagnosticMessage %>
-      </div>
-      <% } %>
-      <%- include("../partials/csrf.ejs",{sessionID:sessionID,csrfToken:csrfToken}) %>
-      <input type="submit" value="Register">
-    </form>
-    Already have an account? <a href="/login">Log In</a>
-  </main>
-  <footer>
-    <%- include("../partials/footer.ejs") %>
-  </footer>
+    </header>
+    <main>
+      <h1>Register</h1>
+      <form action="" method="POST">
+        <input type="text" name="username" placeholder="Username">
+        <br>
+        <input type="password" name="password" placeholder="Password">
+        <br>
+        <input type="password" name="confirm-password" placeholder="Confirm Password">
+        <br>
+        <div class="g-recaptcha" data-sitekey=<%-recaptchaSiteKey%>></div>
+        <% if (diagnosticMessage) { %>
+        <div class="message--error">
+          <%= diagnosticMessage %>
+        </div>
+        <% } %>
+        <%- include("../partials/csrf.ejs",{sessionID:sessionID,csrfToken:csrfToken}) %>
+        <input type="submit" value="Register">
+      </form>
+      Already have an account? <a href="/login">Log In</a>
+    </main>
+    <footer>
+      <%- include("../partials/footer.ejs") %>
+    </footer>
   </div>
   <script src="https://www.google.com/recaptcha/api.js" async defer></script>
-  </body>
+</body>
 
 </html>

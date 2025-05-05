@@ -4,7 +4,7 @@
 <head>
 
   <title>UntitledPasswordFindingGame</title>
-  <%- include("../partials/head.ejs")>
+  <%- include("../partials/head.ejs")%>
 
   <link rel="stylesheet" type="text/css" href="/assets/css/global.css" />
 </head>
@@ -13,22 +13,22 @@
   <div id="container">
     <header>
       <%- include("../partials/header.ejs") %>
-  </header>
-  <main>
-    <h1><%= username %></h1>
-    Correct Answers: <%= data?.correctAnswers?.length || "0" %>
-    <br>
-    <form action="/account/settings">
-      <input type="submit" value="Go to Account Settings">
-    </form>
-    <form action="/logout">
-      <input type="submit" value="Logout">
-    </form>
-  </main>
-  <footer>
-    <%- include("../partials/footer.ejs") %>
-  </footer>
+    </header>
+    <main>
+      <h1><%= username %></h1>
+      Correct Answers: <%= data?.correctAnswers?.length || "0" %>
+      <br>
+      <form action="/account/settings">
+        <input type="submit" value="Go to Account Settings">
+      </form>
+      <form action="/logout">
+        <input type="submit" value="Logout">
+      </form>
+    </main>
+    <footer>
+      <%- include("../partials/footer.ejs") %>
+    </footer>
   </div>
-  </body>
+</body>
 
 </html>
