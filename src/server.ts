@@ -12,9 +12,9 @@ import bodyParser from "body-parser";
 import { isAuthenticated } from "./server/utilities/authentication";
 import { CsrfTokenGeneratorRequestUtil, doubleCsrf } from "csrf-csrf";
 import { rateLimit } from "express-rate-limit";
-
+const favicon = require("serve-favicon");
 const session = require("cookie-session");
-require("dotenv").config();
+require("@dotenvx/dotenvx").config();
 
 declare global {
 	namespace Express {
@@ -129,6 +129,7 @@ app.use(loggedIn);
 app.use(doubleCsrfProtection);
 app.use(errorHandling);
 app.use(limiter);
+app.use(favicon(path.join(__dirname, "public", "favicon.ico")));
 
 // Routes
 require("fs")
