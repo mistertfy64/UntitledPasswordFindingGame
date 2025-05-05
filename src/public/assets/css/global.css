@@ -167,3 +167,7 @@ p {
   white-space: nowrap;
   text-align: center;
 }
+
+.cell--solved {
+  background-color: #00ff005f;
+}
