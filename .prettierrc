@@ -1,0 +1,16 @@
+{
+  "trailingComma": "none",
+  "tabWidth": 2,
+  "printWidth": 80,
+  "quoteProps": "preserve",
+  "overrides": [
+    {
+      "files": [
+        "*.ejs"
+      ],
+      "options": {
+        "printWidth": 320
+      }
+    }
+  ]
+}
