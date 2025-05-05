@@ -15,6 +15,9 @@
       <%- include("../partials/header.ejs") %>
     </header>
     <main>
+      <% if (data.isAdministrator) {  %>
+      <h2>Administrator</h2>
+      <% } %>
       <h1><%= username %></h1>
       Correct Answers: <%= data?.correctAnswers?.length || "0" %>
       <br>
