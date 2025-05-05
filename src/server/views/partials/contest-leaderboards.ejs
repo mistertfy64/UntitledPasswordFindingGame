@@ -10,7 +10,7 @@
 <div id="contest-leaderboards__wrapper">
   <table id="contest-leaderboards">
     <tr>
-      <th>#</th>
+      <th class="cell--number">#</th>
       <th>Username</th>
       <th>Σ</th>
       <% for (const problem of contestData.problems) { %>
@@ -19,20 +19,20 @@
     </tr>
     <% for (let order = 0; order < contestData.scores.length; order++){ %>
     <tr>
-      <td><%=order+1%></td>
+      <td class="cell--number"><%=order+1%></td>
       <td><%=contestData.scores[order].username%></td>
-      <td><span class="score--total"><%=contestData.scores[order].totalScore%></span></td>
+      <td class="cell--number"><span class="score--total"><%=contestData.scores[order].totalScore%></span></td>
       <% for (const problem of contestData.problems) { %>
       <% if (contestData.scores[order].detailed[problem.problemID].solved) { %>
-      <td>
+      <td class="cell--number">
         <span title="Solved after <%=contestData.scores[order].detailed[problem.problemID].timeTaken%> milliseconds and <%=contestData.scores[order].detailed[problem.problemID].wrongAnswers%> wrong answer(s)" class="score--correct-answer">
           <%=contestData.scores[order].detailed[problem.problemID].score%>
         </span>
       </td>
       <% }else if (contestData.scores[order].detailed[problem.problemID].wrongAnswers > 0) {%>
-      <td><span title="<%=contestData.scores[order].detailed[problem.problemID].wrongAnswers%> wrong answer(s) so far." class="score--wrong-answer">-<%=contestData.scores[order].detailed[problem.problemID].wrongAnswers%></span></td>
+      <td class="cell--number"><span title="<%=contestData.scores[order].detailed[problem.problemID].wrongAnswers%> wrong answer(s) so far." class="score--wrong-answer">-<%=contestData.scores[order].detailed[problem.problemID].wrongAnswers%></span></td>
       <%}else{%>
-      <td><span title="Did not attempt yet."></span></td>
+      <td class="cell--number"><span title="Did not attempt yet."></span></td>
       <%}%>
         <% } %>
     </tr>

@@ -19,22 +19,24 @@
         <% if (contests.length === 0) { %>
         No contests have been held yet.
         <%}else{%>
-      <table id="contest-list">
-        <tr>
-          <th>ID</th>
-          <th>Name</th>
-          <th>Start</th>
-          <th>End</th>
-        </tr>
-        <% for (const contest of contests){ %>
-        <tr>
-          <td><%=contest.contestID%></td>
-          <td><a href="/contests/<%=contest.contestID%>"><%=contest.contestName%></a></td>
-          <td><%=contest.startDateAndTime.toISOString()%></td>
-          <td><%=contest.endDateAndTime.toISOString()%></td>
-        </tr>
-        <% } %>
-      </table>
+      <div id="contest-list__wrapper">
+        <table id="contest-list">
+          <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Start</th>
+            <th>End</th>
+          </tr>
+          <% for (const contest of contests){ %>
+          <tr>
+            <td class="cell--number"><%=contest.contestID%></td>
+            <td><a href="/contests/<%=contest.contestID%>"><%=contest.contestName%></a></td>
+            <td><%=contest.startDateAndTime.toISOString()%></td>
+            <td><%=contest.endDateAndTime.toISOString()%></td>
+          </tr>
+          <% } %>
+        </table>
+      </div>
       <%}%>
       </p>
       <footer>

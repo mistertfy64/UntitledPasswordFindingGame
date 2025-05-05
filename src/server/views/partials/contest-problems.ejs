@@ -1,17 +1,19 @@
 <h2>Contest Problems</h2>
-<table id="problemset">
-  <tr>
-    <th>#</th>
-    <th>Name</th>
-    <th>ID</th>
-    <th>Solved</th>
-  </tr>
-  <% for (const problem of contestData.contestProblems) { %>
-  <tr>
-    <td><%= problem.problemNumber %></td>
-    <td><a href="/problem/<%= problem.problemID %>"><%= problem.problemName %></a></td>
-    <td><%= problem.problemID %></td>
-    <td><%= problem.correctAnswers.length %></td>
-  </tr>
-  <% } %>
-</table>
+<div id="contest-problemset__wrapper">
+  <table id="contest-problemset">
+    <tr>
+      <th class="cell--number">#</th>
+      <th>Name</th>
+      <th>ID</th>
+      <th>Solved</th>
+    </tr>
+    <% for (const problem of contestData.contestProblems) { %>
+    <tr>
+      <td class="cell--number"><%= problem.problemNumber %></td>
+      <td><a href="/problem/<%= problem.problemID %>"><%= problem.problemName %></a></td>
+      <td><%= problem.problemID %></td>
+      <td class="cell--number"><%= problem.correctAnswers.length %></td>
+    </tr>
+    <% } %>
+  </table>
+</div>

@@ -14,22 +14,28 @@
       <%- include("../partials/header.ejs") %>
     </header>
     <main>
-      <table id="problemset">
-        <tr>
-          <th>#</th>
-          <th>Name</th>
-          <th>ID</th>
-          <th>Solved</th>
-        </tr>
-        <% for (const problem of problems) { %>
-        <tr>
-          <td><%= problem.problemNumber %></td>
-          <td><a href="/problem/<%= problem.problemID %>"><%= problem.problemName %></a></td>
-          <td><%= problem.problemID %></td>
-          <td><%= problem.correctAnswers.length %></td>
-        </tr>
-        <% } %>
-      </table>
+      <div id="problemset__wrapper">
+        <table id="problemset">
+          <tr>
+            <th class="cell--number">#</th>
+            <th>Name</th>
+            <th>ID</th>
+            <th>Solved</th>
+          </tr>
+          <% for (const problem of problems) { %>
+          <% if (authentication.ok && problem.correctAnswers.find((e)=>e.username===authentication.username) ) { %>
+          <tr class="cell--solved">
+            <% } else { %>
+          <tr>
+            <% } %>
+            <td class="cell--number"><%= problem.problemNumber %></td>
+            <td><a href="/problem/<%= problem.problemID %>"><%= problem.problemName %></a></td>
+            <td><%= problem.problemID %></td>
+            <td class="cell--number"><%= problem.correctAnswers.length %></td>
+          </tr>
+          <% } %>
+        </table>
+      </div>
     </main>
     <footer>
       <%- include("../partials/footer.ejs") %>

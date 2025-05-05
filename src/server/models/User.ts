@@ -13,6 +13,7 @@ interface UserInterface {
   tokens: Array<string>;
   email: string;
   creationDateAndTime: Date;
+  isAdministrator: Boolean;
 }
 
 interface UserMethods {
@@ -33,7 +34,8 @@ const userSchema = new Schema({
   correctAnswers: Array<UserCorrectAnswerInterface>,
   tokens: Array<String>,
   email: String,
-  creationDateAndTime: Date
+  creationDateAndTime: Date,
+  isAdministrator: Boolean
 });
 
 userSchema.static("safeFindByUsername", async function (username: string) {
