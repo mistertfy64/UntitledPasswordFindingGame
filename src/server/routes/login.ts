@@ -6,70 +6,70 @@ const crypto = require("crypto");
 const router = express.Router();
 
 router.get("/login", async (request: express.Request, response) => {
-	if (!request.authentication.ok) {
-		response.render("pages/login", {
-			diagnosticMessage: "",
-			authentication: request.authentication,
-			csrfToken: request.generatedCSRFToken,
-			sessionID: request.sessionID,
-		});
-	}
+  if (!request.authentication.ok) {
+    response.render("pages/login", {
+      diagnosticMessage: "",
+      authentication: request.authentication,
+      csrfToken: request.generatedCSRFToken,
+      sessionID: request.sessionID
+    });
+  }
 });
 
 router.post("/login", async (request: express.Request, response) => {
-	const username = request.body["username"];
-	const password = request.body["password"];
+  const username = request.body["username"];
+  const password = request.body["password"];
 
-	if (!username) {
-		response.render("pages/login", {
-			diagnosticMessage: "Username field is empty.",
-			authentication: request.authentication,
-			csrfToken: request.generatedCSRFToken,
-			sessionID: request.sessionID,
-		});
-		return;
-	}
+  if (!username) {
+    response.render("pages/login", {
+      diagnosticMessage: "Username field is empty.",
+      authentication: request.authentication,
+      csrfToken: request.generatedCSRFToken,
+      sessionID: request.sessionID
+    });
+    return;
+  }
 
-	if (!password) {
-		response.render("pages/login", {
-			diagnosticMessage: "Password field is empty.",
-			authentication: request.authentication,
-			csrfToken: request.generatedCSRFToken,
-			sessionID: request.sessionID,
-		});
-		return;
-	}
+  if (!password) {
+    response.render("pages/login", {
+      diagnosticMessage: "Password field is empty.",
+      authentication: request.authentication,
+      csrfToken: request.generatedCSRFToken,
+      sessionID: request.sessionID
+    });
+    return;
+  }
 
-	const sanitizedUsername = mongoSanitize.sanitize(username);
-	const user = await User.findOne({ username: sanitizedUsername });
+  const sanitizedUsername = mongoSanitize.sanitize(username);
+  const user = await User.findOne({ username: sanitizedUsername });
 
-	if (!user) {
-		response.render("pages/login", {
-			diagnosticMessage: "Username or password is incorrect.",
-			authentication: request.authentication,
-			csrfToken: request.generatedCSRFToken,
-			sessionID: request.sessionID,
-		});
-		return;
-	}
+  if (!user) {
+    response.render("pages/login", {
+      diagnosticMessage: "Username or password is incorrect.",
+      authentication: request.authentication,
+      csrfToken: request.generatedCSRFToken,
+      sessionID: request.sessionID
+    });
+    return;
+  }
 
-	const passwordResult = await bcrypt.compare(password, user.passwordHash);
-	if (!passwordResult) {
-		response.render("pages/login", {
-			diagnosticMessage: "Username or password is incorrect.",
-			authentication: request.authentication,
-			csrfToken: request.generatedCSRFToken,
-			sessionID: request.sessionID,
-		});
-		return;
-	}
+  const passwordResult = await bcrypt.compare(password, user.passwordHash);
+  if (!passwordResult) {
+    response.render("pages/login", {
+      diagnosticMessage: "Username or password is incorrect.",
+      authentication: request.authentication,
+      csrfToken: request.generatedCSRFToken,
+      sessionID: request.sessionID
+    });
+    return;
+  }
 
-	// add cookies
-	const token = await crypto.randomBytes(40).toString("hex");
-	response.cookie("username", username);
-	response.cookie("token", token);
-	await user.setToken(token);
-	response.redirect("/");
+  // add cookies
+  const token = await crypto.randomBytes(40).toString("hex");
+  response.cookie("username", username);
+  response.cookie("token", token);
+  await user.setToken(token);
+  response.redirect("/");
 });
 
 export { router };

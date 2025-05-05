@@ -1,6 +1,6 @@
 {
   "name": "untitled-password-finding-game",
-  "version": "0.1.0-alpha.4",
+  "version": "0.1.0-alpha.5",
   "description": "fun password finding game",
   "main": "index.js",
   "private": true,
@@ -28,6 +28,7 @@
     "typescript": "^5.8.3"
   },
   "dependencies": {
+    "@dotenvx/dotenvx": "^1.43.0",
     "bcrypt": "^5.1.1",
     "body-parser": "^2.2.0",
     "cookie-parser": "^1.4.7",
@@ -41,6 +42,7 @@
     "express-rate-limit": "^7.5.0",
     "markdown-it": "^14.1.0",
     "markdown-it-sub": "^2.0.0",
-    "mongoose": "^8.14.1"
+    "mongoose": "^8.14.1",
+    "serve-favicon": "^2.5.0"
   }
 }
