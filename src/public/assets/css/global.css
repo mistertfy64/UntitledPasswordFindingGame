@@ -155,3 +155,7 @@ td {
 p {
 	margin: 4px 0;
 }
+
+#contest-leaderboards__wrapper {
+	overflow-x: auto;
+}
