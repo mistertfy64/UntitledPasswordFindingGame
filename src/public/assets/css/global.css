@@ -1,162 +1,162 @@
 body {
-	font-family: sans-serif;
-	margin: 8px 0;
+  font-family: sans-serif;
+  margin: 8px 0;
 }
 
 #container {
-	max-width: 1024px;
-	margin: 0 auto;
-	padding: 8px;
+  max-width: 1024px;
+  margin: 0 auto;
+  padding: 8px;
 }
 
 h1,
 h2 {
-	margin: 2px 0;
-	word-wrap: break-word;
+  margin: 2px 0;
+  word-wrap: break-word;
 }
 
 footer {
-	text-align: center;
-	margin: 0 auto;
+  text-align: center;
+  margin: 0 auto;
 }
 
 button,
 input[type="submit"] {
-	cursor: pointer;
+  cursor: pointer;
 }
 
 .navigation-button-container {
-	display: flex;
-	flex-direction: row;
+  display: flex;
+  flex-direction: row;
 }
 
 input {
-	margin: 2px 0;
+  margin: 2px 0;
 }
 
 .message--error {
-	color: #ff0000;
+  color: #ff0000;
 }
 
 .message--success {
-	color: #007f00;
+  color: #007f00;
 }
 
 table {
-	width: 100%;
-	border-collapse: collapse;
+  width: 100%;
+  border-collapse: collapse;
 }
 
 table,
 th,
 td {
-	border: 1px solid;
-	word-wrap: break-word;
+  border: 1px solid;
+  word-wrap: break-word;
 }
 
 #problemset {
-	table-layout: fixed;
+  table-layout: fixed;
 }
 
 #problemset th:nth-child(1) {
-	width: 5%;
-	text-align: center;
+  width: 5%;
+  text-align: center;
 }
 
 #problemset th:nth-child(2) {
-	width: 55%;
-	text-align: center;
-	word-wrap: break-word;
+  width: 55%;
+  text-align: center;
+  word-wrap: break-word;
 }
 
 #problemset th:nth-child(3) {
-	width: 25%;
-	text-align: center;
-	word-wrap: break-word;
+  width: 25%;
+  text-align: center;
+  word-wrap: break-word;
 }
 
 #problemset th:nth-child(4) {
-	width: 15%;
-	text-align: center;
-	word-wrap: break-word;
+  width: 15%;
+  text-align: center;
+  word-wrap: break-word;
 }
 
 #problemset td:nth-child(1) {
-	width: 5%;
-	text-align: center;
+  width: 5%;
+  text-align: center;
 }
 
 #problemset td:nth-child(2) {
-	width: 55%;
-	word-wrap: break-word;
+  width: 55%;
+  word-wrap: break-word;
 }
 
 #problemset td:nth-child(3) {
-	width: 25%;
-	word-wrap: break-word;
+  width: 25%;
+  word-wrap: break-word;
 }
 
 #problemset td:nth-child(4) {
-	width: 15%;
-	text-align: center;
+  width: 15%;
+  text-align: center;
 }
 
 #correct-answers {
-	table-layout: fixed;
+  table-layout: fixed;
 }
 
 #correct-answers th:nth-child(1) {
-	width: 5%;
-	text-align: center;
+  width: 5%;
+  text-align: center;
 }
 
 #correct-answers th:nth-child(2) {
-	width: 55%;
+  width: 55%;
 }
 
 #correct-answers th:nth-child(3) {
-	width: 30%;
-	word-wrap: break-word;
+  width: 30%;
+  word-wrap: break-word;
 }
 
 #correct-answers {
-	text-align: center;
+  text-align: center;
 }
 
 .footer-text {
-	font-size: 10px;
-	margin: 8px 0;
+  font-size: 10px;
+  margin: 8px 0;
 }
 
 .disclaimer-text {
-	font-size: 10px;
+  font-size: 10px;
 }
 
 #contest-leaderboards {
-	text-align: center;
+  text-align: center;
 }
 
 #contest-list {
-	text-align: center;
+  text-align: center;
 }
 
 .score--wrong-answer {
-	color: #ff0000;
+  color: #ff0000;
 }
 
 .score--correct-answer {
-	color: #00cc00;
-	font-weight: bold;
+  color: #00cc00;
+  font-weight: bold;
 }
 
 .score--total {
-	font-weight: bold;
+  font-weight: bold;
 }
 
 p {
-	margin: 4px 0;
+  margin: 4px 0;
 }
 
 #contest-leaderboards__wrapper {
-	overflow-x: auto;
+  overflow-x: auto;
 }
