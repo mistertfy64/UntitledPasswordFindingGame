@@ -22,6 +22,7 @@ declare global {
       authentication: {
         ok: boolean;
         username: string;
+        isAdministrator: boolean;
       };
       session: string;
       generatedCSRFToken: string;

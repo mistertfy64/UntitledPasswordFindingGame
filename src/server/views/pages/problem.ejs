@@ -15,6 +15,9 @@
     </header>
     <main>
       <h1><%- problemName %></h1>
+      <% if (bypassed) { %>
+      <strong>Bypassing problem restrictions because user is administrator.</strong>
+      <% } %>
       <%- problemStatement %>
       <hr>
       <% if (authentication.ok) { %>

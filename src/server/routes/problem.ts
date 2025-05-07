@@ -32,13 +32,20 @@ router.get(
 
     if (
       problem.releaseDateAndTime != null &&
-      problem.releaseDateAndTime > new Date()
+      problem.releaseDateAndTime > new Date() &&
+      (!request.authentication.ok || !request.authentication.isAdministrator)
     ) {
       response.redirect("/problemset");
       return;
     }
     const name = problem.problemName;
     const statement = md.render(problem.problemStatement);
+
+    const bypassed =
+      problem.releaseDateAndTime != null &&
+      problem.releaseDateAndTime > new Date() &&
+      request.authentication.ok &&
+      request.authentication.isAdministrator;
 
     problem.correctAnswers.sort(
       (a, b) => a.timestamp.getTime() - b.timestamp.getTime()
@@ -50,7 +57,8 @@ router.get(
       authentication: request.authentication,
       correctAnswers: problem.correctAnswers,
       csrfToken: request.generatedCSRFToken,
-      sessionID: request.sessionID
+      sessionID: request.sessionID,
+      bypassed: bypassed
     });
   }
 );

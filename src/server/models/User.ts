@@ -13,7 +13,7 @@ interface UserInterface {
   tokens: Array<string>;
   email: string;
   creationDateAndTime: Date;
-  isAdministrator: Boolean;
+  isAdministrator: boolean;
 }
 
 interface UserMethods {
