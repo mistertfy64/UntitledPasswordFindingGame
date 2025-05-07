@@ -45,7 +45,7 @@ router.get(
       problem.releaseDateAndTime != null &&
       problem.releaseDateAndTime > new Date() &&
       request.authentication.ok &&
-      !request.authentication.isAdministrator;
+      request.authentication.isAdministrator;
 
     problem.correctAnswers.sort(
       (a, b) => a.timestamp.getTime() - b.timestamp.getTime()
