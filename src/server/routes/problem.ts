@@ -32,7 +32,8 @@ router.get(
 
     if (
       problem.releaseDateAndTime != null &&
-      problem.releaseDateAndTime > new Date()
+      problem.releaseDateAndTime > new Date() &&
+      (!request.authentication.ok || !request.authentication.isAdministrator)
     ) {
       response.redirect("/problemset");
       return;
