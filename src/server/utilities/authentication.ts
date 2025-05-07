@@ -15,7 +15,12 @@ async function isAuthenticated(username: string, token: string) {
   if (!tokenResult) {
     return { ok: false, username: null };
   }
-  return { ok: true, username: sanitizedUsername };
+  const isAdministrator = user.isAdministrator;
+  return {
+    ok: true,
+    username: sanitizedUsername,
+    isAdministrator: isAdministrator
+  };
 }
 
 export { isAuthenticated };
