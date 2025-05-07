@@ -171,3 +171,7 @@ p {
 .cell--solved {
   background-color: #00ff005f;
 }
+
+#contest-list td:nth-child(2) {
+  text-align: left;
+}
