@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+  <title>UntitledPasswordFindingGame</title>
+  <%- include("../partials/head.ejs")%>
+
+  <link rel="stylesheet" type="text/css" href="/assets/css/global.css" />
+</head>
+
+<body>
+  <div id="container">
+    <header>
+      <%- include("../partials/header.ejs") %>
+    </header>
+    <h1>Administrator Dashboard</h1>
+    <main>
+      <form action="/administrator/new-problem">
+        <input type="submit" value="Add a New Problem">
+      </form>
+      <form action="/administrator/submissions">
+        <input type="submit" value="View Submissions">
+      </form>
+      <form action="/administrator/clarifications">
+        <input type="submit" value="View Clarifications">
+      </form>
+    </main>
+    <footer>
+      <%- include("../partials/footer.ejs") %>
+    </footer>
+  </div>
+</body>
+
+</html>
