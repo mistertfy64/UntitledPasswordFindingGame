@@ -16,7 +16,7 @@ router.get(
       response.redirect("/");
       return;
     }
-    response.render("pages/administrator.ejs", {
+    response.render("pages/submissions.ejs", {
       authentication: request.authentication,
       csrfToken: request.generatedCSRFToken,
       sessionID: request.sessionID
