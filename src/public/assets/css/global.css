@@ -175,3 +175,34 @@ p {
 #contest-list td:nth-child(2) {
   text-align: left;
 }
+
+.answer--correct {
+  color: #00cc00;
+}
+
+.answer--wrong {
+  color: #ff0000;
+}
+
+#submissions {
+  text-align: center;
+}
+
+.monospaced {
+  font-family: monospace;
+}
+
+#amount-selector {
+  display: flex;
+  justify-content: space-between;
+}
+
+#amount-selector > div {
+  text-align: center;
+  width: 33.3%;
+}
+
+#page-number {
+  display: flex;
+  justify-content: center;
+}
