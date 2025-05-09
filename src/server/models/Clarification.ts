@@ -35,7 +35,7 @@ clarificationSchema.static(
   "getAccordingToQuery",
   async function (page: number, amount: number, keepOrder?: boolean) {
     return await this.find({ response: null })
-      .sort({ timestamp: keepOrder ? 1 : -1 })
+      .sort({ timestampOnAsk: keepOrder ? 1 : -1 })
       .skip((page - 1) * amount)
       .limit(amount);
   }
