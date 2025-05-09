@@ -34,32 +34,34 @@
       <hr>
       <h2>Previous Clarifications</h2>
       <span>(showing most recent 10)</span>
-      <table id="previous-clarifications">
-        <tr>
-          <th>Asked By</th>
-          <th>Asked On</th>
-          <th>Question</th>
-          <th>Response</th>
-          <th>Answered By</th>
-          <th>Answered On</th>
-        </tr>
-        <% if (data && data.length > 0) { %>
-        <% for (const clarification of data) { %>
-        <tr>
-          <td><%= clarification.questionAskedBy %></td>
-          <td><%= clarification.timestampOnAsk?.toISOString() %></td>
-          <td class="monospaced"><%= clarification.question %></td>
-          <td class="monospaced"><%= clarification.response %></td>
-          <td><%= clarification.responseAnswerBy %></td>
-          <td><%= clarification.timestampOnAnswer?.toISOString() %></td>
-        </tr>
-        <% } %>
-        <% } else { %>
-        <tr>
-          <td colspan="6">No clarifications found.</td>
-        </tr>
-        <% } %>
-      </table>
+      <div id="previous-clarifications__wrapper">
+        <table id="previous-clarifications">
+          <tr>
+            <th>Asked By</th>
+            <th>Asked On</th>
+            <th>Question</th>
+            <th>Response</th>
+            <th>Answered By</th>
+            <th>Answered On</th>
+          </tr>
+          <% if (data && data.length > 0) { %>
+          <% for (const clarification of data) { %>
+          <tr>
+            <td><%= clarification.questionAskedBy %></td>
+            <td><%= clarification.timestampOnAsk?.toISOString() %></td>
+            <td class="monospaced"><%= clarification.question %></td>
+            <td class="monospaced"><%= clarification.response %></td>
+            <td><%= clarification.responseAnswerBy %></td>
+            <td><%= clarification.timestampOnAnswer?.toISOString() %></td>
+          </tr>
+          <% } %>
+          <% } else { %>
+          <tr>
+            <td colspan="6">No clarifications found.</td>
+          </tr>
+          <% } %>
+        </table>
+      </div>
     </main>
     <footer>
       <%- include("../partials/footer.ejs") %>

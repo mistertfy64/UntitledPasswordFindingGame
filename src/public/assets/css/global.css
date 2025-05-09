@@ -159,7 +159,8 @@ p {
 #problemset__wrapper,
 #contest-problemset__wrapper,
 #submissions-table__wrapper,
-#previous-clarifications {
+#previous-clarifications__wrapper,
+#clarifications-table__wrapper {
   overflow-x: auto;
 }
 
