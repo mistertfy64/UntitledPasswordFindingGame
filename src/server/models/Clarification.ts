@@ -5,7 +5,8 @@ interface ClarificationInterface {
   question: string;
   response: string;
   responseAnsweredBy: string;
-  timestamp: Date;
+  timestampOnAsk: Date;
+  timestampOnAnswer: Date;
 }
 
 interface ClarificationModel
@@ -22,7 +23,8 @@ const clarificationSchema = new Schema({
   question: String,
   response: String,
   responseAnsweredBy: String,
-  timestamp: Date
+  timestampOnAsk: Date,
+  timestampOnAnswer: Date
 });
 
 /**
