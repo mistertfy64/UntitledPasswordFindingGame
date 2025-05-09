@@ -3,6 +3,11 @@ import { log } from "../utilities/log";
 const router = express.Router();
 
 router.get("/clarifications", async (request: express.Request, response) => {
+  if (!request.authentication.ok) {
+    response.redirect("/login");
+    return;
+  }
+
   if (process.env.ENVIRONMENT !== "production") {
     // testing credentials
     response.render("pages/clarifications", {
