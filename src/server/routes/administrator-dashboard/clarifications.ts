@@ -130,6 +130,12 @@ router.post(
       request.params.clarificationID as any
     );
 
+    if (request.body["response"].length > 1024) {
+      log.error(`Answer to clarification with id ${sanitizedID} too long.`);
+      response.redirect(`/administrator/clarifications/${sanitizedID}`);
+      return;
+    }
+
     try {
       const clarification = await Clarification.findOne({
         _id: sanitizedID
