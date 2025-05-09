@@ -6,7 +6,9 @@
   <td><%=submission.timestamp.toISOString()%></td>
   <% if (submission.verdict === "correct answer") { %>
   <td><span class="answer--correct">CORRECT ANSWER</span></td>
-  <% } else { %>
+  <% } else if (submission.verdict === "wrong answer"){ %>
   <td><span class="answer--wrong">WRONG ANSWER</span></td>
-  <%}%>
+  <%} else { %>
+  <td><span class="answer--ignored">IGNORED</span></td>
+  <% }%>
 </tr>
