@@ -12,10 +12,48 @@
 <body>
   <div id="container">
     <header>
-      <%- include("../partials/header.ejs") %>
+      <%- include("../partials/header.ejs",{authentication:authentication}) %>
     </header>
-    <h1>Submissions</h1>
     <main>
+      <h1>Submissions</h1>
+      <div id="submissions-table__wrapper">
+        <table id="submissions-table">
+          <tr>
+            <th>ID</th>
+            <th>Problem ID</th>
+            <th>Username</th>
+            <th>Answer</th>
+            <th>Timestamp</th>
+            <th>Verdict</th>
+          </tr>
+          <% if (data && data.length > 0) { %>
+          <% for (const submission of data) { %>
+          <%- include("../partials/submission.ejs",{submission:submission}) %>
+          <% } %>
+          <% } else { %>
+          <tr>
+            <td colspan="6">No submissions found.</td>
+          </tr>
+          <% } %>
+        </table>
+      </div>
+      <div id="page-number">
+        Page <%-`${parseInt(page)}`%>
+      </div>
+      <div id="amount-selector">
+        <div>
+          <a href="?page=<%= parseInt(page)===1 ? 1 : parseInt(page) - 1 %>&amount=<%= parseInt(amount) %>">Previous</a>
+        </div>
+        <div>
+          <% const amountOptions = [10,25,50,100] %>
+          <% amountOptions.forEach(option => { %>
+          <a href="?page=<%= page %>&amount=<%= option %>"><%= option %></a>
+          <% }); %>
+        </div>
+        <div>
+          <a href="?page=<%= parseInt(page) + 1 %>&amount=<%= parseInt(amount) %>">Next</a>
+        </div>
+      </div>
     </main>
     <footer>
       <%- include("../partials/footer.ejs") %>
