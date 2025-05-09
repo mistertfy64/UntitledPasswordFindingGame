@@ -158,7 +158,8 @@ p {
 #contest-list__wrapper,
 #problemset__wrapper,
 #contest-problemset__wrapper,
-#submissions-table__wrapper {
+#submissions-table__wrapper,
+#previous-clarifications {
   overflow-x: auto;
 }
 
@@ -210,4 +211,16 @@ p {
 #page-number {
   display: flex;
   justify-content: center;
+}
+
+#previous-clarifications {
+  text-align: center;
+}
+
+#previous-clarifications td:nth-child(3) {
+  text-align: left;
+}
+
+#previous-clarifications td:nth-child(4) {
+  text-align: left;
 }
