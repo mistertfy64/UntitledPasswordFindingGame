@@ -1,9 +1,9 @@
 <tr>
-  <td class="monospaced"><%=submission._id%></td>
-  <td><a href="/problem/<%=submission.problemID%>"><%=submission.problemID%></a></td>
-  <td><%=submission.username%></td>
-  <td class="monospaced"><%=submission.answer%></td>
-  <td><%=submission.timestamp.toISOString()%></td>
+  <td class="monospaced"><%=submission._id || "???"%></td>
+  <td><a href="/problem/<%=submission.problemID%>"><%=submission.problemID|| "???"%></a></td>
+  <td><%=submission.username|| "???"%></td>
+  <td class="monospaced"><%=submission.answer|| "???"%></td>
+  <td><%=submission.timestamp.toISOString()|| "???"%></td>
   <% if (submission.verdict === "correct answer") { %>
   <td><span class="answer--correct">CORRECT ANSWER</span></td>
   <% } else if (submission.verdict === "wrong answer"){ %>
