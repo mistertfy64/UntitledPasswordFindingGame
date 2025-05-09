@@ -18,7 +18,7 @@ interface UserInterface {
 }
 
 interface UserMethods {
-  setToken(token: string): void;
+  addToken(token: string): void;
   addCorrectAnswer(problemID: string, timestamp: Date): void;
   setNewEmail(newEmail: string): void;
 }
@@ -58,9 +58,13 @@ userSchema.static(
   }
 );
 
-userSchema.method("setToken", async function addToken(token) {
-  const hashedToken: string = await bcrypt.hash(token, 8);
-  await this.updateOne({ tokens: [hashedToken] });
+userSchema.method("addToken", async function addToken(token) {
+  const hashedToken: string = await bcrypt.hash(token, 10);
+  await this.updateOne({
+    $push: {
+      tokens: hashedToken
+    }
+  });
 });
 
 userSchema.method(
