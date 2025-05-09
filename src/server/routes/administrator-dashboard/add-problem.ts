@@ -2,6 +2,7 @@ import express from "express";
 import { log } from "../../utilities/log";
 import { Problem } from "../../models/Problem";
 const router = express.Router();
+import ExpressMongoSanitize from "express-mongo-sanitize";
 
 function authorized(request: express.Request) {
   return request.authentication.ok && request.authentication.isAdministrator;
@@ -37,7 +38,7 @@ router.post(
       return;
     }
 
-    const validationResult = validateProblem(request);
+    const validationResult = await validateProblem(request);
     if (!validationResult.ok) {
       response.render("pages/administrator-dashboard/add-problem.ejs", {
         authentication: request.authentication,
@@ -67,7 +68,7 @@ router.post(
   }
 );
 
-function validateProblem(request: express.Request) {
+async function validateProblem(request: express.Request) {
   const fields = [
     "problem-name",
     "problem-statement",
@@ -85,6 +86,15 @@ function validateProblem(request: express.Request) {
         reason: `Field empty on ${field}, unable to add problem.`
       };
     }
+  }
+
+  const sanitizedID = ExpressMongoSanitize.sanitize(request.body["problem-id"]);
+  const existingProblem = await Problem.findOne({ problemID: sanitizedID });
+  if (existingProblem) {
+    return {
+      ok: false,
+      reason: `Problem with ID ${sanitizedID} already exists.`
+    };
   }
 
   if (request.body["problem-name"].length > 128) {
