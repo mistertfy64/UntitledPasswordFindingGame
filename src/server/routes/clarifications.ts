@@ -101,9 +101,7 @@ router.post("/clarifications", async (request: express.Request, response) => {
     const clarification = new Clarification();
     clarification.question = request.body["question"];
     clarification.questionAskedBy = request.authentication.username;
-    clarification.response = "";
-    clarification.responseAnsweredBy = "";
-    clarification.timestamp = new Date();
+    clarification.timestampOnAsk = new Date();
     clarification.save();
 
     if (process.env.ENVIRONMENT !== "production") {
