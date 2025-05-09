@@ -3,10 +3,10 @@ import { Model, Schema, model } from "mongoose";
 interface ClarificationInterface {
   questionAskedBy: string;
   question: string;
-  response: string;
-  responseAnsweredBy: string;
+  response: string | null;
+  responseAnsweredBy: string | null;
   timestampOnAsk: Date;
-  timestampOnAnswer: Date;
+  timestampOnAnswer: Date | null;
 }
 
 interface ClarificationModel
