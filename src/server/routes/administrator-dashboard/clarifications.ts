@@ -116,4 +116,59 @@ router.get(
   }
 );
 
+router.post(
+  "/administrator/clarifications/:clarificationID",
+  async (request: express.Request, response) => {
+    if (!authorized(request)) {
+      const username = request.authentication?.username ?? "";
+      log.warn(`${username} tried to access admin page without permission.`);
+      response.redirect("/");
+      return;
+    }
+
+    const sanitizedID = ExpressMongoSanitize.sanitize(
+      request.params.clarificationID as any
+    );
+
+    try {
+      const clarification = await Clarification.findOne({
+        _id: sanitizedID
+      });
+
+      if (!clarification) {
+        log.error(`Clarification with id ${sanitizedID} not found.`);
+        response.redirect("/administrator/clarifications");
+        return;
+      }
+
+      clarification.responseAnsweredBy = request.authentication.username;
+      clarification.response = request.body["response"];
+      clarification.timestampOnAnswer = new Date();
+
+      await clarification.save();
+
+      response.redirect("/administrator/clarifications");
+      return;
+    } catch (error: unknown) {
+      log.error(`Unable to answer to clarification with id ${sanitizedID}.`);
+      if (error instanceof Error) {
+        log.error(error.stack);
+      } else {
+        log.error(error);
+      }
+      response.render(
+        "pages/administrator-dashboard/answer-clarification.ejs",
+        {
+          authentication: request.authentication,
+          csrfToken: request.generatedCSRFToken,
+          sessionID: request.sessionID,
+          data: null,
+          errored: true
+        }
+      );
+      return;
+    }
+  }
+);
+
 export { router };
