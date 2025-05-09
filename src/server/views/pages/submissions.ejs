@@ -16,19 +16,21 @@
     </header>
     <main>
       <h1>Submissions</h1>
-      <table id="submissions-table">
-        <tr>
-          <th>ID</th>
-          <th>Problem ID</th>
-          <th>Username</th>
-          <th>Answer</th>
-          <th>Timestamp</th>
-          <th>Verdict</th>
-        </tr>
-        <% for (const submission of data) { %>
-        <%- include("../partials/submission.ejs",{submission:submission}) %>
-        <% } %>
-      </table>
+      <div id="submissions-table__wrapper">
+        <table id="submissions-table">
+          <tr>
+            <th>ID</th>
+            <th>Problem ID</th>
+            <th>Username</th>
+            <th>Answer</th>
+            <th>Timestamp</th>
+            <th>Verdict</th>
+          </tr>
+          <% for (const submission of data) { %>
+          <%- include("../partials/submission.ejs",{submission:submission}) %>
+          <% } %>
+        </table>
+      </div>
       <div id="page-number">
         Page <%-`${parseInt(page)}`%>
       </div>
