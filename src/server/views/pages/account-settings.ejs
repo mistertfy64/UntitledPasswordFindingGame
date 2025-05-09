@@ -18,7 +18,7 @@
       <h1><%= username %></h1>
     </main>
     <form action="" method="POST">
-      <input type="email" name="email" placeholder="E-mail address" value="<%-email || ""%>">
+      <input type="email" name="email" placeholder="E-mail address" value="<%=email || ""%>">
       <br>
       <span class="disclaimer-text">An e-mail address is NOT required to submit answers, however, it may be required for identity verification, such as when claiming prizes or resetting a forgotten password.</span>
       <%- include("../partials/csrf.ejs",{sessionID:sessionID,csrfToken:csrfToken}) %>
