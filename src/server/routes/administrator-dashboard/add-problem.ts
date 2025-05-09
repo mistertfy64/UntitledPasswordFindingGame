@@ -148,7 +148,8 @@ async function addProblem(request: express.Request) {
   problem.releaseDateAndTime = new Date(
     parseInt(body["problem-release-timestamp"])
   );
-  problem.hidden = body["problem-hidden"];
+  problem.hidden =
+    body["problem-hidden"] === "on" || body["problem-hidden"] === true;
   problem.author = body["problem-author"] || request.authentication.username;
 
   try {
