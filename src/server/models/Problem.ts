@@ -14,6 +14,7 @@ interface ProblemInterface {
   creationDateAndTime: Date;
   releaseDateAndTime: Date;
   hidden: boolean;
+  author: string;
 }
 
 interface ProblemMethods {
@@ -35,7 +36,8 @@ const problemSchema = new Schema({
   correctAnswers: Array<ProblemCorrectAnswerInterface>,
   creationDateAndTime: Date,
   releaseDateAndTime: Date,
-  hidden: Boolean
+  hidden: Boolean,
+  author: String
 });
 
 problemSchema.static(
