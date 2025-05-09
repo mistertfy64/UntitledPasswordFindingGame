@@ -45,10 +45,10 @@
           <a href="?page=<%= parseInt(page)===1 ? 1 : parseInt(page) - 1 %>&amount=<%= parseInt(amount) %>">Previous</a>
         </div>
         <div>
-          <%-`<a href=?page=${parseInt(page)}&amount=10>10</a>`%>
-          <%-`<a href=?page=${parseInt(page)}&amount=25>25</a>`%>
-          <%-`<a href=?page=${parseInt(page)}&amount=50>50</a>`%>
-          <%-`<a href=?page=${parseInt(page)}&amount=100>100</a>`%>
+          <% const amountOptions = [10,25,50,100] %>
+          <% amountOptions.forEach(option => { %>
+          <a href="?page=<%= page %>&amount=<%= option %>"><%= option %></a>
+          <% }); %>
         </div>
         <div>
           <a href="?page=<%= parseInt(page) + 1 %>&amount=<%= parseInt(amount) %>">Next</a>
