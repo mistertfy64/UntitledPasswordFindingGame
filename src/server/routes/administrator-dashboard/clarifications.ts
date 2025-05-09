@@ -147,6 +147,10 @@ router.post(
 
       await clarification.save();
 
+      log.info(
+        `${request.authentication.username} answered clarification with ID ${sanitizedID}`
+      );
+
       response.redirect("/administrator/clarifications");
       return;
     } catch (error: unknown) {
