@@ -31,31 +31,17 @@ router.get(
 
     const page = Math.max(1, queryPage);
 
-    try {
-      const submissions = await Submission.getAccordingToQuery(page, amount);
-      response.render("pages/submissions.ejs", {
-        authentication: request.authentication,
-        csrfToken: request.generatedCSRFToken,
-        sessionID: request.sessionID,
-        data: submissions,
-        page: page,
-        amount: amount
-      });
-      return;
-    } catch (error: unknown) {
-      log.error("Unable to fetch submissions.");
-      if (error instanceof Error) {
-        log.error(error.stack);
-      } else {
-        log.error(error);
-      }
-      response.render("pages/500.ejs", {
-        authentication: request.authentication,
-        csrfToken: request.generatedCSRFToken,
-        sessionID: request.sessionID
-      });
-      return;
-    }
+    const submissions = await Submission.getAccordingToQuery(page, amount);
+
+    response.render("pages/submissions.ejs", {
+      authentication: request.authentication,
+      csrfToken: request.generatedCSRFToken,
+      sessionID: request.sessionID,
+      data: submissions,
+      page: page,
+      amount: amount
+    });
+    return;
   }
 );
 
