@@ -108,7 +108,7 @@ async function validateRegistration(
   captchaResponse: unknown
 ) {
   // validate captcha
-  if (!validateCaptcha(captchaResponse)) {
+  if (!(await validateCaptcha(captchaResponse))) {
     return {
       ok: false,
       reason: "reCAPTCHA not completed."
