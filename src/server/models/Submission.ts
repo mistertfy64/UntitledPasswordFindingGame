@@ -9,13 +9,7 @@ interface SubmissionInterface {
   timestamp: Date;
 }
 
-interface SubmissionModel extends Model<SubmissionInterface, SubmissionModel> {
-  getAccordingToQuery(
-    page: number,
-    amount: number,
-    keepOrder?: boolean
-  ): Promise<Array<SubmissionInterface>>;
-}
+interface SubmissionModel extends Model<SubmissionInterface, SubmissionModel> {}
 
 const submissionSchema = new Schema({
   username: String,
@@ -25,20 +19,6 @@ const submissionSchema = new Schema({
   problemID: String,
   timestamp: Date
 });
-
-/**
- * Gets the first/last (page*amount+1)th to ((page+1)*amount)th submissions.
- * If `keepOrder` is `true`, gets the first submissions, otherwise gets the most recent.
- */
-submissionSchema.static(
-  "getAccordingToQuery",
-  async function (page: number, amount: number, keepOrder?: boolean) {
-    return await this.find({})
-      .sort({ timestamp: keepOrder ? 1 : -1 })
-      .skip((page - 1) * amount)
-      .limit(amount);
-  }
-);
 
 const Submission = model<SubmissionModel, SubmissionModel>(
   "Submission",
