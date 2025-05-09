@@ -12,7 +12,7 @@ function authorized(request: express.Request) {
 const LIMIT = 100;
 
 router.get(
-  "/administrator/submissions",
+  "/administrator/clarifications",
   async (request: express.Request, response) => {
     if (!authorized(request)) {
       const username = request.authentication?.username ?? "";
