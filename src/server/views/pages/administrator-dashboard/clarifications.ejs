@@ -4,7 +4,7 @@
 <head>
 
   <title>UntitledPasswordFindingGame</title>
-  <%- include("../partials/head.ejs")%>
+  <%- include("../../partials/head.ejs")%>
 
   <link rel="stylesheet" type="text/css" href="/assets/css/global.css" />
 </head>
@@ -12,23 +12,23 @@
 <body>
   <div id="container">
     <header>
-      <%- include("../partials/header.ejs",{authentication:authentication}) %>
+      <%- include("../../partials/header.ejs",{authentication:authentication}) %>
     </header>
     <main>
       <h1>Answer Clarifications</h1>
       <div id="clarifications-table__wrapper">
         <table id="clarifications-table">
           <tr>
+            <th>Asked By</th>
+            <th>Asked On</th>
+            <th>Question</th>
+            <th>Response</th>
             <th>ID</th>
-            <th>Problem ID</th>
-            <th>Username</th>
-            <th>Answer</th>
-            <th>Timestamp</th>
-            <th>Verdict</th>
+            <th>Send Response</th>
           </tr>
           <% if (data && data.length > 0) { %>
           <% for (const clarification of data) { %>
-          <%- include("../partials/unanswered-clarification.ejs",{clarification:clarification}) %>
+          <%- include("../../partials/unanswered-clarification.ejs",{clarification:clarification}) %>
           <% } %>
           <% } else { %>
           <tr>
@@ -56,7 +56,7 @@
       </div>
     </main>
     <footer>
-      <%- include("../partials/footer.ejs") %>
+      <%- include("../../partials/footer.ejs") %>
     </footer>
   </div>
 </body>
