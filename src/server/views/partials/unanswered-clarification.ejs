@@ -1,0 +1,8 @@
+<tr>
+  <td><%= clarification.questionAskedBy %></td>
+  <td><%= clarification.timestampOnAsk?.toISOString() %></td>
+  <td class="monospaced"><%= clarification.question %></td>
+  <td class="monospaced"><%= clarification.response %></td>
+  <td class="monospaced"><%= clarification._id || "???" %></td>
+  <td><a href="/administrator/clarifications/<%=clarification._id %>">Answer?</a></td>
+</tr>

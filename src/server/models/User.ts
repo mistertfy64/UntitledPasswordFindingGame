@@ -14,6 +14,7 @@ interface UserInterface {
   email: string;
   creationDateAndTime: Date;
   isAdministrator: boolean;
+  isContributor: boolean;
 }
 
 interface UserMethods {
@@ -35,7 +36,8 @@ const userSchema = new Schema({
   tokens: Array<String>,
   email: String,
   creationDateAndTime: Date,
-  isAdministrator: Boolean
+  isAdministrator: Boolean,
+  isContributor: Boolean
 });
 
 userSchema.static("safeFindByUsername", async function (username: string) {
