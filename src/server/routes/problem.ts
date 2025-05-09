@@ -40,6 +40,7 @@ router.get(
     }
     const name = problem.problemName;
     const statement = md.render(problem.problemStatement);
+    const author = problem.author;
 
     const bypassed =
       problem.releaseDateAndTime != null &&
@@ -53,6 +54,7 @@ router.get(
 
     response.render("pages/problem", {
       problemName: name,
+      problemAuthor: author ?? "(unknown)",
       problemStatement: statement,
       authentication: request.authentication,
       correctAnswers: problem.correctAnswers,

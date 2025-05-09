@@ -10,7 +10,8 @@ body {
 }
 
 h1,
-h2 {
+h2,
+h3 {
   margin: 2px 0;
   word-wrap: break-word;
 }
@@ -236,4 +237,8 @@ p {
 
 #clarifications-table td:nth-child(4) {
   text-align: left;
+}
+
+.wrapped {
+  word-wrap: break-word;
 }

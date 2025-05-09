@@ -1,6 +1,7 @@
 import express from "express";
 import mongoSanitize from "express-mongo-sanitize";
 import { User } from "../models/User";
+import { log } from "../utilities/log";
 const bcrypt = require("bcrypt");
 const crypto = require("crypto");
 const router = express.Router();
@@ -64,11 +65,13 @@ router.post("/login", async (request: express.Request, response) => {
     return;
   }
 
+  log.info(`User ${request.authentication.username} successfully logged in.`);
+
   // add cookies
   const token = await crypto.randomBytes(40).toString("hex");
   response.cookie("username", username);
   response.cookie("token", token);
-  await user.setToken(token);
+  await user.addToken(token);
   response.redirect("/");
 });
 
