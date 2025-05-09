@@ -9,6 +9,12 @@ router.get("/clarifications", async (request: express.Request, response) => {
     return;
   }
 
+  const data = await Clarification.find({
+    questionAskedBy: request.authentication.username
+  })
+    .limit(10)
+    .lean();
+
   if (process.env.ENVIRONMENT !== "production") {
     // testing credentials
     response.render("pages/clarifications", {
@@ -16,7 +22,8 @@ router.get("/clarifications", async (request: express.Request, response) => {
       authentication: request.authentication,
       diagnosticMessage: "",
       csrfToken: request.generatedCSRFToken,
-      sessionID: request.sessionID
+      sessionID: request.sessionID,
+      data: data
     });
   } else {
     // real credentials
@@ -25,7 +32,8 @@ router.get("/clarifications", async (request: express.Request, response) => {
       diagnosticMessage: "",
       authentication: request.authentication,
       csrfToken: request.generatedCSRFToken,
-      sessionID: request.sessionID
+      sessionID: request.sessionID,
+      data: data
     });
   }
   return;
