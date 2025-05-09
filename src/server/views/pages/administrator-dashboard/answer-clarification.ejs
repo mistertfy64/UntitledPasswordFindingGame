@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+  <title>UntitledPasswordFindingGame</title>
+  <%- include("../../partials/head.ejs")%>
+
+  <link rel="stylesheet" type="text/css" href="/assets/css/global.css" />
+</head>
+
+<body>
+  <div id="container">
+    <header>
+      <%- include("../../partials/header.ejs",{authentication:authentication}) %>
+    </header>
+    <main>
+      <h1>Answer Clarification</h1>
+      <% if (errored){ %>
+      Unable to fetch response.
+      <br>
+      Please contact the server administrator if this persists
+      <% } else { %>
+      <p>
+        Asked by: <span><%= data.questionAskedBy %></span>
+        <br>
+        Asked on: <span><%= data.timestampOnAsk?.toISOString() %></span>
+        <br>
+        Clarification ID: <span class="monospaced"><%= data._id || "???" %></span>
+      </p>
+      <div>
+        Question:
+        <p class="monospaced">
+          <%= data.question%>
+        </p>
+        Response:
+        <form action="" method="POST">
+          <textarea maxlength="1024" name="response" placeholder="Enter response... (max. 1024 characters)"></textarea>
+          <%- include("../../partials/csrf.ejs") %>
+          <br>
+          <input type="submit" value="Send Response">
+        </form>
+      </div>
+      <% } %>
+    </main>
+    <footer>
+      <%- include("../../partials/footer.ejs") %>
+    </footer>
+  </div>
+</body>
+
+</html>
