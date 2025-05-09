@@ -201,7 +201,7 @@ async function validateCaptcha(captchaResponse: unknown) {
     secretKey = process.env.RECAPTCHA_SECRET_KEY as string;
   }
   const url = `https://www.google.com/recaptcha/api/siteverify?secret=${secretKey}&response=${captchaResponse}`;
-  const result: any = (await fetch(url)).json();
+  const result: any = await (await fetch(url, { method: "POST" })).json();
   if (!result.success) {
     return false;
   }
