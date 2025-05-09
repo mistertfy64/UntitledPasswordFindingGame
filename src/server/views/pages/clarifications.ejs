@@ -47,11 +47,11 @@
         <% for (const clarification of data) { %>
         <tr>
           <td><%= clarification.questionAskedBy %></td>
-          <td><%= clarification.timestampOnAsk %></td>
+          <td><%= clarification.timestampOnAsk?.toISOString() %></td>
           <td class="monospaced"><%= clarification.question %></td>
           <td class="monospaced"><%= clarification.response %></td>
           <td><%= clarification.responseAnswerBy %></td>
-          <td><%= clarification.timestampOnAnswer %></td>
+          <td><%= clarification.timestampOnAnswer?.toISOString() %></td>
         </tr>
         <% } %>
         <% } else { %>
