@@ -3,6 +3,11 @@ import { log } from "../../utilities/log";
 import { Problem } from "../../models/Problem";
 const router = express.Router();
 import ExpressMongoSanitize from "express-mongo-sanitize";
+import { JSDOM } from "jsdom";
+import DOMPurify from "dompurify";
+
+const window = new JSDOM("").window;
+const purify = DOMPurify(window);
 
 function authorized(request: express.Request) {
   return request.authentication.ok && request.authentication.isAdministrator;
@@ -148,10 +153,10 @@ async function validateProblem(request: express.Request) {
 async function addProblem(request: express.Request) {
   const problem = new Problem();
   const body = request.body;
-  problem.problemName = body["problem-name"];
+  problem.problemName = purify.sanitize(body["problem-name"]);
   problem.problemStatement = body["problem-statement"];
-  problem.problemID = body["problem-id"];
-  problem.correctPassword = body["correct-password"];
+  problem.problemID = purify.sanitize(body["problem-id"]);
+  problem.correctPassword = purify.sanitize(body["correct-password"]);
   problem.problemNumber = parseInt(body["problem-number"]);
   problem.correctAnswers = [];
   problem.creationDateAndTime = new Date();
