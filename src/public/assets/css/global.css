@@ -157,7 +157,8 @@ p {
 #contest-leaderboards__wrapper,
 #contest-list__wrapper,
 #problemset__wrapper,
-#contest-problemset__wrapper {
+#contest-problemset__wrapper,
+#submissions-table__wrapper {
   overflow-x: auto;
 }
 
