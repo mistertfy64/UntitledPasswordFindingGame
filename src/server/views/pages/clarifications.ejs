@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+  <title>UntitledPasswordFindingGame</title>
+  <%- include("../partials/head.ejs")%>
+  <link rel="stylesheet" type="text/css" href="/assets/css/global.css" />
+</head>
+
+<body>
+  <div id="container">
+    <header>
+      <%- include("../partials/header.ejs") %>
+    </header>
+    <main>
+      <h1>Clarifications</h1>
+      <hr>
+      <h2>Ask Question</h2>
+      <% if (authentication.ok) { %>
+      <form action="" method="POST">
+        <%- include("../partials/csrf.ejs",{sessionID:sessionID,csrfToken:csrfToken}) %>
+        <textarea maxlength="512" name="clarification" placeholder="Enter message... (max. 512 characters)"></textarea>
+        <br>
+        <div class="g-recaptcha" data-sitekey=<%-recaptchaSiteKey%>></div>
+        <% if (diagnosticMessage) { %>
+        <div class="message--error">
+          <%= diagnosticMessage %>
+        </div>
+        <% } %>
+        <input type="submit">
+      </form>
+      <% } %>
+      <hr>
+      <h2>Previous Clarifications</h2>
+      <table id="previous-clarifications">
+        <th>Question</th>
+        <th>Response</th>
+        <th>Answered By</th>
+      </table>
+    </main>
+    <footer>
+      <%- include("../partials/footer.ejs") %>
+    </footer>
+  </div>
+  <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+</body>
