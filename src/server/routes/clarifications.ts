@@ -123,6 +123,9 @@ router.post("/clarifications", async (request: express.Request, response) => {
         sessionID: request.sessionID
       });
     }
+
+    log.info(`Added new clarification from ${request.authentication.username}`);
+
     return;
   } catch (error: unknown) {
     if (error instanceof Error) {
