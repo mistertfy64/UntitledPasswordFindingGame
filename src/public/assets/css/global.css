@@ -225,3 +225,15 @@ p {
 #previous-clarifications td:nth-child(4) {
   text-align: left;
 }
+
+#clarifications-table {
+  text-align: center;
+}
+
+#clarifications-table td:nth-child(3) {
+  text-align: left;
+}
+
+#clarifications-table td:nth-child(4) {
+  text-align: left;
+}
