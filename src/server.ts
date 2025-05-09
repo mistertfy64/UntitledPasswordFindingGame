@@ -132,13 +132,32 @@ app.use(errorHandling);
 app.use(limiter);
 app.use(favicon(path.join(__dirname, "public", "assets", "favicon.png")));
 
+const directories = ["administrator-dashboard"];
+
 // Routes
 require("fs")
   .readdirSync(path.join(__dirname, "./server/routes"))
   .forEach((file: string) => {
+    if (directories.find((e) => e === file)) {
+      return;
+    }
     const route = require("path").join(__dirname, "./server/routes", file);
     app.use(require(route).router);
   });
+
+for (const directory of directories) {
+  require("fs")
+    .readdirSync(path.join(__dirname, "./server/routes/", directory))
+    .forEach((file: string) => {
+      const route = require("path").join(
+        __dirname,
+        "./server/routes/",
+        directory,
+        file
+      );
+      app.use(require(route).router);
+    });
+}
 
 // PUT THIS LAST (404 page)
 app.get("*splat", function (request: Request, response: Response) {

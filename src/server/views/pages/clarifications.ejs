@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+  <title>UntitledPasswordFindingGame</title>
+  <%- include("../partials/head.ejs")%>
+  <link rel="stylesheet" type="text/css" href="/assets/css/global.css" />
+</head>
+
+<body>
+  <div id="container">
+    <header>
+      <%- include("../partials/header.ejs") %>
+    </header>
+    <main>
+      <h1>Clarifications</h1>
+      <hr>
+      <h2>Ask Question</h2>
+      <% if (authentication.ok) { %>
+      <form action="" method="POST">
+        <%- include("../partials/csrf.ejs",{sessionID:sessionID,csrfToken:csrfToken}) %>
+        <textarea maxlength="512" name="question" placeholder="Enter message... (max. 512 characters)"></textarea>
+        <br>
+        <div class="g-recaptcha" data-sitekey=<%-recaptchaSiteKey%>></div>
+        <% if (diagnosticMessage) { %>
+        <div class="message--error">
+          <%= diagnosticMessage %>
+        </div>
+        <% } %>
+        <input type="submit">
+      </form>
+      <% } %>
+      <hr>
+      <h2>Previous Clarifications</h2>
+      <span>(showing most recent 10)</span>
+      <div id="previous-clarifications__wrapper">
+        <table id="previous-clarifications">
+          <tr>
+            <th>Asked By</th>
+            <th>Asked On</th>
+            <th>Question</th>
+            <th>Response</th>
+            <th>Answered By</th>
+            <th>Answered On</th>
+          </tr>
+          <% if (data && data.length > 0) { %>
+          <% for (const clarification of data) { %>
+          <tr>
+            <td><%= clarification.questionAskedBy %></td>
+            <td><%= clarification.timestampOnAsk?.toISOString() %></td>
+            <td class="monospaced"><%= clarification.question %></td>
+            <td class="monospaced"><%= clarification.response %></td>
+            <td><%= clarification.responseAnsweredBy %></td>
+            <td><%= clarification.timestampOnAnswer?.toISOString() %></td>
+          </tr>
+          <% } %>
+          <% } else { %>
+          <tr>
+            <td colspan="6">No clarifications found.</td>
+          </tr>
+          <% } %>
+        </table>
+      </div>
+    </main>
+    <footer>
+      <%- include("../partials/footer.ejs") %>
+    </footer>
+  </div>
+  <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+</body>
