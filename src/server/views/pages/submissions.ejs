@@ -26,8 +26,14 @@
             <th>Timestamp</th>
             <th>Verdict</th>
           </tr>
+          <% if (data && data.length > 0) { %>
           <% for (const submission of data) { %>
           <%- include("../partials/submission.ejs",{submission:submission}) %>
+          <% } %>
+          <% } else { %>
+          <tr>
+            <td colspan="6">No submissions found.</td>
+          </tr>
           <% } %>
         </table>
       </div>
