@@ -1,14 +1,11 @@
 import express from "express";
 import ejs from "ejs";
 import { log } from "../../utilities/log";
-import { Submission } from "../../models/Submission";
 const router = express.Router();
 
 function authorized(request: express.Request) {
   return request.authentication.ok && request.authentication.isAdministrator;
 }
-
-const LIMIT = 100;
 
 router.get(
   "/administrator/submissions",
