@@ -12,6 +12,7 @@ router.get("/clarifications", async (request: express.Request, response) => {
   const data = await Clarification.find({
     questionAskedBy: request.authentication.username
   })
+    .sort({ timestampOnAsk: -1 })
     .limit(10)
     .lean();
 
@@ -48,6 +49,12 @@ router.post("/clarifications", async (request: express.Request, response) => {
 
   if (!captcha) {
     // TODO: DRY this
+    const data = await Clarification.find({
+      questionAskedBy: request.authentication.username
+    })
+      .sort({ timestampOnAsk: -1 })
+      .limit(10)
+      .lean();
     if (process.env.ENVIRONMENT !== "production") {
       // testing credentials
       response.render("pages/clarifications", {
@@ -55,7 +62,8 @@ router.post("/clarifications", async (request: express.Request, response) => {
         authentication: request.authentication,
         diagnosticMessage: "CAPTCHA Incomplete. Clarification not sent.",
         csrfToken: request.generatedCSRFToken,
-        sessionID: request.sessionID
+        sessionID: request.sessionID,
+        data: data
       });
     } else {
       // real credentials
@@ -64,13 +72,20 @@ router.post("/clarifications", async (request: express.Request, response) => {
         diagnosticMessage: "CAPTCHA Incomplete. Clarification not sent.",
         authentication: request.authentication,
         csrfToken: request.generatedCSRFToken,
-        sessionID: request.sessionID
+        sessionID: request.sessionID,
+        data: data
       });
     }
     return;
   }
 
   if (request.body["question"].length > 512) {
+    const data = await Clarification.find({
+      questionAskedBy: request.authentication.username
+    })
+      .sort({ timestampOnAsk: -1 })
+      .limit(10)
+      .lean();
     // TODO: DRY this
     if (process.env.ENVIRONMENT !== "production") {
       // testing credentials
@@ -80,7 +95,8 @@ router.post("/clarifications", async (request: express.Request, response) => {
         diagnosticMessage:
           "Question too long. Maximum is 512 characters. Clarification not sent.",
         csrfToken: request.generatedCSRFToken,
-        sessionID: request.sessionID
+        sessionID: request.sessionID,
+        data: data
       });
     } else {
       // real credentials
@@ -90,7 +106,8 @@ router.post("/clarifications", async (request: express.Request, response) => {
           "Question too long. Maximum is 512 characters. Clarification not sent.",
         authentication: request.authentication,
         csrfToken: request.generatedCSRFToken,
-        sessionID: request.sessionID
+        sessionID: request.sessionID,
+        data: data
       });
     }
     return;
@@ -102,8 +119,14 @@ router.post("/clarifications", async (request: express.Request, response) => {
     clarification.question = request.body["question"];
     clarification.questionAskedBy = request.authentication.username;
     clarification.timestampOnAsk = new Date();
-    clarification.save();
+    await clarification.save();
 
+    const data = await Clarification.find({
+      questionAskedBy: request.authentication.username
+    })
+      .sort({ timestampOnAsk: -1 })
+      .limit(10)
+      .lean();
     if (process.env.ENVIRONMENT !== "production") {
       // testing credentials
       response.render("pages/clarifications", {
@@ -111,7 +134,8 @@ router.post("/clarifications", async (request: express.Request, response) => {
         authentication: request.authentication,
         diagnosticMessage: "",
         csrfToken: request.generatedCSRFToken,
-        sessionID: request.sessionID
+        sessionID: request.sessionID,
+        data: data
       });
     } else {
       // real credentials
@@ -120,7 +144,8 @@ router.post("/clarifications", async (request: express.Request, response) => {
         diagnosticMessage: "",
         authentication: request.authentication,
         csrfToken: request.generatedCSRFToken,
-        sessionID: request.sessionID
+        sessionID: request.sessionID,
+        data: data
       });
     }
 
@@ -137,6 +162,12 @@ router.post("/clarifications", async (request: express.Request, response) => {
         `Unable to set new send clarification for user ${request.authentication.username}\n${error}`
       );
     }
+    const data = await Clarification.find({
+      questionAskedBy: request.authentication.username
+    })
+      .sort({ timestampOnAsk: -1 })
+      .limit(10)
+      .lean();
     if (process.env.ENVIRONMENT !== "production") {
       // testing credentials
       response.render("pages/clarifications", {
@@ -145,7 +176,8 @@ router.post("/clarifications", async (request: express.Request, response) => {
         diagnosticMessage:
           "An internal error has occurred. Please contact the server administrator if this persists. Clarification not sent.",
         csrfToken: request.generatedCSRFToken,
-        sessionID: request.sessionID
+        sessionID: request.sessionID,
+        data: data
       });
     } else {
       // real credentials
@@ -155,7 +187,8 @@ router.post("/clarifications", async (request: express.Request, response) => {
           "An internal error has occurred. Please contact the server administrator if this persists. Clarification not sent.",
         authentication: request.authentication,
         csrfToken: request.generatedCSRFToken,
-        sessionID: request.sessionID
+        sessionID: request.sessionID,
+        data: data
       });
     }
     return;
