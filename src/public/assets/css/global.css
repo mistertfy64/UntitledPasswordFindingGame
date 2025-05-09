@@ -185,6 +185,10 @@ p {
   color: #ff0000;
 }
 
+.answer--ignored {
+  color: #7f7f7f;
+}
+
 #submissions-table {
   text-align: center;
 }
