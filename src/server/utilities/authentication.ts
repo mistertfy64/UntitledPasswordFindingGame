@@ -11,10 +11,15 @@ async function isAuthenticated(username: string, token: string) {
   if (!user) {
     return { ok: false, username: null, isAdministrator: false };
   }
-  const tokenResult = await user.tokens.findIndex(
-    async (e) => await bcrypt.compare(token, e)
-  );
-  if (tokenResult === -1) {
+  let tokenResult = false;
+  for (const userToken of user.tokens) {
+    const result = await bcrypt.compare(token, userToken);
+    if (result) {
+      tokenResult = true;
+      break;
+    }
+  }
+  if (!tokenResult) {
     return { ok: false, username: null, isAdministrator: false };
   }
   const isAdministrator = user.isAdministrator;
