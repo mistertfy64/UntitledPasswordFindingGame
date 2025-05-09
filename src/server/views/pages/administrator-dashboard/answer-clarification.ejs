@@ -17,9 +17,11 @@
     <main>
       <h1>Answer Clarification</h1>
       <% if (errored){ %>
-      Unable to fetch response.
+      Unable to fetch clarification.
       <br>
-      Please contact the server administrator if this persists
+      Please contact the server administrator if this persists.
+      <% } else if (!data) { %>
+      Unable to find clarification with this ID.
       <% } else { %>
       <p>
         Asked by: <span><%= data.questionAskedBy %></span>
