@@ -20,7 +20,7 @@
       <% if (authentication.ok) { %>
       <form action="" method="POST">
         <%- include("../partials/csrf.ejs",{sessionID:sessionID,csrfToken:csrfToken}) %>
-        <textarea maxlength="512" name="clarification" placeholder="Enter message... (max. 512 characters)"></textarea>
+        <textarea maxlength="512" name="question" placeholder="Enter message... (max. 512 characters)"></textarea>
         <br>
         <div class="g-recaptcha" data-sitekey=<%-recaptchaSiteKey%>></div>
         <% if (diagnosticMessage) { %>
