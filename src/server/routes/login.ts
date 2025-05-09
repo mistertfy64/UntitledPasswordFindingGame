@@ -65,7 +65,7 @@ router.post("/login", async (request: express.Request, response) => {
     return;
   }
 
-  log.info(`User ${request.authentication.username} successfully logged in.`);
+  log.info(`User ${username} successfully logged in.`);
 
   // add cookies
   const token = await crypto.randomBytes(40).toString("hex");
