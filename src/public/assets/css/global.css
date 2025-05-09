@@ -237,3 +237,7 @@ p {
 #clarifications-table td:nth-child(4) {
   text-align: left;
 }
+
+.wrapped {
+  word-wrap: break-word;
+}
