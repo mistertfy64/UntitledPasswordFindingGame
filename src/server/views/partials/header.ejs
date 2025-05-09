@@ -6,7 +6,7 @@
 <% }else{%>
 <a href="/account">Account (<%- authentication.username%>)</a>
 <%} %>
-<% if (typeof authentication !== "undefined" || authentication.ok){ %>
+<% if (typeof authentication !== "undefined" && authentication.ok){ %>
 | <a href="/clarifications">Clarifications</a>
 <% } %>
 <% if (typeof authentication !== "undefined" && authentication.ok && authentication.isAdministrator){ %>
