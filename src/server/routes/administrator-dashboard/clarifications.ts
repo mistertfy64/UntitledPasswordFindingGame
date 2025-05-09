@@ -1,7 +1,6 @@
 import express from "express";
-import ejs from "ejs";
+import ExpressMongoSanitize from "express-mongo-sanitize";
 import { log } from "../../utilities/log";
-import { Submission } from "../../models/Submission";
 import { Clarification } from "../../models/Clarification";
 const router = express.Router();
 
@@ -61,6 +60,57 @@ router.get(
         csrfToken: request.generatedCSRFToken,
         sessionID: request.sessionID
       });
+      return;
+    }
+  }
+);
+
+router.get(
+  "/administrator/clarifications/:clarificationID",
+  async (request: express.Request, response) => {
+    if (!authorized(request)) {
+      const username = request.authentication?.username ?? "";
+      log.warn(`${username} tried to access admin page without permission.`);
+      response.redirect("/");
+      return;
+    }
+
+    const sanitizedID = ExpressMongoSanitize.sanitize(
+      request.params.clarificationID as any
+    );
+
+    try {
+      const clarification = await Clarification.findOne({
+        _id: sanitizedID
+      });
+      response.render(
+        "pages/administrator-dashboard/answer-clarification.ejs",
+        {
+          authentication: request.authentication,
+          csrfToken: request.generatedCSRFToken,
+          sessionID: request.sessionID,
+          data: clarification,
+          errored: false
+        }
+      );
+      return;
+    } catch (error: unknown) {
+      log.error(`Unable to fetch clarification with id ${sanitizedID}.`);
+      if (error instanceof Error) {
+        log.error(error.stack);
+      } else {
+        log.error(error);
+      }
+      response.render(
+        "pages/administrator-dashboard/answer-clarification.ejs",
+        {
+          authentication: request.authentication,
+          csrfToken: request.generatedCSRFToken,
+          sessionID: request.sessionID,
+          data: null,
+          errored: true
+        }
+      );
       return;
     }
   }
