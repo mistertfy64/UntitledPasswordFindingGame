@@ -17,6 +17,8 @@
     <main>
       <% if (data.isAdministrator) {  %>
       <h2>Administrator</h2>
+      <% } else if (data.isContributor) {%>
+      <h2>Contributor</h2>
       <% } %>
       <h1><%= username %></h1>
       Correct Answers: <%= data?.correctAnswers?.length || "0" %>
