@@ -3,6 +3,6 @@
   <td><%= clarification.timestampOnAsk?.toISOString() %></td>
   <td class="monospaced"><%= clarification.question %></td>
   <td class="monospaced"><%= clarification.response %></td>
-  <td><%= clarification.responseAnswerBy %></td>
-  <td><%= clarification.timestampOnAnswer?.toISOString() %></td>
+  <td class="monospaced"><%= clarification._id || "???" %></td>
+  <td><a href="/administrator/clarifications/<%=clarification._id %>">Answer?</a></td>
 </tr>
