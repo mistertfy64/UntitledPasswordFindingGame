@@ -6,6 +6,7 @@ import mongoSanitize from "express-mongo-sanitize";
 import { User } from "../models/User";
 import { log } from "../utilities/log";
 import { Submission } from "../models/Submission";
+import { alreadySolved } from "../utilities/already-solved";
 
 const md = markdownit().use(require("markdown-it-sub"));
 const router = express.Router();
@@ -21,9 +22,11 @@ router.get(
       request.params.problemID as any
     );
 
+    const solvedProblem = await alreadySolved(request, sanitizedProblemID);
+
     const problem = await Problem.findProblemWithProblemID(
       sanitizedProblemID,
-      request.solvedProblem
+      solvedProblem
     );
 
     if (!problem) {
@@ -55,6 +58,8 @@ router.get(
       (a, b) => a.timestamp.getTime() - b.timestamp.getTime()
     );
 
+    const correctPassword = problem.correctPassword ?? "";
+
     response.render("pages/problem", {
       problemName: name,
       problemAuthor: author ?? "(unknown)",
@@ -64,8 +69,8 @@ router.get(
       csrfToken: request.generatedCSRFToken,
       sessionID: request.sessionID,
       bypassed: bypassed,
-      showCorrectPassword: request.solvedProblem,
-      correctPassword: request.solvedProblem ? problem.correctPassword : ""
+      showCorrectPassword: solvedProblem,
+      correctPassword: correctPassword
     });
   }
 );
