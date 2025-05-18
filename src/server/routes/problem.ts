@@ -64,7 +64,8 @@ router.get(
       csrfToken: request.generatedCSRFToken,
       sessionID: request.sessionID,
       bypassed: bypassed,
-      showCorrectPassword: showCorrectPassword
+      showCorrectPassword: request.solvedProblem,
+      correctPassword: request.solvedProblem ? problem.correctPassword : ""
     });
   }
 );
