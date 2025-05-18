@@ -1,10 +1,7 @@
 import { Request } from "express";
 import mongoSanitize from "express-mongo-sanitize";
 
-const alreadySolved = async function (request: Request) {
-  if (!request.params.problemID) {
-    return false;
-  }
+const alreadySolved = async function (request: Request, problemID: string) {
   if (!request.authentication.ok) {
     return false;
   }
