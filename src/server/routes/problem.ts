@@ -21,7 +21,10 @@ router.get(
       request.params.problemID as any
     );
 
-    const problem = await Problem.findProblemWithProblemID(sanitizedProblemID);
+    const problem = await Problem.findProblemWithProblemID(
+      sanitizedProblemID,
+      request.solvedProblem
+    );
 
     if (!problem) {
       response.render("pages/404", {
