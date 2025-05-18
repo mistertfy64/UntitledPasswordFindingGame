@@ -3,20 +3,21 @@ import { User } from "../models/User";
 import { sha384 } from "./hashing";
 
 async function isAuthenticated(username: string, token: string) {
+  const NOT_GOOD = {
+    ok: false,
+    username: null,
+    isAdministrator: false,
+    statistics: {
+      correctAnswers: []
+    }
+  };
   if (!username || !token) {
-    return { ok: false, username: null, isAdministrator: false };
+    return NOT_GOOD;
   }
   const sanitizedUsername = mongoSanitize.sanitize(username as any);
   const user = await User.findOne({ username: sanitizedUsername });
   if (!user) {
-    return {
-      ok: false,
-      username: null,
-      isAdministrator: false,
-      statistics: {
-        correctAnswers: []
-      }
-    };
+    return NOT_GOOD;
   }
   let tokenResult = false;
   const hashed = await sha384(token);
@@ -28,14 +29,7 @@ async function isAuthenticated(username: string, token: string) {
     }
   }
   if (!tokenResult) {
-    return {
-      ok: false,
-      username: null,
-      isAdministrator: false,
-      statistics: {
-        correctAnswers: []
-      }
-    };
+    return NOT_GOOD;
   }
   const isAdministrator = user.isAdministrator;
   return {
