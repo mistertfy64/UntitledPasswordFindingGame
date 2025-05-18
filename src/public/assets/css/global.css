@@ -246,4 +246,6 @@ p {
 .verdict-symbol {
   font-size: 244px;
   margin: -45px 0 -30px 0;
+  text-align: center;
+  width: 100%;
 }
