@@ -69,15 +69,6 @@ const loggedIn = async function (
   next();
 };
 
-const setAlreadySolved = async function (
-  request: express.Request,
-  response: express.Response,
-  next: NextFunction
-) {
-  request.solvedProblem = await alreadySolved(request);
-  next();
-};
-
 const setCSRFToken = async function (
   request: express.Request,
   response: express.Response,
@@ -133,7 +124,6 @@ app.use(cookieParser());
 app.use(bodyParser.json());
 app.use(setCSRFToken);
 app.use(loggedIn);
-app.use(setAlreadySolved);
 app.use(doubleCsrfProtection);
 app.use(errorHandling);
 app.use(limiter);
