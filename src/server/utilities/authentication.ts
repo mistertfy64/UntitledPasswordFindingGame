@@ -1,6 +1,6 @@
 import mongoSanitize from "express-mongo-sanitize";
 import { User } from "../models/User";
-const bcrypt = require("bcrypt");
+import { sha384 } from "./hashing";
 
 async function isAuthenticated(username: string, token: string) {
   if (!username || !token) {
@@ -12,9 +12,10 @@ async function isAuthenticated(username: string, token: string) {
     return { ok: false, username: null, isAdministrator: false };
   }
   let tokenResult = false;
+  const hashed = await sha384(token);
   for (const userToken of user.tokens) {
-    const result = await bcrypt.compare(token, userToken);
-    if (result) {
+    // const result = await bcrypt.compare(token, userToken);
+    if (hashed === userToken) {
       tokenResult = true;
       break;
     }
