@@ -23,7 +23,10 @@ interface ProblemMethods {
 
 interface ProblemModel
   extends Model<ProblemInterface, ProblemModel, ProblemMethods> {
-  findProblemWithProblemID(problemID: string): Promise<ProblemInterface>;
+  findProblemWithProblemID(
+    problemID: string,
+    solvedProblem?: boolean
+  ): Promise<ProblemInterface>;
   getVisibleProblems(): Promise<Array<ProblemInterface>>;
 }
 
