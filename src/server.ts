@@ -23,6 +23,9 @@ declare global {
         ok: boolean;
         username: string;
         isAdministrator: boolean;
+        statistics: {
+          correctAnswers: Array<unknown>;
+        };
       };
       session: string;
       generatedCSRFToken: string;
