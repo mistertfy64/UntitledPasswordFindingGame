@@ -60,7 +60,8 @@ router.get(
       correctAnswers: problem.correctAnswers,
       csrfToken: request.generatedCSRFToken,
       sessionID: request.sessionID,
-      bypassed: bypassed
+      bypassed: bypassed,
+      showCorrectPassword: showCorrectPassword
     });
   }
 );

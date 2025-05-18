@@ -1,11 +1,10 @@
-import { NextFunction, Request, Response } from "express";
+import { Request } from "express";
 import mongoSanitize from "express-mongo-sanitize";
 
-const alreadySolved = async function (
-  request: Request,
-  response: Response,
-  next: NextFunction
-) {
+const alreadySolved = async function (request: Request) {
+  if (!request.params.problemID) {
+    return false;
+  }
   if (!request.authentication.ok) {
     return false;
   }
