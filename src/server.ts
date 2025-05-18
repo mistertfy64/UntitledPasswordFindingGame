@@ -14,6 +14,7 @@ import { CsrfTokenGeneratorRequestUtil, doubleCsrf } from "csrf-csrf";
 import { rateLimit } from "express-rate-limit";
 import { UserCorrectAnswerInterface } from "./server/models/User";
 import { alreadySolved } from "./server/utilities/already-solved";
+import helmet from "helmet";
 const favicon = require("serve-favicon");
 const session = require("cookie-session");
 require("@dotenvx/dotenvx").config();
@@ -38,7 +39,7 @@ declare global {
 
 const limiter = rateLimit({
   windowMs: 10 * 60 * 1000,
-  limit: 100,
+  limit: 500,
   standardHeaders: "draft-8",
   legacyHeaders: false // Disable the `X-RateLimit-*` headers.
 });
@@ -107,6 +108,7 @@ const errorHandling: ErrorRequestHandler = async function (
 
 const app = express();
 const cookieParser = require("cookie-parser");
+app.use(helmet());
 app.set("trust proxy", 2);
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "server/views"));
