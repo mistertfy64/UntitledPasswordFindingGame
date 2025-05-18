@@ -28,7 +28,7 @@
       <% if (authentication.ok) { %>
       <form action="" method="POST">
         <%- include("../partials/csrf.ejs",{sessionID:sessionID,csrfToken:csrfToken}) %>
-        <input type="text" name="password" placeholder="Password">
+        <input type="text" name="password" placeholder="Password" autocomplete="off">
         <input type="submit">
       </form>
       <% } else { %>
