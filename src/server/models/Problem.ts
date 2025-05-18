@@ -42,10 +42,10 @@ const problemSchema = new Schema({
 
 problemSchema.static(
   "findProblemWithProblemID",
-  async function (problemID: string) {
+  async function (problemID: string, showCorrectPassword?: boolean) {
     return await this.findOne({ problemID: problemID })
       .select({
-        "correctPassword": 0
+        "correctPassword": showCorrectPassword ? 1 : 0
       })
       .lean();
   }
