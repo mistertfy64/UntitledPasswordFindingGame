@@ -1,4 +1,5 @@
 import { Model, Schema, model } from "mongoose";
+import { sha384 } from "../utilities/hashing";
 const bcrypt = require("bcrypt");
 
 interface UserCorrectAnswerInterface {
@@ -59,7 +60,7 @@ userSchema.static(
 );
 
 userSchema.method("addToken", async function addToken(token) {
-  const hashedToken: string = await bcrypt.hash(token, 10);
+  const hashedToken: string = await sha384(token);
   await this.updateOne({
     $push: {
       tokens: hashedToken
