@@ -6,6 +6,7 @@ import mongoSanitize from "express-mongo-sanitize";
 import { User } from "../models/User";
 import { log } from "../utilities/log";
 import { Submission } from "../models/Submission";
+import { alreadySolved } from "../utilities/already-solved";
 
 const md = markdownit().use(require("markdown-it-sub"));
 const router = express.Router();
@@ -21,7 +22,12 @@ router.get(
       request.params.problemID as any
     );
 
-    const problem = await Problem.findProblemWithProblemID(sanitizedProblemID);
+    const solvedProblem = await alreadySolved(request, sanitizedProblemID);
+
+    const problem = await Problem.findProblemWithProblemID(
+      sanitizedProblemID,
+      solvedProblem
+    );
 
     if (!problem) {
       response.render("pages/404", {
@@ -52,6 +58,8 @@ router.get(
       (a, b) => a.timestamp.getTime() - b.timestamp.getTime()
     );
 
+    const correctPassword = problem.correctPassword ?? "";
+
     response.render("pages/problem", {
       problemName: name,
       problemAuthor: author ?? "(unknown)",
@@ -60,7 +68,9 @@ router.get(
       correctAnswers: problem.correctAnswers,
       csrfToken: request.generatedCSRFToken,
       sessionID: request.sessionID,
-      bypassed: bypassed
+      bypassed: bypassed,
+      showCorrectPassword: solvedProblem,
+      correctPassword: correctPassword
     });
   }
 );

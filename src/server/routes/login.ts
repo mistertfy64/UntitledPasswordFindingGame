@@ -6,6 +6,8 @@ const bcrypt = require("bcrypt");
 const crypto = require("crypto");
 const router = express.Router();
 
+const ONE_DAY = 24 * 60 * 60 * 1000;
+
 router.get("/login", async (request: express.Request, response) => {
   if (!request.authentication.ok) {
     response.render("pages/login", {
@@ -70,7 +72,13 @@ router.post("/login", async (request: express.Request, response) => {
   // add cookies
   const token = await crypto.randomBytes(40).toString("hex");
   response.cookie("username", username);
-  response.cookie("token", token);
+  const onProduction = process.env.ENVIRONMENT === "production";
+  response.cookie("token", token, {
+    httpOnly: true,
+    secure: onProduction,
+    maxAge: ONE_DAY,
+    sameSite: onProduction ? "strict" : undefined
+  });
   await user.addToken(token);
   response.redirect("/");
 });

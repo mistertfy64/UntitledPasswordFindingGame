@@ -20,11 +20,15 @@
       <strong>Bypassing problem restrictions because user is administrator.</strong>
       <% } %>
       <%- problemStatement %>
+      <% if (authentication.ok && showCorrectPassword){ %>
+      <hr>
+      You already solved this problem! The correct password is "<%=correctPassword%>".
+      <% } %>
       <hr>
       <% if (authentication.ok) { %>
       <form action="" method="POST">
         <%- include("../partials/csrf.ejs",{sessionID:sessionID,csrfToken:csrfToken}) %>
-        <input type="text" name="password" placeholder="Password">
+        <input type="text" name="password" placeholder="Password" autocomplete="off">
         <input type="submit">
       </form>
       <% } else { %>
