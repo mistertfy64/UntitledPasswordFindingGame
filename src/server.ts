@@ -24,7 +24,7 @@ declare global {
         username: string;
         isAdministrator: boolean;
         statistics: {
-          correctAnswers: Array<unknown>;
+          correctAnswers: Array<UserCorrectAnswerInterface>;
         };
       };
       session: string;
