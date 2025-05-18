@@ -9,7 +9,12 @@ async function isAuthenticated(username: string, token: string) {
   const sanitizedUsername = mongoSanitize.sanitize(username as any);
   const user = await User.findOne({ username: sanitizedUsername });
   if (!user) {
-    return { ok: false, username: null, isAdministrator: false };
+    return {
+      ok: false,
+      username: null,
+      isAdministrator: false,
+      correctAnswers: []
+    };
   }
   let tokenResult = false;
   const hashed = await sha384(token);
@@ -21,13 +26,19 @@ async function isAuthenticated(username: string, token: string) {
     }
   }
   if (!tokenResult) {
-    return { ok: false, username: null, isAdministrator: false };
+    return {
+      ok: false,
+      username: null,
+      isAdministrator: false,
+      correctAnswers: []
+    };
   }
   const isAdministrator = user.isAdministrator;
   return {
     ok: true,
     username: sanitizedUsername,
-    isAdministrator: isAdministrator ?? false
+    isAdministrator: isAdministrator ?? false,
+    correctAnswers: user.correctAnswers
   };
 }
 
