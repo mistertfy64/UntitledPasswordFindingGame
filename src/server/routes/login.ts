@@ -76,7 +76,8 @@ router.post("/login", async (request: express.Request, response) => {
   response.cookie("token", token, {
     httpOnly: true,
     secure: onProduction,
-    maxAge: ONE_DAY
+    maxAge: ONE_DAY,
+    sameSite: onProduction ? "strict" : undefined
   });
   await user.addToken(token);
   response.redirect("/");
