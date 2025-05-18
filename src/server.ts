@@ -12,6 +12,7 @@ import bodyParser from "body-parser";
 import { isAuthenticated } from "./server/utilities/authentication";
 import { CsrfTokenGeneratorRequestUtil, doubleCsrf } from "csrf-csrf";
 import { rateLimit } from "express-rate-limit";
+import { UserCorrectAnswerInterface } from "./server/models/User";
 const favicon = require("serve-favicon");
 const session = require("cookie-session");
 require("@dotenvx/dotenvx").config();
