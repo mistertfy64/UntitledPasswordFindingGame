@@ -13,7 +13,9 @@ async function isAuthenticated(username: string, token: string) {
       ok: false,
       username: null,
       isAdministrator: false,
-      correctAnswers: []
+      statistics: {
+        correctAnswers: []
+      }
     };
   }
   let tokenResult = false;
@@ -30,7 +32,9 @@ async function isAuthenticated(username: string, token: string) {
       ok: false,
       username: null,
       isAdministrator: false,
-      correctAnswers: []
+      statistics: {
+        correctAnswers: []
+      }
     };
   }
   const isAdministrator = user.isAdministrator;
@@ -38,7 +42,9 @@ async function isAuthenticated(username: string, token: string) {
     ok: true,
     username: sanitizedUsername,
     isAdministrator: isAdministrator ?? false,
-    correctAnswers: user.correctAnswers
+    statistics: {
+      correctAnswers: user.correctAnswers
+    }
   };
 }
 
