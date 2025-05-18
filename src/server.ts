@@ -13,6 +13,7 @@ import { isAuthenticated } from "./server/utilities/authentication";
 import { CsrfTokenGeneratorRequestUtil, doubleCsrf } from "csrf-csrf";
 import { rateLimit } from "express-rate-limit";
 import { UserCorrectAnswerInterface } from "./server/models/User";
+import { alreadySolved } from "./server/utilities/already-solved";
 const favicon = require("serve-favicon");
 const session = require("cookie-session");
 require("@dotenvx/dotenvx").config();
@@ -30,6 +31,7 @@ declare global {
       };
       session: string;
       generatedCSRFToken: string;
+      solvedProblem: boolean;
     }
   }
 }
@@ -67,12 +69,12 @@ const loggedIn = async function (
   next();
 };
 
-const setSessionID = async function (
+const setAlreadySolved = async function (
   request: express.Request,
   response: express.Response,
   next: NextFunction
 ) {
-  request.sessionID = crypto.randomBytes(32).toString("hex");
+  request.solvedProblem = await alreadySolved(request);
   next();
 };
 
