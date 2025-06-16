@@ -71,8 +71,13 @@ router.post("/login", async (request: express.Request, response) => {
 
   // add cookies
   const token = await crypto.randomBytes(40).toString("hex");
-  response.cookie("username", username);
   const onProduction = process.env.ENVIRONMENT === "production";
+  response.cookie("username", username, {
+    httpOnly: true,
+    secure: onProduction,
+    maxAge: ONE_DAY,
+    sameSite: onProduction ? "strict" : undefined
+  });
   response.cookie("token", token, {
     httpOnly: true,
     secure: onProduction,
