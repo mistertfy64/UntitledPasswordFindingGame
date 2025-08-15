@@ -172,7 +172,7 @@ p {
   text-align: center;
 }
 
-.cell-detail {
+.cell--solved {
   background-color: #00ff005f;
 }
 
