@@ -144,6 +144,16 @@ async function validateProblem(request: express.Request) {
     };
   }
 
+  if (
+    request.body["problem-difficulty"] &&
+    isNaN(parseInt(request.body["problem-difficulty"]))
+  ) {
+    return {
+      ok: false,
+      reason: `Problem difficulty isn't an integer.`
+    };
+  }
+
   return {
     ok: true,
     reason: `All checks passed.`
@@ -158,6 +168,12 @@ async function addProblem(request: express.Request) {
   problem.problemID = purify.sanitize(body["problem-id"]);
   problem.correctPassword = purify.sanitize(body["correct-password"]);
   problem.problemNumber = parseInt(body["problem-number"]);
+  if (body["problem-difficulty"]) {
+    problem.difficulty = parseInt(body["problem-difficulty"]);
+  }
+  if (body["problem-categories"]) {
+    problem.categories = body["problem-categories"].toString().split(",");
+  }
   problem.correctAnswers = [];
   problem.creationDateAndTime = new Date();
   problem.releaseDateAndTime = new Date(
