@@ -16,7 +16,7 @@ interface ProblemInterface {
   hidden: boolean;
   author: string;
   difficulty: number;
-  category: Array<string>;
+  categories: Array<string>;
 }
 
 interface ProblemMethods {
@@ -44,7 +44,7 @@ const problemSchema = new Schema({
   hidden: Boolean,
   author: String,
   difficulty: Number,
-  category: Array<String>
+  categories: Array<String>
 });
 
 problemSchema.static(
