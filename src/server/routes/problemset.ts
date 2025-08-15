@@ -25,8 +25,8 @@ async function getDetailToShow(request: express.Request) {
     case "difficulty": {
       return { header: "Difficulty", value: "difficulty" };
     }
-    case "category": {
-      return { header: "Category", value: "category" };
+    case "categories": {
+      return { header: "Categories", value: "categories" };
     }
     default: {
       return { header: "Solved", value: "solved" };
