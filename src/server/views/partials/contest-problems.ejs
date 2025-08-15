@@ -9,7 +9,7 @@
     </tr>
     <% for (const problem of contestData.contestProblems) { %>
     <% if (authentication.ok && problem.correctAnswers.find((e)=>e.username===authentication.username) ) { %>
-    <tr class="cell--solved">
+    <tr class="cell-detail">
       <% } else { %>
     <tr>
       <% } %>

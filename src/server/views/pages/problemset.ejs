@@ -25,7 +25,7 @@
           </tr>
           <% for (const problem of problems) { %>
           <% if (authentication.ok && problem.correctAnswers.find((e)=>e.username===authentication.username) ) { %>
-          <tr class="cell--solved">
+          <tr class="cell-detail">
             <% } else { %>
           <tr>
             <% } %>
