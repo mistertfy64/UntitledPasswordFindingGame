@@ -21,10 +21,10 @@
             <th class="cell--number">#</th>
             <th>Name</th>
             <th>ID</th>
-            <th><%= detail.header ></th>
+            <th><%= detail.header %></th>
           </tr>
           <% for (const problem of problems) { %>
-              <% if (authentication.ok && problem.correctAnswers.find((e)=>e.username===authentication.username) ) { %>
+          <% if (authentication.ok && problem.correctAnswers.find((e)=>e.username===authentication.username) ) { %>
           <tr class="cell--solved">
             <% } else { %>
           <tr>
@@ -32,14 +32,14 @@
             <td class="cell--number"><%= problem.problemNumber %></td>
             <td><a href="/problem/<%= problem.problemID %>"><%= problem.problemName %></a></td>
             <td><%= problem.problemID %></td>
-            <td class="cell--number"><%= problem.correctAnswers.length %></td>
+            <%- include("../partials/detail-cell.ejs", {detail:detail,problem:problem}) %>
           </tr>
-          <% } %>
+          <%}%>
         </table>
       </div>
     </main>
     <footer>
       <%- include("../partials/footer.ejs") %>
-    </footer>
-  </div>
+          </footer>
+      </div>
 </body>
