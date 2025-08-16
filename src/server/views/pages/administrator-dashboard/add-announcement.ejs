@@ -22,7 +22,7 @@
         <br>
         <textarea name="announcement-body" maxlength="16000" placeholder="Enter announcement body here... (Markdown, max. 16000 characters)"></textarea>
         <br>
-        <%- include("../../partials/csrf.ejs") %>
+        <%- include("../../partials/csrf.ejs",{sessionID:sessionID,csrfToken:csrfToken}) %>
         <% if (diagnosticMessage) { %>
         <div class="message--error">
           <%= diagnosticMessage %>
