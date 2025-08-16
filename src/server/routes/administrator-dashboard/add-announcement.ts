@@ -70,25 +70,28 @@ router.post(
 );
 
 async function validateAnnouncement(request: express.Request) {
-  if (request.body["announcement-title"].length === 0) {
+  const title = (request.body["announcement-title"] ?? "").trim();
+  const bodyText = (request.body["announcement-title"] ?? "").trim();
+
+  if (title === 0) {
     return {
       ok: false,
       reason: "Announcement title is empty."
     };
   }
-  if (request.body["announcement-title"].length > 128) {
+  if (title > 128) {
     return {
       ok: false,
       reason: "Announcement title is too long."
     };
   }
-  if (request.body["announcement-body"].length === 0) {
+  if (bodyText === 0) {
     return {
       ok: false,
       reason: "Announcement body is empty."
     };
   }
-  if (request.body["announcement-body"].length > 16000) {
+  if (bodyText > 16000) {
     return {
       ok: false,
       reason: "Announcement body is too long."
