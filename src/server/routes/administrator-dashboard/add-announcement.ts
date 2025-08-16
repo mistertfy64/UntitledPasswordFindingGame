@@ -71,7 +71,7 @@ router.post(
 
 async function validateAnnouncement(request: express.Request) {
   const title = (request.body["announcement-title"] ?? "").trim();
-  const bodyText = (request.body["announcement-title"] ?? "").trim();
+  const bodyText = (request.body["announcement-body"] ?? "").trim();
 
   if (title.length === 0) {
     return {
