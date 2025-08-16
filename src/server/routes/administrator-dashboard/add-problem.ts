@@ -146,7 +146,7 @@ async function validateProblem(request: express.Request) {
 
   if (
     request.body["problem-difficulty"] &&
-    isNaN(parseInt(request.body["problem-difficulty"]))
+    !Number.isInteger(request.body["problem-difficulty"])
   ) {
     return {
       ok: false,
