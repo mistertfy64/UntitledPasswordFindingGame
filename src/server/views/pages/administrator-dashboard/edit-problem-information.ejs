@@ -11,15 +11,17 @@
 <body>
   <div id="container">
     <header>
-      <%- include("../../partials/header.ejs") %>
+      <%- include("../../partials/header.ejs", {authentication: authentication}) %>
     </header>
     <main>
       <h1>Edit Problem</h1>
       <hr>
-      To edit problem with problem ID problemID: append <code>/problemID</code> to the URL.
+      To edit problem with problem ID test: append <code>/test</code> to the URL.
     </main>
     <footer>
       <%- include("../../partials/footer.ejs") %>
     </footer>
   </div>
 </body>
+
+</html>
