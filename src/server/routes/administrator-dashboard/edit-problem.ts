@@ -149,7 +149,7 @@ async function validateProblem(request: express.Request) {
     };
   }
 
-  if (!Number.isInteger(["problem-release-timestamp"])) {
+  if (!Number.isInteger(request.body["problem-release-timestamp"])) {
     return {
       ok: false,
       reason: `Release timestamp isn't a integer.`
