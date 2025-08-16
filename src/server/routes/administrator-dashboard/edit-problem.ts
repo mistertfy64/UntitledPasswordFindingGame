@@ -149,7 +149,7 @@ async function validateProblem(request: express.Request) {
     };
   }
 
-  if (isNaN(parseInt(request.body["problem-release-timestamp"]))) {
+  if (!Number.isInteger(["problem-release-timestamp"])) {
     return {
       ok: false,
       reason: `Release timestamp isn't a integer.`
@@ -158,7 +158,7 @@ async function validateProblem(request: express.Request) {
 
   if (
     request.body["problem-difficulty"] &&
-    isNaN(parseInt(request.body["problem-difficulty"]))
+    !Number.isInteger(request.body["problem-difficulty"])
   ) {
     return {
       ok: false,
