@@ -1,9 +1,9 @@
 <% if(detail.value === "difficulty"){ %>
-<td class="cell--number"><%= problem.difficulty ?? "" %></td>
+<td class="cell--text"><%= problem.difficulty ?? "" %></td>
 <% }else if(detail.value === "categories"){ %>
-<td class="cell--number"><%= problem?.categories?.join(", ") ?? "" %></td>
+<td class="cell--text"><%= problem?.categories?.join(", ") ?? "" %></td>
 <%} else if(detail.value === "solved"){ %>
-<td class="cell--number"><%= problem.correctAnswers.length %></td>
+<td class="cell--text"><%= problem.correctAnswers.length %></td>
 <%} else {%>
-<td class="cell--number"><%= problem.correctAnswers.length %></td>
+<td class="cell--text"><%= problem.correctAnswers.length %></td>
 <%}%>

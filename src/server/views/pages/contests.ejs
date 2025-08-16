@@ -29,7 +29,7 @@
           </tr>
           <% for (const contest of contests){ %>
           <tr>
-            <td class="cell--number"><%=contest.contestID%></td>
+            <td class="cell--text"><%=contest.contestID%></td>
             <td><a href="/contests/<%=contest.contestID%>"><%=contest.contestName%></a></td>
             <td><%=contest.startDateAndTime.toISOString()%></td>
             <td><%=contest.endDateAndTime.toISOString()%></td>

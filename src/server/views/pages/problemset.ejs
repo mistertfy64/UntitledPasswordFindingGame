@@ -22,7 +22,7 @@
       <div id="problemset__wrapper">
         <table id="problemset">
           <tr>
-            <th class="cell--number">#</th>
+            <th class="cell--text">#</th>
             <th>Name</th>
             <th>ID</th>
             <th><%= detail.header %></th>
@@ -33,7 +33,7 @@
             <% } else { %>
           <tr>
             <% } %>
-            <td class="cell--number"><%= problem.problemNumber %></td>
+            <td class="cell--text"><%= problem.problemNumber %></td>
             <td><a href="/problem/<%= problem.problemID %>"><%= problem.problemName %></a></td>
             <td><%= problem.problemID %></td>
             <%- include("../partials/detail-cell.ejs", {detail:detail,problem:problem}) %>
