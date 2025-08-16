@@ -13,7 +13,7 @@ router.get("/", async (request: express.Request, response) => {
   const announcements = await Announcement.getVisibleAnnouncements(5);
   for (const announcement of announcements) {
     const rendered = md.render(announcement.body);
-    announcement.body = purify.sanitize(rendered, {
+    announcement.sanitizedBody = purify.sanitize(rendered, {
       USE_PROFILES: { html: true }
     });
   }
