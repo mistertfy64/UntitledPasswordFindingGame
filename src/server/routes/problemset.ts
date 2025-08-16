@@ -6,7 +6,7 @@ const router = express.Router();
 router.get("/problemset", async (request: express.Request, response) => {
   const problems = await Problem.getVisibleProblems();
   problems.sort((a, b) => a.problemNumber - b.problemNumber);
-  const detail = await getDetailToShow(request);
+  const detail = getDetailToShow(request);
   response.render("pages/problemset", {
     authentication: request.authentication,
     problems: problems,
@@ -16,7 +16,7 @@ router.get("/problemset", async (request: express.Request, response) => {
   });
 });
 
-async function getDetailToShow(request: express.Request) {
+function getDetailToShow(request: express.Request) {
   const detail = request.query.detail?.toString() ?? "";
   switch (detail) {
     case "solved": {
