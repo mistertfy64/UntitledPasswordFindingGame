@@ -17,7 +17,7 @@ router.get("/problemset", async (request: express.Request, response) => {
 });
 
 async function getDetailToShow(request: express.Request) {
-  const detail = request.query.detail;
+  const detail = request.query.detail?.toString() ?? "";
   switch (detail) {
     case "solved": {
       return { header: "Solved", value: "solved" };
