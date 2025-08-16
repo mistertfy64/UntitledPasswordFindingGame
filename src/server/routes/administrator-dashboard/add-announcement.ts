@@ -73,25 +73,25 @@ async function validateAnnouncement(request: express.Request) {
   const title = (request.body["announcement-title"] ?? "").trim();
   const bodyText = (request.body["announcement-title"] ?? "").trim();
 
-  if (title === 0) {
+  if (title.length === 0) {
     return {
       ok: false,
       reason: "Announcement title is empty."
     };
   }
-  if (title > 128) {
+  if (title.length > 128) {
     return {
       ok: false,
       reason: "Announcement title is too long."
     };
   }
-  if (bodyText === 0) {
+  if (bodyText.length === 0) {
     return {
       ok: false,
       reason: "Announcement body is empty."
     };
   }
-  if (bodyText > 16000) {
+  if (bodyText.length > 16000) {
     return {
       ok: false,
       reason: "Announcement body is too long."
