@@ -19,7 +19,7 @@
       <% } else { %>
       <% for (let i = 0; i < announcements.length; i++) { %>
       <%- include("../partials/announcement.ejs",{announcement: announcements[i]})%>
-      <% if (i == announcements.length-2) { %>
+      <% if (i < announcements.length-1) { %>
       <hr>
       <% } %>
       <% } %>
