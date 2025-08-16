@@ -9,6 +9,8 @@ import DOMPurify from "dompurify";
 const window = new JSDOM("").window;
 const purify = DOMPurify(window);
 
+const INTEGER_REGEX = /^[0-9]+$/;
+
 function authorized(request: express.Request) {
   return request.authentication.ok && request.authentication.isAdministrator;
 }
@@ -137,7 +139,10 @@ async function validateProblem(request: express.Request) {
     };
   }
 
-  if (isNaN(parseInt(request.body["problem-release-timestamp"]))) {
+  if (
+    request.body["problem-release-timestamp"] &&
+    !INTEGER_REGEX.test(request.body["problem-release-timestamp"])
+  ) {
     return {
       ok: false,
       reason: `Release timestamp isn't a integer.`
@@ -146,7 +151,7 @@ async function validateProblem(request: express.Request) {
 
   if (
     request.body["problem-difficulty"] &&
-    !Number.isInteger(request.body["problem-difficulty"])
+    !INTEGER_REGEX.test(request.body["problem-difficulty"])
   ) {
     return {
       ok: false,
