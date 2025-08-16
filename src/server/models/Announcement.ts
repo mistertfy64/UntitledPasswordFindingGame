@@ -5,6 +5,7 @@ interface AnnouncementInterface {
   title: string;
   author: string;
   creationDateAndTime: Date;
+  sanitizedBody: string;
 }
 
 interface AnnouncementModel
