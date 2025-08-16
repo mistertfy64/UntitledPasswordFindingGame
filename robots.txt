@@ -3,4 +3,6 @@ Disallow: /account
 Disallow: /login
 Disallow: /logout
 Disallow: /register
+Disallow: /administrator
+Disallow: /administrator/
 Allow: /
