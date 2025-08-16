@@ -151,7 +151,10 @@ async function validateProblem(request: express.Request) {
     };
   }
 
-  if (!INTEGER_REGEX.test(request.body["problem-release-timestamp"])) {
+  if (
+    request.body["problem-release-timestamp"] &&
+    !INTEGER_REGEX.test(request.body["problem-release-timestamp"])
+  ) {
     return {
       ok: false,
       reason: `Release timestamp isn't a integer.`
@@ -194,9 +197,11 @@ async function editProblem(request: express.Request) {
   if (body["problem-categories"]) {
     problem.categories = body["problem-categories"].toString().split(",");
   }
-  problem.releaseDateAndTime = new Date(
-    parseInt(body["problem-release-timestamp"])
-  );
+  if (body["problem-release-timestamp"]) {
+    problem.releaseDateAndTime = new Date(
+      parseInt(body["problem-release-timestamp"])
+    );
+  }
   problem.hidden =
     body["problem-hidden"] === "on" || body["problem-hidden"] === true;
   problem.author = body["problem-author"] || request.authentication.username;
