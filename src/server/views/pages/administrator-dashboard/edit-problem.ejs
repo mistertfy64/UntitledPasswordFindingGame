@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+  <title>UntitledPasswordFindingGame</title>
+  <%- include("../../partials/head.ejs")%>
+  <link rel="stylesheet" type="text/css" href="/assets/css/global.css" />
+</head>
+
+<body>
+  <div id="container">
+    <header>
+      <%- include("../../partials/header.ejs") %>
+    </header>
+    <main>
+      <h1>Edit Problem</h1>
+      <hr>
+      <form action="" method="POST">
+        Problem Name: <input type="text" name="problem-name" placeholder="Problem Name">
+        <br>
+        <textarea name="problem-statement" maxlength="16000" placeholder="Enter problem statement here... (Markdown, max. 16000 characters)"></textarea>
+        <br>
+        Problem ID: <input type="text" name="problem-id" placeholder="Problem ID">
+        <br>
+        Correct Password: <input type="text" name="correct-password" placeholder="Correct Password">
+        <br>
+        Problem Number: <input type="number" name="problem-number" placeholder="Problem Number">
+        <br>
+        Timestamp to release: <input type="number" name="problem-release-timestamp" placeholder="Timestamp to release">
+        <br>
+        Person to credit (optional, leave blank for self): <input type="text" name="problem-author" placeholder="Person to credit. Leave blank for current user.">
+        <br>
+        Difficulty (optional): <input type="number" name="problem-difficulty" placeholder="Problem Difficulty">
+        <br>
+        Categories (optional, comma separated): <input type="text" name="problem-categories" placeholder="Problem Categories">
+        <div>
+          <input type="checkbox" name="problem-hidden"> Hidden Problem (must type URL directly)
+        </div>
+        <%- include("../../partials/csrf.ejs",{sessionID:sessionID,csrfToken:csrfToken}) %>
+        <% if (diagnosticMessage) { %>
+        <div class="message--error">
+          <%= diagnosticMessage %>
+        </div>
+        <% } %>
+        <input type="submit" name="Add Problem">
+      </form>
+    </main>
+    <footer>
+      <%- include("../../partials/footer.ejs") %>
+    </footer>
+  </div>
+</body>
