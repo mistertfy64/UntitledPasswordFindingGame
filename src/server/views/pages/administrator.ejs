@@ -16,18 +16,10 @@
     </header>
     <h1>Administrator Dashboard</h1>
     <main>
-      <form action="/administrator/add-problem">
-        <input type="submit" value="Add a New Problem">
-      </form>
-      <!-- <form action="/administrator/new-contest">
-        <input type="submit" value="Add a New Contest">
-      </form> -->
-      <form action="/administrator/submissions">
-        <input type="submit" value="View Submissions">
-      </form>
-      <form action="/administrator/clarifications">
-        <input type="submit" value="View Clarifications">
-      </form>
+      <a href="/administrator/add-announcement">Add a new announcement</a> |
+      <a href="/administrator/add-problem">Add a new problem</a> |
+      <a href="/administrator/submissions">View submissions</a> |
+      <a href="/administrator/clarifications">View unanswered clarifications</a>
     </main>
     <footer>
       <%- include("../partials/footer.ejs") %>
