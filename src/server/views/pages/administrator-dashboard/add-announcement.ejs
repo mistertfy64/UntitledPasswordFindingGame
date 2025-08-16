@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+  <title>UntitledPasswordFindingGame</title>
+  <%- include("../../partials/head.ejs")%>
+
+  <link rel="stylesheet" type="text/css" href="/assets/css/global.css" />
+</head>
+
+<body>
+  <div id="container">
+    <header>
+      <%- include("../../partials/header.ejs",{authentication:authentication}) %>
+    </header>
+    <main>
+      <h1>Add Announcement</h1>
+      <hr>
+      <form action="" method="POST">
+        Announcement Title: <input type="text" name="announcement-title" placeholder="Announcement title">
+        <br>
+        <textarea name="announcement-body" maxlength="16000" placeholder="Enter announcement body here... (Markdown, max. 16000 characters)"></textarea>
+        <br>
+        <%- include("../../partials/csrf.ejs",{sessionID:sessionID,csrfToken:csrfToken}) %>
+        <% if (diagnosticMessage) { %>
+        <div class="message--error">
+          <%= diagnosticMessage %>
+        </div>
+        <% } %>
+        <input type="submit" value="Add announcement">
+      </form>
+    </main>
+    <footer>
+      <%- include("../../partials/footer.ejs") %>
+    </footer>
+  </div>
+</body>
+
+</html>

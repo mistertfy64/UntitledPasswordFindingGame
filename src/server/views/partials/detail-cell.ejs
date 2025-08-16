@@ -1,0 +1,9 @@
+<% if(detail.value === "difficulty"){ %>
+<td class="cell--text"><%= problem.difficulty ?? "" %></td>
+<% }else if(detail.value === "categories"){ %>
+<td class="cell--text"><%= problem?.categories?.join(", ") ?? "" %></td>
+<%} else if(detail.value === "solved"){ %>
+<td class="cell--text"><%= problem.correctAnswers.length ?? 0 %></td>
+<%} else {%>
+<td class="cell--text"><%= problem.correctAnswers.length %></td>
+<%}%>

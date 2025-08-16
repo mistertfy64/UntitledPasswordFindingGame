@@ -1,0 +1,3 @@
+<h1><%= announcement.title %></h1>
+<h3>Created by <%= announcement.author %> at <%= announcement.creationDateAndTime.toISOString() %></h3>
+<%- announcement.sanitizedBody %>

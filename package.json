@@ -1,6 +1,6 @@
 {
   "name": "untitled-password-finding-game",
-  "version": "0.1.0-alpha.13",
+  "version": "0.1.0-alpha.14",
   "description": "fun password finding game",
   "main": "index.js",
   "private": true,

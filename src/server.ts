@@ -108,7 +108,24 @@ const errorHandling: ErrorRequestHandler = async function (
 
 const app = express();
 const cookieParser = require("cookie-parser");
-app.use(helmet());
+app.use(
+  helmet({
+    contentSecurityPolicy: {
+      directives: {
+        "script-src": [
+          "'self'",
+          "https://www.google.com/recaptcha/",
+          "https://www.gstatic.com/recaptcha/"
+        ],
+        "frame-src": [
+          "'self'",
+          "https://www.google.com/recaptcha/",
+          "https://recaptcha.google.com/recaptcha/"
+        ]
+      }
+    }
+  })
+);
 app.set("trust proxy", 2);
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "server/views"));

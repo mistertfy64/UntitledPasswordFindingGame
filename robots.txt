@@ -3,4 +3,8 @@ Disallow: /account
 Disallow: /login
 Disallow: /logout
 Disallow: /register
+Disallow: /administrator
+Disallow: /administrator/
+Disallow: /administrator-dashboard
+Disallow: /administrator-dashboard/
 Allow: /

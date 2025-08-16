@@ -2,7 +2,7 @@
 <div id="contest-problemset__wrapper">
   <table id="contest-problemset">
     <tr>
-      <th class="cell--number">#</th>
+      <th class="cell--text">#</th>
       <th>Name</th>
       <th>ID</th>
       <th>Solved</th>
@@ -13,10 +13,10 @@
       <% } else { %>
     <tr>
       <% } %>
-      <td class="cell--number"><%= problem.problemNumber %></td>
+      <td class="cell--text"><%= problem.problemNumber %></td>
       <td><a href="/problem/<%= problem.problemID %>"><%= problem.problemName %></a></td>
       <td><%= problem.problemID %></td>
-      <td class="cell--number"><%= problem.correctAnswers.length %></td>
+      <td class="cell--text"><%= problem.correctAnswers.length %></td>
     </tr>
     <% } %>
   </table>

@@ -38,7 +38,7 @@
         Response:
         <form action="" method="POST">
           <textarea maxlength="1024" name="response" placeholder="Enter response... (max. 1024 characters)"></textarea>
-          <%- include("../../partials/csrf.ejs") %>
+          <%- include("../../partials/csrf.ejs",{sessionID:sessionID,csrfToken:csrfToken}) %>
           <br>
           <input type="submit" value="Send Response">
         </form>

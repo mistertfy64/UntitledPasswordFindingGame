@@ -165,7 +165,7 @@ p {
   overflow-x: auto;
 }
 
-.cell--number {
+.cell--text {
   padding: 0 4px;
   text-wrap: nowrap;
   white-space: nowrap;

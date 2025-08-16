@@ -13,24 +13,17 @@
       <%- include("../partials/header.ejs", {authentication: authentication}) %>
     </header>
     <main>
+      <% if (!announcements || announcements.length === 0){ %>
       <h1>Welcome to UntitledPasswordFindingGame!</h1>
-      UntitledPasswordFindingGame is a website where you have to find out hidden passwords to each problem.
-      <br>
-      Here's how it works:
-      <ul>
-        <li>The problem statement will tell you what you need to do to find the hidden password for each problem.</li>
-        <li>If you think you have the password, enter the password to see if you're correct.</li>
-      </ul>
-      That's it!
-      <br>
-      If this feels similar to a cybersecurity capture-the-flag website, then you're on to something!
-      However, unlike capture-the-flag websites, this is more of a "puzzle-game" website, but there may be CTF-elements hidden in some puzzles.
-      <br>
-      Puzzles range from low-quality to high-quality, easy to hard, and some are even brute force!
-      <br>
-      You can start to solve the puzzles in the "Problemset" section of this website.
-      <br>
-      Good luck!
+      There are no announcements at the moment.
+      <% } else { %>
+      <% for (let i = 0; i < announcements.length; i++) { %>
+      <%- include("../partials/announcement.ejs",{announcement: announcements[i]})%>
+      <% if (i < announcements.length-1) { %>
+      <hr>
+      <% } %>
+      <% } %>
+      <% } %>
     </main>
     <footer>
       <%- include("../partials/footer.ejs") %>
