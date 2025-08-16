@@ -23,6 +23,11 @@
         <textarea name="announcement-body" maxlength="16000" placeholder="Enter announcement body here... (Markdown, max. 16000 characters)"></textarea>
         <br>
         <%- include("../../partials/csrf.ejs") %>
+        <% if (diagnosticMessage) { %>
+        <div class="message--error">
+          <%= diagnosticMessage %>
+        </div>
+        <% } %>
         <input type="submit" value="Add announcement">
       </form>
     </main>
