@@ -9,6 +9,8 @@ import DOMPurify from "dompurify";
 const window = new JSDOM("").window;
 const purify = DOMPurify(window);
 
+const INTEGER_REGEX = /^[0-9]+$/;
+
 function authorized(request: express.Request) {
   return request.authentication.ok && request.authentication.isAdministrator;
 }
@@ -149,7 +151,10 @@ async function validateProblem(request: express.Request) {
     };
   }
 
-  if (!Number.isInteger(request.body["problem-release-timestamp"])) {
+  if (
+    request.body["problem-release-timestamp"] &&
+    !INTEGER_REGEX.test(request.body["problem-release-timestamp"])
+  ) {
     return {
       ok: false,
       reason: `Release timestamp isn't a integer.`
@@ -158,7 +163,7 @@ async function validateProblem(request: express.Request) {
 
   if (
     request.body["problem-difficulty"] &&
-    !Number.isInteger(request.body["problem-difficulty"])
+    !INTEGER_REGEX.test(request.body["problem-difficulty"])
   ) {
     return {
       ok: false,
@@ -192,9 +197,11 @@ async function editProblem(request: express.Request) {
   if (body["problem-categories"]) {
     problem.categories = body["problem-categories"].toString().split(",");
   }
-  problem.releaseDateAndTime = new Date(
-    parseInt(body["problem-release-timestamp"])
-  );
+  if (body["problem-release-timestamp"]) {
+    problem.releaseDateAndTime = new Date(
+      parseInt(body["problem-release-timestamp"])
+    );
+  }
   problem.hidden =
     body["problem-hidden"] === "on" || body["problem-hidden"] === true;
   problem.author = body["problem-author"] || request.authentication.username;
