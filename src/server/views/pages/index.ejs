@@ -15,7 +15,7 @@
     <main>
       <% if (!announcements || announcements.length === 0){ %>
       <h1>Welcome to UntitledPasswordFindingGame!</h1>
-      At the moment there are no announcements made yet.
+      There are no announcements at the moment.
       <% } else { %>
       <% for (let i = 0; i < announcements.length; i++) { %>
       <%- include("../partials/announcement.ejs",{announcement: announcements[i]})%>
