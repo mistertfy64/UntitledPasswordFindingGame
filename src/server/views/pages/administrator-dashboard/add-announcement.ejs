@@ -18,6 +18,8 @@
       <h1>Add Announcement</h1>
       <hr>
       <form action="" method="POST">
+        Announcement Title: <input type="text" name="announcement-title" placeholder="Announcement title">
+        <br>
         <textarea name="announcement-body" maxlength="16000" placeholder="Enter announcement body here... (Markdown, max. 16000 characters)"></textarea>
         <br>
         <%- include("../../partials/csrf.ejs") %>
