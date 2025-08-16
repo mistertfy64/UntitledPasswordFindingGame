@@ -17,25 +17,25 @@
       <h1>Edit Problem</h1>
       <hr>
       <form action="" method="POST">
-        Problem Name: <input type="text" name="problem-name" placeholder="Problem Name">
+        Problem Name: <input type="text" name="problem-name" placeholder="Problem Name" value=<%=problemToEdit.problemName%>>
         <br>
-        <textarea name="problem-statement" maxlength="16000" placeholder="Enter problem statement here... (Markdown, max. 16000 characters)"></textarea>
+        <textarea name="problem-statement" maxlength="16000" placeholder="Enter problem statement here... (Markdown, max. 16000 characters)"><%=problemToEdit.problemStatement%></textarea>
         <br>
-        Problem ID: <input type="text" name="problem-id" placeholder="Problem ID">
+        Problem ID: <code><%=problemToEdit.problemID%></code>
         <br>
-        Correct Password: <input type="text" name="correct-password" placeholder="Correct Password">
+        Correct Password: <input type="text" name="correct-password" placeholder="Correct Password" value=<%=problemToEdit.correctPassword%>>
         <br>
-        Problem Number: <input type="number" name="problem-number" placeholder="Problem Number">
+        Problem Number: <code><%=problemToEdit.problemNumber%></code>
         <br>
-        Timestamp to release: <input type="number" name="problem-release-timestamp" placeholder="Timestamp to release">
+        Timestamp to release: <input type="number" name="problem-release-timestamp" placeholder="Timestamp to release" value=<%=problemToEdit?.releaseDateAndTime?.getTime() ?? 1%>>
         <br>
-        Person to credit (optional, leave blank for self): <input type="text" name="problem-author" placeholder="Person to credit. Leave blank for current user.">
+        Person to credit (optional, leave blank for self): <input type="text" name="problem-author" placeholder="Person to credit. Leave blank for current user." value=<%=problemToEdit.author ?? ""%>>
         <br>
-        Difficulty (optional): <input type="number" name="problem-difficulty" placeholder="Problem Difficulty">
+        Difficulty (optional): <input type="number" name="problem-difficulty" placeholder="Problem Difficulty" value=<%=problemToEdit.difficulty%>>
         <br>
-        Categories (optional, comma separated): <input type="text" name="problem-categories" placeholder="Problem Categories">
+        Categories (optional, comma separated): <input type="text" name="problem-categories" placeholder="Problem Categories" value=<%=problemToEdit?.categories?.join(",")??""%>>
         <div>
-          <input type="checkbox" name="problem-hidden"> Hidden Problem (must type URL directly)
+          <input type="checkbox" name="problem-hidden"> Hidden Problem (must type URL directly) Do note that this box must be rechecked to re main hidden.
         </div>
         <%- include("../../partials/csrf.ejs",{sessionID:sessionID,csrfToken:csrfToken}) %>
         <% if (diagnosticMessage) { %>
@@ -44,6 +44,8 @@
         </div>
         <% } %>
         <input type="submit" name="Add Problem">
+        <br>
+        Note: To edit ID and/or number, edit them in database itself, although it might cause problems.
       </form>
     </main>
     <footer>
