@@ -8,26 +8,7 @@ router.get("/clarifications", async (request: express.Request, response) => {
     response.redirect("/login");
     return;
   }
-
-  const data = await Clarification.find({
-    questionAskedBy: request.authentication.username
-  })
-    .sort({ timestampOnAsk: -1 })
-    .limit(10)
-    .lean();
-
-  response.render("pages/clarifications", {
-    recaptchaSiteKey:
-      process.env.ENVIRONMENT === "production"
-        ? process.env.RECAPTCHA_SITE_KEY
-        : process.env.TESTING_RECAPTCHA_SITE_KEY,
-    authentication: request.authentication,
-    diagnosticMessage: "",
-    csrfToken: request.generatedCSRFToken,
-    sessionID: request.sessionID,
-    data: data
-  });
-
+  renderPage(request, response);
   return;
 });
 
@@ -39,47 +20,20 @@ router.post("/clarifications", async (request: express.Request, response) => {
   const captcha = await validateCaptcha(request.body["g-recaptcha-response"]);
 
   if (!captcha) {
-    const data = await Clarification.find({
-      questionAskedBy: request.authentication.username
-    })
-      .sort({ timestampOnAsk: -1 })
-      .limit(10)
-      .lean();
-
-    response.render("pages/clarifications", {
-      recaptchaSiteKey:
-        process.env.ENVIRONMENT === "production"
-          ? process.env.RECAPTCHA_SITE_KEY
-          : process.env.TESTING_RECAPTCHA_SITE_KEY,
-      authentication: request.authentication,
-      diagnosticMessage: "CAPTCHA Incomplete. Clarification not sent.",
-      csrfToken: request.generatedCSRFToken,
-      sessionID: request.sessionID,
-      data: data
-    });
-
+    renderPage(
+      request,
+      response,
+      "CAPTCHA Incomplete. Clarification not sent."
+    );
     return;
   }
 
   if (request.body["question"].length > 512) {
-    const data = await Clarification.find({
-      questionAskedBy: request.authentication.username
-    })
-      .sort({ timestampOnAsk: -1 })
-      .limit(10)
-      .lean();
-    response.render("pages/clarifications", {
-      recaptchaSiteKey:
-        process.env.ENVIRONMENT === "production"
-          ? process.env.RECAPTCHA_SITE_KEY
-          : process.env.TESTING_RECAPTCHA_SITE_KEY,
-      authentication: request.authentication,
-      diagnosticMessage:
-        "Question too long. Maximum is 512 characters. Clarification not sent.",
-      csrfToken: request.generatedCSRFToken,
-      sessionID: request.sessionID,
-      data: data
-    });
+    renderPage(
+      request,
+      response,
+      "Question too long. Maximum is 512 characters. Clarification not sent."
+    );
     return;
   }
 
@@ -91,25 +45,7 @@ router.post("/clarifications", async (request: express.Request, response) => {
     clarification.timestampOnAsk = new Date();
     await clarification.save();
 
-    const data = await Clarification.find({
-      questionAskedBy: request.authentication.username
-    })
-      .sort({ timestampOnAsk: -1 })
-      .limit(10)
-      .lean();
-
-    // testing credentials
-    response.render("pages/clarifications", {
-      recaptchaSiteKey:
-        process.env.ENVIRONMENT === "production"
-          ? process.env.RECAPTCHA_SITE_KEY
-          : process.env.TESTING_RECAPTCHA_SITE_KEY,
-      authentication: request.authentication,
-      diagnosticMessage: "",
-      csrfToken: request.generatedCSRFToken,
-      sessionID: request.sessionID,
-      data: data
-    });
+    renderPage(request, response);
 
     log.info(`Added new clarification from ${request.authentication.username}`);
 
@@ -124,29 +60,41 @@ router.post("/clarifications", async (request: express.Request, response) => {
         `Unable to set new send clarification for user ${request.authentication.username}\n${error}`
       );
     }
-    const data = await Clarification.find({
-      questionAskedBy: request.authentication.username
-    })
-      .sort({ timestampOnAsk: -1 })
-      .limit(10)
-      .lean();
-    // testing credentials
-    response.render("pages/clarifications", {
-      recaptchaSiteKey:
-        process.env.ENVIRONMENT === "production"
-          ? process.env.RECAPTCHA_SITE_KEY
-          : process.env.TESTING_RECAPTCHA_SITE_KEY,
-      authentication: request.authentication,
-      diagnosticMessage:
-        "An internal error has occurred. Please contact the server administrator if this persists. Clarification not sent.",
-      csrfToken: request.generatedCSRFToken,
-      sessionID: request.sessionID,
-      data: data
-    });
+    renderPage(
+      request,
+      response,
+      "CAPTCHA Incomplete. Clarification not sent."
+    );
 
     return;
   }
 });
+
+async function renderPage(
+  request: express.Request,
+  response: express.Response,
+  diagnosticMessage?: string
+) {
+  const CLARIFICATIONS_TO_SHOW = 10;
+  const data = await Clarification.find({
+    questionAskedBy: request.authentication.username
+  })
+    .sort({ timestampOnAsk: -1 })
+    .limit(CLARIFICATIONS_TO_SHOW)
+    .lean();
+
+  response.render("pages/clarifications", {
+    recaptchaSiteKey:
+      process.env.ENVIRONMENT === "production"
+        ? process.env.RECAPTCHA_SITE_KEY
+        : process.env.TESTING_RECAPTCHA_SITE_KEY,
+    authentication: request.authentication,
+    diagnosticMessage: diagnosticMessage ?? "",
+    csrfToken: request.generatedCSRFToken,
+    sessionID: request.sessionID,
+    data: data
+  });
+}
 
 async function validateCaptcha(captchaResponse: unknown) {
   let secretKey = "";
