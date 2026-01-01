@@ -39,7 +39,7 @@ declare global {
 
 const limiter = rateLimit({
   windowMs: 10 * 60 * 1000,
-  limit: 2,
+  limit: 500,
   standardHeaders: "draft-8",
   legacyHeaders: false,
   handler: (req, res, next, options) =>
