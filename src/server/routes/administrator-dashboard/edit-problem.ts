@@ -176,7 +176,7 @@ async function validateProblem(request: express.Request) {
   if (typeof request.body["correct-password"] !== "string") {
     return {
       ok: false,
-      reason: `Problem statement is of wrong type.`
+      reason: `Problem's answer is of wrong type.`
     };
   }
 
