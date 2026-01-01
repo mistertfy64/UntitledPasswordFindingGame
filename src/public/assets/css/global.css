@@ -213,6 +213,7 @@ p {
 #page-number {
   display: flex;
   justify-content: center;
+  text-align: center;
 }
 
 #previous-clarifications {
