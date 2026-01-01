@@ -99,4 +99,4 @@ const Problem = model<ProblemInterface, ProblemModel>(
   "problems"
 );
 
-export { Problem, ProblemInterface };
+export { Problem, ProblemInterface, ProblemModel };
