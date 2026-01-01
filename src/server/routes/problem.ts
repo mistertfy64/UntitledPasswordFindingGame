@@ -83,19 +83,21 @@ router.post(
       return;
     }
 
-    const answer = request.body["password"];
+    const sent = request.body["password"];
 
     // Ignore answers that aren't `string`s
-    if (typeof answer !== "string") {
+    if (typeof sent !== "string") {
       response.redirect(`/problem/${request.params.problemID}`);
       return;
     }
 
     // Ignore empty answers or answers with more than 64 characters
-    if (!answer || answer.length > 64) {
+    if (!sent || sent.length > 64) {
       response.redirect(`/problem/${request.params.problemID}`);
       return;
     }
+
+    const answer = sent.trim();
 
     const problemID = request.params.problemID;
 
