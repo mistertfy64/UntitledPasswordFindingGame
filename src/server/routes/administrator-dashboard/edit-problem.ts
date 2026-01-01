@@ -121,7 +121,10 @@ async function validateProblem(request: express.Request) {
   ];
 
   for (const field of fields) {
-    if (typeof request.body[field].toString !== "function") {
+    if (
+      typeof request.body[field] !== "string" &&
+      typeof request.body[field] !== "number"
+    ) {
       log.error(`Field ${field} can't be converted to a string.`);
       return {
         ok: false,
