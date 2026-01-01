@@ -112,10 +112,31 @@ async function validateProblem(request: express.Request) {
     };
   }
 
+  if (typeof request.body["problem-name"] !== "string") {
+    return {
+      ok: false,
+      reason: `Problem name is of wrong type.`
+    };
+  }
+
+  if (request.body["problem-name"].length <= 0) {
+    return {
+      ok: false,
+      reason: `Problem name is empty.`
+    };
+  }
+
   if (request.body["problem-name"].length > 128) {
     return {
       ok: false,
       reason: `Problem name too long.`
+    };
+  }
+
+  if (typeof request.body["problem-statement"] !== "string") {
+    return {
+      ok: false,
+      reason: `Problem statement is of wrong type.`
     };
   }
 
@@ -126,10 +147,24 @@ async function validateProblem(request: express.Request) {
     };
   }
 
-  if (request.body["problem-id"].length > 64) {
+  if (typeof request.body["problem-id"] !== "string") {
     return {
       ok: false,
-      reason: `Problem ID too long.`
+      reason: `Problem ID is of wrong type.`
+    };
+  }
+
+  if (typeof request.body["correct-password"] !== "string") {
+    return {
+      ok: false,
+      reason: `Problem answer is of wrong type.`
+    };
+  }
+
+  if (request.body["correct-password"].length <= 0) {
+    return {
+      ok: false,
+      reason: `Problem's answer is empty.`
     };
   }
 
