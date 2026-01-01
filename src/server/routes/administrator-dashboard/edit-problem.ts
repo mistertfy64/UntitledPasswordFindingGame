@@ -130,6 +130,13 @@ async function validateProblem(request: express.Request) {
     }
   }
 
+  if (request.body["problem-name"].length <= 0) {
+    return {
+      ok: false,
+      reason: `Problem name is empty.`
+    };
+  }
+
   if (request.body["problem-name"].length > 128) {
     return {
       ok: false,
