@@ -237,7 +237,7 @@ async function editProblem(request: express.Request) {
   if (body["problem-difficulty"]) {
     problem.difficulty = parseInt(body["problem-difficulty"]);
   }
-  if (body["problem-categories"]) {
+  if (typeof body["problem-categories"] !== "string") {
     problem.categories = body["problem-categories"].toString().split(",");
   }
   if (body["problem-release-timestamp"]) {
