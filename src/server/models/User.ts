@@ -1,6 +1,5 @@
 import { Model, Schema, model } from "mongoose";
 import { sha384 } from "../utilities/hashing";
-const bcrypt = require("bcrypt");
 
 interface UserCorrectAnswerInterface {
   problemID: string;
@@ -85,4 +84,4 @@ userSchema.method("setNewEmail", async function setNewEmail(newEmail) {
 
 const User = model<UserInterface, UserModel>("User", userSchema, "users");
 
-export { User, UserCorrectAnswerInterface };
+export { User, UserCorrectAnswerInterface, UserInterface, UserModel };
