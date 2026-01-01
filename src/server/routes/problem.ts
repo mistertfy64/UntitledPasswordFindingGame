@@ -1,8 +1,8 @@
 import express from "express";
-import { Problem, ProblemInterface, ProblemModel } from "../models/Problem";
+import { Problem, ProblemInterface } from "../models/Problem";
 import markdownit from "markdown-it";
 import mongoSanitize from "express-mongo-sanitize";
-import { User, UserInterface, UserModel } from "../models/User";
+import { User } from "../models/User";
 import { log } from "../utilities/log";
 import { Submission, SubmissionInterface } from "../models/Submission";
 import { alreadySolved } from "../utilities/already-solved";
