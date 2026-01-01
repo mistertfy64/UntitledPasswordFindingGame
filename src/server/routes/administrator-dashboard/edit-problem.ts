@@ -237,13 +237,13 @@ async function editProblem(request: express.Request) {
   problem.problemName = purify.sanitize(body["problem-name"]);
   problem.problemStatement = body["problem-statement"];
   problem.correctPassword = purify.sanitize(body["correct-password"]);
-  if (body["problem-difficulty"]) {
+  if (INTEGER_REGEX.test(body["problem-difficulty"])) {
     problem.difficulty = parseInt(body["problem-difficulty"]);
   }
   if (typeof body["problem-categories"] === "string") {
     problem.categories = body["problem-categories"].split(",");
   }
-  if (body["problem-release-timestamp"]) {
+  if (INTEGER_REGEX.test(body["problem-difficulty"])) {
     problem.releaseDateAndTime = new Date(
       parseInt(body["problem-release-timestamp"])
     );
