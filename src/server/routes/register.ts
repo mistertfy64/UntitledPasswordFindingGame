@@ -126,14 +126,14 @@ async function validateRegistration(
   if (typeof password !== "string") {
     return {
       ok: false,
-      reason: "Username is invalid."
+      reason: "Password is invalid."
     };
   }
 
   if (typeof confirmPassword !== "string") {
     return {
       ok: false,
-      reason: "Username is invalid."
+      reason: "Password confirmation is invalid."
     };
   }
 
