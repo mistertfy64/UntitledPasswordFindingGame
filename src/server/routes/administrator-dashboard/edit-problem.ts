@@ -121,6 +121,14 @@ async function validateProblem(request: express.Request) {
   ];
 
   for (const field of fields) {
+    if (typeof request.body[field].toString !== "function") {
+      log.error(`Field ${field} can't be converted to a string.`);
+      return {
+        ok: false,
+        reason: `Field ${field} can't be converted to a string, unable to edit problem.`
+      };
+    }
+
     if (request.body[field].toString().trim().length === 0) {
       log.error(`Field empty on ${field}, unable to edit problem.`);
       return {
