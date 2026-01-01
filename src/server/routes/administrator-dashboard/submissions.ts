@@ -35,6 +35,7 @@ router.get(
     const page = Math.max(1, queryPage);
 
     try {
+      const estimatedTotal = await Submission.estimatedDocumentCount();
       const submissions = await Submission.getAccordingToQuery(page, amount);
       response.render("pages/administrator-dashboard/submissions.ejs", {
         authentication: request.authentication,
@@ -42,7 +43,9 @@ router.get(
         sessionID: request.sessionID,
         data: submissions,
         page: page,
-        amount: amount
+        amount: amount,
+        shown: submissions.length,
+        estimatedTotal: estimatedTotal
       });
       return;
     } catch (error: unknown) {
