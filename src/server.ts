@@ -194,11 +194,11 @@ for (const directory of directories) {
 }
 
 // PUT THIS LAST (404 page)
-app.get("*splat", function (request: Request, response: Response) {
+app.get("*", function (request: Request, response: Response) {
   response.status(404).render(__dirname + "/server/views/pages/404");
 });
 
-app.all("*splat", function (request: Request, response: Response) {
+app.all("*", function (request: Request, response: Response) {
   response.status(404).render(__dirname + "/server/views/pages/404");
 });
 
