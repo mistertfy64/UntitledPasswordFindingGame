@@ -28,6 +28,15 @@ router.post("/clarifications", async (request: express.Request, response) => {
     return;
   }
 
+  if (request.body["question"].length <= 0) {
+    renderPage(
+      request,
+      response,
+      "Question should not be empty. Clarification not sent."
+    );
+    return;
+  }
+
   if (request.body["question"].length > 512) {
     renderPage(
       request,
