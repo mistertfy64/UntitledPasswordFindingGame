@@ -227,7 +227,7 @@ async function addProblem(request: express.Request) {
   }
   problem.correctAnswers = [];
   problem.creationDateAndTime = new Date();
-  if (INTEGER_REGEX.test(body["problem-difficulty"])) {
+  if (INTEGER_REGEX.test(body["problem-release-timestamp"])) {
     problem.releaseDateAndTime = new Date(
       parseInt(body["problem-release-timestamp"])
     );
