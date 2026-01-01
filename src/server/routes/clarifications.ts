@@ -32,7 +32,7 @@ router.post("/clarifications", async (request: express.Request, response) => {
     renderPage(
       request,
       response,
-      "Question should not be empty. Clarification not sent."
+      "Question type is invalid. Clarification not sent."
     );
     return;
   }
