@@ -10,13 +10,13 @@ import path from "path";
 import mongoose from "mongoose";
 import bodyParser from "body-parser";
 import { isAuthenticated } from "./server/utilities/authentication";
-import { CsrfTokenGeneratorRequestUtil, doubleCsrf } from "csrf-csrf";
+import { doubleCsrf } from "csrf-csrf";
 import { rateLimit } from "express-rate-limit";
 import { UserCorrectAnswerInterface } from "./server/models/User";
-import { alreadySolved } from "./server/utilities/already-solved";
 import helmet from "helmet";
 const favicon = require("serve-favicon");
 const session = require("cookie-session");
+const mongoSanitize = require("express-mongo-sanitize");
 require("@dotenvx/dotenvx").config();
 
 declare global {
@@ -144,8 +144,9 @@ app.use(bodyParser.json());
 app.use(setCSRFToken);
 app.use(loggedIn);
 app.use(doubleCsrfProtection);
-app.use(errorHandling);
 app.use(limiter);
+app.use(mongoSanitize());
+app.use(errorHandling);
 app.use(favicon(path.join(__dirname, "public", "assets", "favicon.png")));
 
 const directories = ["administrator-dashboard"];
