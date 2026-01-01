@@ -126,6 +126,12 @@ router.post(
 
     const sanitizedID = request.params.clarificationID;
 
+    if (typeof request.body["response"] !== "string") {
+      log.error(`Answer to clarification id ${sanitizedID} is wrong type.`);
+      response.redirect(`/administrator/clarifications/${sanitizedID}`);
+      return;
+    }
+
     if (request.body["response"].length > 1024) {
       log.error(`Answer to clarification with id ${sanitizedID} too long.`);
       response.redirect(`/administrator/clarifications/${sanitizedID}`);
