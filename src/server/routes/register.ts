@@ -115,6 +115,28 @@ async function validateRegistration(
     };
   }
 
+  // check types
+  if (typeof username !== "string") {
+    return {
+      ok: false,
+      reason: "Username is invalid."
+    };
+  }
+
+  if (typeof password !== "string") {
+    return {
+      ok: false,
+      reason: "Username is invalid."
+    };
+  }
+
+  if (typeof confirmPassword !== "string") {
+    return {
+      ok: false,
+      reason: "Username is invalid."
+    };
+  }
+
   // sanitize data
   const sanitizedUsername = mongoSanitize.sanitize(username as any);
   if (sanitizedUsername !== username) {
