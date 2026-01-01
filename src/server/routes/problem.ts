@@ -1,12 +1,12 @@
 import express from "express";
-import ejs from "ejs";
-import { Problem } from "../models/Problem";
+import { Problem, ProblemInterface } from "../models/Problem";
 import markdownit from "markdown-it";
 import mongoSanitize from "express-mongo-sanitize";
 import { User } from "../models/User";
 import { log } from "../utilities/log";
-import { Submission } from "../models/Submission";
+import { Submission, SubmissionInterface } from "../models/Submission";
 import { alreadySolved } from "../utilities/already-solved";
+import { HydratedDocument } from "mongoose";
 
 const md = markdownit().use(require("markdown-it-sub"));
 const router = express.Router();
@@ -83,19 +83,26 @@ router.post(
       return;
     }
 
-    const answer = request.body["password"];
+    const sent = request.body["password"];
 
-    // Ignore empty answers or answers with more than 64 characters
-    if (!answer || answer.length > 64) {
+    // Ignore answers that aren't `string`s
+    if (typeof sent !== "string") {
       response.redirect(`/problem/${request.params.problemID}`);
       return;
     }
 
-    const sanitizedProblemID = mongoSanitize.sanitize(
-      request.params.problemID as any
-    );
+    // Ignore empty answers or answers with more than 64 characters
+    if (!sent || sent.length > 64) {
+      response.redirect(`/problem/${request.params.problemID}`);
+      return;
+    }
+
+    const answer = sent.trim();
+
+    const problemID = request.params.problemID;
+
     const problem = await Problem.findOne({
-      problemID: sanitizedProblemID
+      problemID: problemID
     });
 
     if (!problem) {
@@ -113,97 +120,139 @@ router.post(
       return;
     }
 
-    // create submission object
-    const submission = new Submission();
-
-    const timestamp = new Date();
-    const number = problem?.problemNumber;
-    const correctAnswer = problem.correctPassword;
-    const sanitizedUsername = mongoSanitize.sanitize(
-      request.authentication.username as any
-    );
-
-    submission.problemNumber = number;
-    submission.problemID = problem.problemID;
-    submission.username = sanitizedUsername;
-    submission.answer = answer;
-    submission.timestamp = new Date();
-
-    if (correctAnswer !== answer) {
-      // wrong answer
-      response.render("pages/wrong-answer", {
-        answer: answer,
-        number: number,
-        problemID: sanitizedProblemID,
-        authentication: request.authentication,
-        csrfToken: request.generatedCSRFToken,
-        sessionID: request.sessionID
-      });
-      log.info(
-        `${sanitizedUsername} incorrectly answered ${answer} to problem with ID ${sanitizedProblemID}.`
-      );
-
-      // add submission
-      submission.verdict = "wrong answer";
-      try {
-        submission.save();
-      } catch (error: unknown) {
-        log.error("Unable to save submission.");
-        if (error instanceof Error) {
-          log.error(error.stack);
-        } else {
-          log.error(error);
-        }
-      }
-      return;
-    }
-
-    // correct answer + passed all checks
-
-    const user = await User.findOne({ username: sanitizedUsername });
+    const username = request.authentication.username;
+    const user = await User.exists({ username: username });
 
     if (!user) {
       response.redirect("/login");
       return;
     }
 
-    // user must not have solved problem before
-    if (
-      !user.correctAnswers.find((e) => e.problemID === sanitizedProblemID) &&
-      !problem.correctAnswers.find((e) => e.username === sanitizedUsername)
-    ) {
-      user.addCorrectAnswer(sanitizedProblemID, timestamp);
-      problem.addCorrectAnswer(sanitizedUsername, timestamp);
-      log.info(
-        `${sanitizedUsername} solved problem with ID ${sanitizedProblemID} on ${timestamp.toISOString()}.`
-      );
+    const timestamp = new Date();
+
+    // create submission object
+    const submission = createSubmissionObject(
+      problem,
+      answer,
+      request.authentication.username,
+      timestamp
+    );
+
+    if (problem.correctPassword !== answer) {
+      // wrong answer
+      await handleWrongAnswer(submission);
+      log.info(`[WA] ${username} answered ${answer} to problem ${problemID}.`);
+      response.render("pages/wrong-answer", {
+        answer: answer,
+        number: problem.problemNumber,
+        problemID: request.params.problemID,
+        authentication: request.authentication,
+        csrfToken: request.generatedCSRFToken,
+        sessionID: request.sessionID
+      });
+      return;
     }
 
+    // correct answer + passed all checks
+    log.info(`[AC] ${username} answered ${answer} to problem ${problemID}.`);
+    await handleCorrectAnswer(submission, username, problemID);
     response.render("pages/correct-answer", {
       answer: answer,
-      number: number,
-      problemID: sanitizedProblemID,
+      number: problem.problemNumber,
+      problemID: problemID,
       authentication: request.authentication,
       csrfToken: request.generatedCSRFToken,
       sessionID: request.sessionID
     });
-
-    // add submission
-    submission.verdict = "correct answer";
-    try {
-      submission.save();
-    } catch (error: unknown) {
-      log.error("Unable to save submission.");
-      if (error instanceof Error) {
-        log.error(error.stack);
-      } else {
-        log.error(error);
-      }
-    }
-    log.info(
-      `${sanitizedUsername} correctly answered ${answer} to problem with ID ${sanitizedProblemID}.`
-    );
   }
 );
+
+function createSubmissionObject(
+  problem: ProblemInterface,
+  answer: string,
+  username: string,
+  timestamp: Date
+) {
+  const submission = new Submission();
+
+  const number = problem?.problemNumber;
+  const correctAnswer = problem.correctPassword;
+
+  submission.problemNumber = number;
+  submission.problemID = problem.problemID;
+  submission.username = username;
+  submission.answer = answer;
+  submission.timestamp = timestamp;
+  submission.verdict =
+    correctAnswer === answer ? "correct answer" : "wrong answer";
+
+  return submission;
+}
+
+async function handleWrongAnswer(
+  submission: HydratedDocument<SubmissionInterface>
+) {
+  // add submission
+  submission.verdict = "wrong answer";
+  try {
+    submission.save();
+  } catch (error: unknown) {
+    log.error("Unable to save submission.");
+    if (error instanceof Error) {
+      log.error(error.stack);
+    } else {
+      log.error(error);
+    }
+  }
+  return;
+}
+
+async function handleCorrectAnswer(
+  submission: HydratedDocument<SubmissionInterface>,
+  username: string,
+  problemID: string
+) {
+  const user = await User.findOne({ username: username });
+  const problem = await Problem.findOne({ problemID: problemID });
+  const isoTimestamp = submission.timestamp.toISOString();
+
+  if (!user) {
+    log.error("Unable to find user when handling correct answer.");
+    return;
+  }
+
+  if (!problem) {
+    log.error("Unable to find problem when handling correct answer.");
+    return;
+  }
+
+  // user must not have solved problem before
+  const userSolvedProblem = user.correctAnswers.some(
+    (e) => e.problemID === problem.problemID
+  );
+  const problemHasUserAsSolved = problem.correctAnswers.some(
+    (e) => e.username === user.username
+  );
+
+  if (!userSolvedProblem && !problemHasUserAsSolved) {
+    user.addCorrectAnswer(problemID, submission.timestamp);
+    problem.addCorrectAnswer(username, submission.timestamp);
+
+    log.info(
+      `${user.username} solved problem with ID ${problem.problemID} on ${isoTimestamp}.`
+    );
+  }
+
+  try {
+    submission.save();
+  } catch (error: unknown) {
+    log.error("Unable to save submission.");
+    if (error instanceof Error) {
+      log.error(error.stack);
+    } else {
+      log.error(error);
+    }
+  }
+}
 
 export { router };

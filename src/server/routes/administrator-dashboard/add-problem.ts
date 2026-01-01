@@ -86,6 +86,17 @@ async function validateProblem(request: express.Request) {
   ];
 
   for (const field of fields) {
+    if (
+      typeof request.body[field] !== "string" &&
+      typeof request.body[field] !== "number"
+    ) {
+      log.error(`Field ${field} is not a valid type.`);
+      return {
+        ok: false,
+        reason: `Field ${field} is not a valid type, unable to add problem.`
+      };
+    }
+
     if (request.body[field].toString().trim().length === 0) {
       log.error(`Field empty on ${field}, unable to add problem.`);
       return {
@@ -104,10 +115,31 @@ async function validateProblem(request: express.Request) {
     };
   }
 
+  if (typeof request.body["problem-name"] !== "string") {
+    return {
+      ok: false,
+      reason: `Problem name is of wrong type.`
+    };
+  }
+
+  if (request.body["problem-name"].length <= 0) {
+    return {
+      ok: false,
+      reason: `Problem name is empty.`
+    };
+  }
+
   if (request.body["problem-name"].length > 128) {
     return {
       ok: false,
       reason: `Problem name too long.`
+    };
+  }
+
+  if (typeof request.body["problem-statement"] !== "string") {
+    return {
+      ok: false,
+      reason: `Problem statement is of wrong type.`
     };
   }
 
@@ -118,10 +150,24 @@ async function validateProblem(request: express.Request) {
     };
   }
 
-  if (request.body["problem-id"].length > 64) {
+  if (typeof request.body["problem-id"] !== "string") {
     return {
       ok: false,
-      reason: `Problem ID too long.`
+      reason: `Problem ID is of wrong type.`
+    };
+  }
+
+  if (typeof request.body["correct-password"] !== "string") {
+    return {
+      ok: false,
+      reason: `Problem's answer is of wrong type.`
+    };
+  }
+
+  if (request.body["correct-password"].length <= 0) {
+    return {
+      ok: false,
+      reason: `Problem's answer is empty.`
     };
   }
 
@@ -173,17 +219,19 @@ async function addProblem(request: express.Request) {
   problem.problemID = purify.sanitize(body["problem-id"]);
   problem.correctPassword = purify.sanitize(body["correct-password"]);
   problem.problemNumber = parseInt(body["problem-number"]);
-  if (body["problem-difficulty"]) {
+  if (INTEGER_REGEX.test(body["problem-difficulty"])) {
     problem.difficulty = parseInt(body["problem-difficulty"]);
   }
-  if (body["problem-categories"]) {
-    problem.categories = body["problem-categories"].toString().split(",");
+  if (typeof body["problem-categories"] === "string") {
+    problem.categories = body["problem-categories"].split(",");
   }
   problem.correctAnswers = [];
   problem.creationDateAndTime = new Date();
-  problem.releaseDateAndTime = new Date(
-    parseInt(body["problem-release-timestamp"])
-  );
+  if (INTEGER_REGEX.test(body["problem-release-timestamp"])) {
+    problem.releaseDateAndTime = new Date(
+      parseInt(body["problem-release-timestamp"])
+    );
+  }
   problem.hidden =
     body["problem-hidden"] === "on" || body["problem-hidden"] === true;
   problem.author = body["problem-author"] || request.authentication.username;

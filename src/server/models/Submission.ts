@@ -15,6 +15,18 @@ interface SubmissionModel extends Model<SubmissionInterface, SubmissionModel> {
     amount: number,
     keepOrder?: boolean
   ): Promise<Array<SubmissionInterface>>;
+  getByProblemIDAccordingToQuery(
+    problemID: string,
+    page: number,
+    amount: number,
+    keepOrder?: boolean
+  ): Promise<Array<SubmissionInterface>>;
+  getByUsernameAccordingToQuery(
+    username: string,
+    page: number,
+    amount: number,
+    keepOrder?: boolean
+  ): Promise<Array<SubmissionInterface>>;
 }
 
 const submissionSchema = new Schema({
@@ -40,10 +52,40 @@ submissionSchema.static(
   }
 );
 
+submissionSchema.static(
+  "getByProblemIDAccordingToQuery",
+  async function (
+    problemID: string,
+    page: number,
+    amount: number,
+    keepOrder?: boolean
+  ) {
+    return await this.find({ problemID: problemID })
+      .sort({ timestamp: keepOrder ? 1 : -1 })
+      .skip((page - 1) * amount)
+      .limit(amount);
+  }
+);
+
+submissionSchema.static(
+  "getByUsernameAccordingToQuery",
+  async function (
+    username: string,
+    page: number,
+    amount: number,
+    keepOrder?: boolean
+  ) {
+    return await this.find({ username: username })
+      .sort({ timestamp: keepOrder ? 1 : -1 })
+      .skip((page - 1) * amount)
+      .limit(amount);
+  }
+);
+
 const Submission = model<SubmissionModel, SubmissionModel>(
   "Submission",
   submissionSchema,
   "submissions"
 );
 
-export { Submission, SubmissionInterface };
+export { Submission, SubmissionInterface, SubmissionModel };

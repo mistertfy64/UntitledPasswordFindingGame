@@ -121,6 +121,17 @@ async function validateProblem(request: express.Request) {
   ];
 
   for (const field of fields) {
+    if (
+      typeof request.body[field] !== "string" &&
+      typeof request.body[field] !== "number"
+    ) {
+      log.error(`Field ${field} can't be converted to a string.`);
+      return {
+        ok: false,
+        reason: `Field ${field} can't be converted to a string, unable to edit problem.`
+      };
+    }
+
     if (request.body[field].toString().trim().length === 0) {
       log.error(`Field empty on ${field}, unable to edit problem.`);
       return {
@@ -130,6 +141,20 @@ async function validateProblem(request: express.Request) {
     }
   }
 
+  if (typeof request.body["problem-name"] !== "string") {
+    return {
+      ok: false,
+      reason: `Problem name is of wrong type.`
+    };
+  }
+
+  if (request.body["problem-name"].length <= 0) {
+    return {
+      ok: false,
+      reason: `Problem name is empty.`
+    };
+  }
+
   if (request.body["problem-name"].length > 128) {
     return {
       ok: false,
@@ -137,10 +162,31 @@ async function validateProblem(request: express.Request) {
     };
   }
 
+  if (typeof request.body["problem-statement"] !== "string") {
+    return {
+      ok: false,
+      reason: `Problem statement is of wrong type.`
+    };
+  }
+
   if (request.body["problem-statement"].length > 16000) {
     return {
       ok: false,
       reason: `Problem statement too long.`
+    };
+  }
+
+  if (typeof request.body["correct-password"] !== "string") {
+    return {
+      ok: false,
+      reason: `Problem's answer is of wrong type.`
+    };
+  }
+
+  if (request.body["correct-password"].length <= 0) {
+    return {
+      ok: false,
+      reason: `Problem's answer is empty.`
     };
   }
 
@@ -191,13 +237,13 @@ async function editProblem(request: express.Request) {
   problem.problemName = purify.sanitize(body["problem-name"]);
   problem.problemStatement = body["problem-statement"];
   problem.correctPassword = purify.sanitize(body["correct-password"]);
-  if (body["problem-difficulty"]) {
+  if (INTEGER_REGEX.test(body["problem-difficulty"])) {
     problem.difficulty = parseInt(body["problem-difficulty"]);
   }
-  if (body["problem-categories"]) {
-    problem.categories = body["problem-categories"].toString().split(",");
+  if (typeof body["problem-categories"] === "string") {
+    problem.categories = body["problem-categories"].split(",");
   }
-  if (body["problem-release-timestamp"]) {
+  if (INTEGER_REGEX.test(body["problem-release-timestamp"])) {
     problem.releaseDateAndTime = new Date(
       parseInt(body["problem-release-timestamp"])
     );

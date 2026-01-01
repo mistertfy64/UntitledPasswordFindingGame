@@ -75,9 +75,7 @@ router.get(
       return;
     }
 
-    const sanitizedID = ExpressMongoSanitize.sanitize(
-      request.params.clarificationID as any
-    );
+    const sanitizedID = request.params.clarificationID;
 
     try {
       const clarification = await Clarification.findOne({
@@ -126,9 +124,13 @@ router.post(
       return;
     }
 
-    const sanitizedID = ExpressMongoSanitize.sanitize(
-      request.params.clarificationID as any
-    );
+    const sanitizedID = request.params.clarificationID;
+
+    if (typeof request.body["response"] !== "string") {
+      log.error(`Answer to clarification id ${sanitizedID} is wrong type.`);
+      response.redirect(`/administrator/clarifications/${sanitizedID}`);
+      return;
+    }
 
     if (request.body["response"].length > 1024) {
       log.error(`Answer to clarification with id ${sanitizedID} too long.`);

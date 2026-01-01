@@ -10,13 +10,13 @@ import path from "path";
 import mongoose from "mongoose";
 import bodyParser from "body-parser";
 import { isAuthenticated } from "./server/utilities/authentication";
-import { CsrfTokenGeneratorRequestUtil, doubleCsrf } from "csrf-csrf";
+import { doubleCsrf } from "csrf-csrf";
 import { rateLimit } from "express-rate-limit";
 import { UserCorrectAnswerInterface } from "./server/models/User";
-import { alreadySolved } from "./server/utilities/already-solved";
 import helmet from "helmet";
 const favicon = require("serve-favicon");
 const session = require("cookie-session");
+const mongoSanitize = require("express-mongo-sanitize");
 require("@dotenvx/dotenvx").config();
 
 declare global {
@@ -41,7 +41,20 @@ const limiter = rateLimit({
   windowMs: 10 * 60 * 1000,
   limit: 500,
   standardHeaders: "draft-8",
-  legacyHeaders: false // Disable the `X-RateLimit-*` headers.
+  legacyHeaders: false,
+  handler: (req, res, next, options) =>
+    res
+      .status(429)
+      .render(
+        path.join(__dirname, "/server/views/pages/429"),
+        function (error: Error, html: any) {
+          if (error) {
+            next(error);
+          } else {
+            res.send(html);
+          }
+        }
+      )
 });
 
 const {
@@ -99,6 +112,10 @@ const errorHandling: ErrorRequestHandler = async function (
     response.status(404).render(__dirname + "/server/views/pages/404");
     return;
   }
+  if (error.status === 429) {
+    response.status(429).render(__dirname + "/server/views/pages/429");
+    return;
+  }
   if (error.status === 500) {
     response.status(500).render(__dirname + "/server/views/pages/500");
     return;
@@ -144,8 +161,9 @@ app.use(bodyParser.json());
 app.use(setCSRFToken);
 app.use(loggedIn);
 app.use(doubleCsrfProtection);
-app.use(errorHandling);
 app.use(limiter);
+app.use(mongoSanitize());
+app.use(errorHandling);
 app.use(favicon(path.join(__dirname, "public", "assets", "favicon.png")));
 
 const directories = ["administrator-dashboard"];
@@ -176,11 +194,11 @@ for (const directory of directories) {
 }
 
 // PUT THIS LAST (404 page)
-app.get("*splat", function (request: Request, response: Response) {
+app.get("*", function (request: Request, response: Response) {
   response.status(404).render(__dirname + "/server/views/pages/404");
 });
 
-app.all("*splat", function (request: Request, response: Response) {
+app.all("*", function (request: Request, response: Response) {
   response.status(404).render(__dirname + "/server/views/pages/404");
 });
 
