@@ -16,27 +16,18 @@ router.get("/clarifications", async (request: express.Request, response) => {
     .limit(10)
     .lean();
 
-  if (process.env.ENVIRONMENT !== "production") {
-    // testing credentials
-    response.render("pages/clarifications", {
-      recaptchaSiteKey: process.env.TESTING_RECAPTCHA_SITE_KEY,
-      authentication: request.authentication,
-      diagnosticMessage: "",
-      csrfToken: request.generatedCSRFToken,
-      sessionID: request.sessionID,
-      data: data
-    });
-  } else {
-    // real credentials
-    response.render("pages/clarifications", {
-      recaptchaSiteKey: process.env.RECAPTCHA_SITE_KEY,
-      diagnosticMessage: "",
-      authentication: request.authentication,
-      csrfToken: request.generatedCSRFToken,
-      sessionID: request.sessionID,
-      data: data
-    });
-  }
+  response.render("pages/clarifications", {
+    recaptchaSiteKey:
+      process.env.ENVIRONMENT === "production"
+        ? process.env.RECAPTCHA_SITE_KEY
+        : process.env.TESTING_RECAPTCHA_SITE_KEY,
+    authentication: request.authentication,
+    diagnosticMessage: "",
+    csrfToken: request.generatedCSRFToken,
+    sessionID: request.sessionID,
+    data: data
+  });
+
   return;
 });
 
@@ -48,34 +39,25 @@ router.post("/clarifications", async (request: express.Request, response) => {
   const captcha = await validateCaptcha(request.body["g-recaptcha-response"]);
 
   if (!captcha) {
-    // TODO: DRY this
     const data = await Clarification.find({
       questionAskedBy: request.authentication.username
     })
       .sort({ timestampOnAsk: -1 })
       .limit(10)
       .lean();
-    if (process.env.ENVIRONMENT !== "production") {
-      // testing credentials
-      response.render("pages/clarifications", {
-        recaptchaSiteKey: process.env.TESTING_RECAPTCHA_SITE_KEY,
-        authentication: request.authentication,
-        diagnosticMessage: "CAPTCHA Incomplete. Clarification not sent.",
-        csrfToken: request.generatedCSRFToken,
-        sessionID: request.sessionID,
-        data: data
-      });
-    } else {
-      // real credentials
-      response.render("pages/clarifications", {
-        recaptchaSiteKey: process.env.RECAPTCHA_SITE_KEY,
-        diagnosticMessage: "CAPTCHA Incomplete. Clarification not sent.",
-        authentication: request.authentication,
-        csrfToken: request.generatedCSRFToken,
-        sessionID: request.sessionID,
-        data: data
-      });
-    }
+
+    response.render("pages/clarifications", {
+      recaptchaSiteKey:
+        process.env.ENVIRONMENT === "production"
+          ? process.env.RECAPTCHA_SITE_KEY
+          : process.env.TESTING_RECAPTCHA_SITE_KEY,
+      authentication: request.authentication,
+      diagnosticMessage: "CAPTCHA Incomplete. Clarification not sent.",
+      csrfToken: request.generatedCSRFToken,
+      sessionID: request.sessionID,
+      data: data
+    });
+
     return;
   }
 
@@ -86,30 +68,18 @@ router.post("/clarifications", async (request: express.Request, response) => {
       .sort({ timestampOnAsk: -1 })
       .limit(10)
       .lean();
-    // TODO: DRY this
-    if (process.env.ENVIRONMENT !== "production") {
-      // testing credentials
-      response.render("pages/clarifications", {
-        recaptchaSiteKey: process.env.TESTING_RECAPTCHA_SITE_KEY,
-        authentication: request.authentication,
-        diagnosticMessage:
-          "Question too long. Maximum is 512 characters. Clarification not sent.",
-        csrfToken: request.generatedCSRFToken,
-        sessionID: request.sessionID,
-        data: data
-      });
-    } else {
-      // real credentials
-      response.render("pages/clarifications", {
-        recaptchaSiteKey: process.env.RECAPTCHA_SITE_KEY,
-        diagnosticMessage:
-          "Question too long. Maximum is 512 characters. Clarification not sent.",
-        authentication: request.authentication,
-        csrfToken: request.generatedCSRFToken,
-        sessionID: request.sessionID,
-        data: data
-      });
-    }
+    response.render("pages/clarifications", {
+      recaptchaSiteKey:
+        process.env.ENVIRONMENT === "production"
+          ? process.env.RECAPTCHA_SITE_KEY
+          : process.env.TESTING_RECAPTCHA_SITE_KEY,
+      authentication: request.authentication,
+      diagnosticMessage:
+        "Question too long. Maximum is 512 characters. Clarification not sent.",
+      csrfToken: request.generatedCSRFToken,
+      sessionID: request.sessionID,
+      data: data
+    });
     return;
   }
 
@@ -127,27 +97,19 @@ router.post("/clarifications", async (request: express.Request, response) => {
       .sort({ timestampOnAsk: -1 })
       .limit(10)
       .lean();
-    if (process.env.ENVIRONMENT !== "production") {
-      // testing credentials
-      response.render("pages/clarifications", {
-        recaptchaSiteKey: process.env.TESTING_RECAPTCHA_SITE_KEY,
-        authentication: request.authentication,
-        diagnosticMessage: "",
-        csrfToken: request.generatedCSRFToken,
-        sessionID: request.sessionID,
-        data: data
-      });
-    } else {
-      // real credentials
-      response.render("pages/clarifications", {
-        recaptchaSiteKey: process.env.RECAPTCHA_SITE_KEY,
-        diagnosticMessage: "",
-        authentication: request.authentication,
-        csrfToken: request.generatedCSRFToken,
-        sessionID: request.sessionID,
-        data: data
-      });
-    }
+
+    // testing credentials
+    response.render("pages/clarifications", {
+      recaptchaSiteKey:
+        process.env.ENVIRONMENT === "production"
+          ? process.env.RECAPTCHA_SITE_KEY
+          : process.env.TESTING_RECAPTCHA_SITE_KEY,
+      authentication: request.authentication,
+      diagnosticMessage: "",
+      csrfToken: request.generatedCSRFToken,
+      sessionID: request.sessionID,
+      data: data
+    });
 
     log.info(`Added new clarification from ${request.authentication.username}`);
 
@@ -168,29 +130,20 @@ router.post("/clarifications", async (request: express.Request, response) => {
       .sort({ timestampOnAsk: -1 })
       .limit(10)
       .lean();
-    if (process.env.ENVIRONMENT !== "production") {
-      // testing credentials
-      response.render("pages/clarifications", {
-        recaptchaSiteKey: process.env.TESTING_RECAPTCHA_SITE_KEY,
-        authentication: request.authentication,
-        diagnosticMessage:
-          "An internal error has occurred. Please contact the server administrator if this persists. Clarification not sent.",
-        csrfToken: request.generatedCSRFToken,
-        sessionID: request.sessionID,
-        data: data
-      });
-    } else {
-      // real credentials
-      response.render("pages/clarifications", {
-        recaptchaSiteKey: process.env.RECAPTCHA_SITE_KEY,
-        diagnosticMessage:
-          "An internal error has occurred. Please contact the server administrator if this persists. Clarification not sent.",
-        authentication: request.authentication,
-        csrfToken: request.generatedCSRFToken,
-        sessionID: request.sessionID,
-        data: data
-      });
-    }
+    // testing credentials
+    response.render("pages/clarifications", {
+      recaptchaSiteKey:
+        process.env.ENVIRONMENT === "production"
+          ? process.env.RECAPTCHA_SITE_KEY
+          : process.env.TESTING_RECAPTCHA_SITE_KEY,
+      authentication: request.authentication,
+      diagnosticMessage:
+        "An internal error has occurred. Please contact the server administrator if this persists. Clarification not sent.",
+      csrfToken: request.generatedCSRFToken,
+      sessionID: request.sessionID,
+      data: data
+    });
+
     return;
   }
 });
