@@ -243,7 +243,7 @@ async function editProblem(request: express.Request) {
   if (typeof body["problem-categories"] === "string") {
     problem.categories = body["problem-categories"].split(",");
   }
-  if (INTEGER_REGEX.test(body["problem-difficulty"])) {
+  if (INTEGER_REGEX.test(body["problem-release-timestamp"])) {
     problem.releaseDateAndTime = new Date(
       parseInt(body["problem-release-timestamp"])
     );
