@@ -86,11 +86,14 @@ async function validateProblem(request: express.Request) {
   ];
 
   for (const field of fields) {
-    if (typeof request.body[field].toString !== "function") {
-      log.error(`Field ${field} can't be converted to a string.`);
+    if (
+      typeof request.body[field] !== "string" &&
+      typeof request.body[field] !== "number"
+    ) {
+      log.error(`Field ${field} is not a valid type.`);
       return {
         ok: false,
-        reason: `Field ${field} can't be converted to a string, unable to add problem.`
+        reason: `Field ${field} is not a valid type, unable to add problem.`
       };
     }
 
@@ -219,7 +222,7 @@ async function addProblem(request: express.Request) {
   if (body["problem-difficulty"]) {
     problem.difficulty = parseInt(body["problem-difficulty"]);
   }
-  if (typeof request.body["correct-password"] !== "string") {
+  if (typeof body["correct-password"].toString === "function") {
     problem.categories = body["problem-categories"].toString().split(",");
   }
   problem.correctAnswers = [];
