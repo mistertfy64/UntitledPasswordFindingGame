@@ -121,6 +121,11 @@ td {
   text-align: center;
 }
 
+.smaller-text {
+  font-size: 9px;
+  margin: 0;
+}
+
 .footer-text {
   font-size: 10px;
   margin: 8px 0;
@@ -213,6 +218,7 @@ p {
 #page-number {
   display: flex;
   justify-content: center;
+  text-align: center;
 }
 
 #previous-clarifications {
