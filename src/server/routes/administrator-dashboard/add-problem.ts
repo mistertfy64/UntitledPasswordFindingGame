@@ -223,7 +223,7 @@ async function addProblem(request: express.Request) {
     problem.difficulty = parseInt(body["problem-difficulty"]);
   }
   if (typeof body["problem-categories"] === "string") {
-    problem.categories = body["problem-categories"].toString().split(",");
+    problem.categories = body["problem-categories"].split(",");
   }
   problem.correctAnswers = [];
   problem.creationDateAndTime = new Date();
