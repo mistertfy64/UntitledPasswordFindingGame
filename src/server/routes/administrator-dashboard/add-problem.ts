@@ -222,7 +222,7 @@ async function addProblem(request: express.Request) {
   if (body["problem-difficulty"]) {
     problem.difficulty = parseInt(body["problem-difficulty"]);
   }
-  if (typeof body["correct-password"].toString === "function") {
+  if (typeof body["correct-password"] === "string") {
     problem.categories = body["problem-categories"].toString().split(",");
   }
   problem.correctAnswers = [];
