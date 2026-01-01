@@ -18,6 +18,11 @@ router.get("/problemset", async (request: express.Request, response) => {
 
 function getDetailToShow(request: express.Request) {
   const detail = request.query.detail?.toString() ?? "";
+
+  if (typeof detail !== "string") {
+    return { header: "Solved", value: "solved" };
+  }
+
   switch (detail) {
     case "solved": {
       return { header: "Solved", value: "solved" };
