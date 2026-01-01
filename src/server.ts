@@ -39,9 +39,22 @@ declare global {
 
 const limiter = rateLimit({
   windowMs: 10 * 60 * 1000,
-  limit: 500,
+  limit: 2,
   standardHeaders: "draft-8",
-  legacyHeaders: false // Disable the `X-RateLimit-*` headers.
+  legacyHeaders: false,
+  handler: (req, res, next, options) =>
+    res
+      .status(429)
+      .render(
+        path.join(__dirname, "/server/views/pages/429"),
+        function (error: Error, html: any) {
+          if (error) {
+            next(error);
+          } else {
+            res.send(html);
+          }
+        }
+      )
 });
 
 const {
@@ -97,6 +110,10 @@ const errorHandling: ErrorRequestHandler = async function (
   }
   if (error.status === 404) {
     response.status(404).render(__dirname + "/server/views/pages/404");
+    return;
+  }
+  if (error.status === 429) {
+    response.status(429).render(__dirname + "/server/views/pages/429");
     return;
   }
   if (error.status === 500) {
