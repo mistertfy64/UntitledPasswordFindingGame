@@ -81,7 +81,7 @@ router.post("/clarifications", async (request: express.Request, response) => {
     renderPage(
       request,
       response,
-      "CAPTCHA Incomplete. Clarification not sent."
+      "An internal error has occurred. Please contact the server administrator if this persists. Clarification not sent."
     );
 
     return;
