@@ -130,6 +130,13 @@ async function validateProblem(request: express.Request) {
     }
   }
 
+  if (typeof request.body["problem-name"] !== "string") {
+    return {
+      ok: false,
+      reason: `Problem name of wrong type.`
+    };
+  }
+
   if (request.body["problem-name"].length <= 0) {
     return {
       ok: false,
