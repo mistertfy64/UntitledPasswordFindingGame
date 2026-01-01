@@ -219,7 +219,7 @@ async function addProblem(request: express.Request) {
   problem.problemID = purify.sanitize(body["problem-id"]);
   problem.correctPassword = purify.sanitize(body["correct-password"]);
   problem.problemNumber = parseInt(body["problem-number"]);
-  if (body["problem-difficulty"]) {
+  if (INTEGER_REGEX.test(body["problem-difficulty"])) {
     problem.difficulty = parseInt(body["problem-difficulty"]);
   }
   if (typeof body["correct-password"] === "string") {
@@ -227,9 +227,11 @@ async function addProblem(request: express.Request) {
   }
   problem.correctAnswers = [];
   problem.creationDateAndTime = new Date();
-  problem.releaseDateAndTime = new Date(
-    parseInt(body["problem-release-timestamp"])
-  );
+  if (INTEGER_REGEX.test(body["problem-difficulty"])) {
+    problem.releaseDateAndTime = new Date(
+      parseInt(body["problem-release-timestamp"])
+    );
+  }
   problem.hidden =
     body["problem-hidden"] === "on" || body["problem-hidden"] === true;
   problem.author = body["problem-author"] || request.authentication.username;
