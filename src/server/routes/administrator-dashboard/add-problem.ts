@@ -222,7 +222,7 @@ async function addProblem(request: express.Request) {
   if (INTEGER_REGEX.test(body["problem-difficulty"])) {
     problem.difficulty = parseInt(body["problem-difficulty"]);
   }
-  if (typeof body["correct-password"] === "string") {
+  if (typeof body["problem-categories"] === "string") {
     problem.categories = body["problem-categories"].toString().split(",");
   }
   problem.correctAnswers = [];
