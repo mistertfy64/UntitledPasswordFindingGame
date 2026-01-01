@@ -1,5 +1,4 @@
 import express from "express";
-import ejs from "ejs";
 import { Problem } from "../models/Problem";
 const router = express.Router();
 
