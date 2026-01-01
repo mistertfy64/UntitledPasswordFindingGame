@@ -165,6 +165,13 @@ async function validateProblem(request: express.Request) {
     };
   }
 
+  if (typeof request.body["correct-password"] !== "string") {
+    return {
+      ok: false,
+      reason: `Problem statement is of wrong type.`
+    };
+  }
+
   if (request.body["correct-password"].length <= 0) {
     return {
       ok: false,
