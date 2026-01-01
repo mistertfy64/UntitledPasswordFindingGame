@@ -36,7 +36,7 @@ router.get(
 
     try {
       const submissions = await Submission.getAccordingToQuery(page, amount);
-      response.render("pages/administrator/submissions.ejs", {
+      response.render("pages/administrator-dashboard/submissions.ejs", {
         authentication: request.authentication,
         csrfToken: request.generatedCSRFToken,
         sessionID: request.sessionID,
