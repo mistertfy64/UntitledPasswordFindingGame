@@ -151,6 +151,13 @@ async function validateProblem(request: express.Request) {
     };
   }
 
+  if (request.body["correct-password"].length <= 0) {
+    return {
+      ok: false,
+      reason: `Problem's answer is empty.`
+    };
+  }
+
   if (request.body["correct-password"].length > 64) {
     return {
       ok: false,
