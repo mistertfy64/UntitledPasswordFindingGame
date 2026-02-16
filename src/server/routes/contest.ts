@@ -134,11 +134,11 @@ function formatScores(
       continue;
     }
 
-    if (submission.verdict == "correct answer") {
+    if (submission.verdict === "correct answer") {
       penalties[submission.username][submission.problemID].solved = true;
       penalties[submission.username][submission.problemID].timeTaken =
         submission.timestamp.getTime() - contest.startDateAndTime.getTime();
-    } else {
+    } else if (submission.verdict === "wrong answer") {
       penalties[submission.username][submission.problemID].wrongAnswers++;
     }
   }
