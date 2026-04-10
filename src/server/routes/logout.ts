@@ -4,7 +4,7 @@ import { log } from "../utilities/log";
 const router = express.Router();
 const bcrypt = require("bcrypt");
 
-router.get("/logout{-all}", async (request: express.Request, response) => {
+router.get("/logout", async (request: express.Request, response) => {
   if (!request.authentication.ok) {
     response.redirect("/login");
     return;
@@ -20,8 +20,9 @@ router.get("/logout{-all}", async (request: express.Request, response) => {
     return;
   }
 
-  if (request.path === "/logout-all") {
+  if (request.query.scope === "all") {
     user.tokens = [];
+    log.info(`User ${request.authentication.username} cleared all tokens.`);
   } else {
     const index = await user.tokens.findIndex(
       async (e) => await bcrypt.compare(request.cookies.token, e)
