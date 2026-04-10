@@ -29,7 +29,8 @@
       <form action="/logout">
         <input type="submit" value="Logout From This Device">
       </form>
-      <form action="/logout-all">
+      <form action="/logout">
+        <input type="hidden" name="scope" value="all">
         <input type="submit" value="Logout From All Devices">
       </form>
     </main>
