@@ -27,6 +27,7 @@
     "@types/markdown-it": "^14.1.2",
     "@types/node": "^22.15.3",
     "mocha": "^11.7.5",
+    "mongodb-memory-server": "^11.1.0",
     "nyc": "^18.0.0",
     "typescript": "^5.8.3"
   },
