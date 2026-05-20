@@ -7,7 +7,7 @@
   "scripts": {
     "compile": "tsc",
     "copyStaticFiles": "copyfiles --up 1 \"src/**/*\" -e \"**/*.ts\" dist",
-    "start": "npm run compile && npm run copyStaticFiles && node ./dist/server.js",
+    "start": "npm run compile && npm run copyStaticFiles && node ./dist/index.js",
     "test-mocha": "mocha --require 'tests/mocha/fixtures.ts' 'tests/mocha/**/*.spec.*'",
     "test-mocha-with-coverage": "nyc mocha --require 'tests/mocha/fixtures.ts' 'tests/mocha/**/*.spec.*'"
   },
