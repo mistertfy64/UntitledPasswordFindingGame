@@ -7,7 +7,9 @@
   "scripts": {
     "compile": "tsc",
     "copyStaticFiles": "copyfiles --up 1 \"src/**/*\" -e \"**/*.ts\" dist",
-    "start": "npm run compile && npm run copyStaticFiles && node ./dist/server.js"
+    "start": "npm run compile && npm run copyStaticFiles && node ./dist/server.js",
+    "test-mocha": "mocha --require 'tests/mocha/fixtures.ts' 'tests/mocha/**/*.spec.*'",
+    "test-mocha-with-coverage": "nyc mocha --require 'tests/mocha/fixtures.ts' 'tests/mocha/**/*.spec.*'"
   },
   "repository": {
     "type": "git",
@@ -29,6 +31,7 @@
     "mocha": "^11.7.5",
     "mongodb-memory-server": "^11.1.0",
     "nyc": "^18.0.0",
+    "supertest": "^7.2.2",
     "typescript": "^5.8.3"
   },
   "dependencies": {
