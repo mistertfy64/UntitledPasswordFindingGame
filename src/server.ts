@@ -17,7 +17,6 @@ import helmet from "helmet";
 const favicon = require("serve-favicon");
 const session = require("cookie-session");
 const mongoSanitize = require("express-mongo-sanitize");
-require("@dotenvx/dotenvx").config();
 
 declare global {
   namespace Express {
@@ -37,172 +36,183 @@ declare global {
   }
 }
 
-const limiter = rateLimit({
-  windowMs: 10 * 60 * 1000,
-  limit: 500,
-  standardHeaders: "draft-8",
-  legacyHeaders: false,
-  handler: (req, res, next, options) =>
-    res
-      .status(429)
-      .render(
-        path.join(__dirname, "/server/views/pages/429"),
-        function (error: Error, html: any) {
-          if (error) {
-            next(error);
-          } else {
-            res.send(html);
+function createWebServer() {
+  const limiter = rateLimit({
+    windowMs: 10 * 60 * 1000,
+    limit: 500,
+    standardHeaders: "draft-8",
+    legacyHeaders: false,
+    handler: (req, res, next, options) =>
+      res
+        .status(429)
+        .render(
+          path.join(__dirname, "/server/views/pages/429"),
+          function (error: Error, html: any) {
+            if (error) {
+              next(error);
+            } else {
+              res.send(html);
+            }
           }
-        }
-      )
-});
-
-const {
-  invalidCsrfTokenError,
-  generateCsrfToken,
-  validateRequest,
-  doubleCsrfProtection
-} = doubleCsrf({
-  getSecret: () => process.env.CSRF_SECRET as string,
-  getSessionIdentifier: (request: express.Request) => request.session,
-  cookieName:
-    process.env.ENVIRONMENT === "production"
-      ? "__Host-psifi.x-csrf-token"
-      : "testing",
-  getCsrfTokenFromRequest: (request) => request.body?.["x-csrf-token"]
-});
-
-const loggedIn = async function (
-  request: express.Request,
-  response: express.Response,
-  next: NextFunction
-) {
-  const username = request?.cookies?.["username"];
-  const token = request?.cookies?.["token"];
-  request.authentication = await isAuthenticated(username, token);
-  next();
-};
-
-const setCSRFToken = async function (
-  request: express.Request,
-  response: express.Response,
-  next: NextFunction
-) {
-  const csrfToken = generateCsrfToken(request, response);
-  request.generatedCSRFToken = csrfToken;
-  next();
-};
-
-const errorHandling: ErrorRequestHandler = async function (
-  error,
-  request: express.Request,
-  response: express.Response,
-  next: NextFunction
-) {
-  log.error(error.stack);
-  if (error.status === 400) {
-    response.status(400).render(__dirname + "/server/views/pages/400");
-    return;
-  }
-  if (error.status === 403) {
-    response.status(403).render(__dirname + "/server/views/pages/403");
-    return;
-  }
-  if (error.status === 404) {
-    response.status(404).render(__dirname + "/server/views/pages/404");
-    return;
-  }
-  if (error.status === 429) {
-    response.status(429).render(__dirname + "/server/views/pages/429");
-    return;
-  }
-  if (error.status === 500) {
-    response.status(500).render(__dirname + "/server/views/pages/500");
-    return;
-  }
-  response.status(500).render(__dirname + "/server/views/pages/500");
-};
-
-const app = express();
-const cookieParser = require("cookie-parser");
-app.use(
-  helmet({
-    contentSecurityPolicy: {
-      directives: {
-        "script-src": [
-          "'self'",
-          "https://www.google.com/recaptcha/",
-          "https://www.gstatic.com/recaptcha/"
-        ],
-        "frame-src": [
-          "'self'",
-          "https://www.google.com/recaptcha/",
-          "https://recaptcha.google.com/recaptcha/"
-        ]
-      }
-    }
-  })
-);
-app.set("trust proxy", 2);
-app.set("view engine", "ejs");
-app.set("views", path.join(__dirname, "server/views"));
-app.use(express.urlencoded({ extended: true }));
-app.use(express.static(__dirname + "/public"));
-app.use(
-  session({
-    secret: crypto.randomBytes(32).toString("hex"),
-    resave: false,
-    saveUninitialized: true,
-    cookie: { secure: process.env.ENVIRONMENT === "production" }
-  })
-);
-app.use(cookieParser());
-app.use(bodyParser.json());
-app.use(setCSRFToken);
-app.use(loggedIn);
-app.use(doubleCsrfProtection);
-app.use(limiter);
-app.use(mongoSanitize());
-app.use(errorHandling);
-app.use(favicon(path.join(__dirname, "public", "assets", "favicon.png")));
-
-const directories = ["administrator-dashboard"];
-
-// Routes
-require("fs")
-  .readdirSync(path.join(__dirname, "./server/routes"))
-  .forEach((file: string) => {
-    if (directories.find((e) => e === file)) {
-      return;
-    }
-    const route = require("path").join(__dirname, "./server/routes", file);
-    app.use(require(route).router);
+        )
   });
 
-for (const directory of directories) {
+  const {
+    invalidCsrfTokenError,
+    generateCsrfToken,
+    validateRequest,
+    doubleCsrfProtection
+  } = doubleCsrf({
+    getSecret: () => process.env.CSRF_SECRET as string,
+    getSessionIdentifier: (request: express.Request) => request.session,
+    cookieName:
+      process.env.ENVIRONMENT === "production"
+        ? "__Host-psifi.x-csrf-token"
+        : "testing",
+    getCsrfTokenFromRequest: (request) => request.body?.["x-csrf-token"]
+  });
+
+  const loggedIn = async function (
+    request: express.Request,
+    response: express.Response,
+    next: NextFunction
+  ) {
+    const username = request?.cookies?.["username"];
+    const token = request?.cookies?.["token"];
+    request.authentication = await isAuthenticated(username, token);
+    next();
+  };
+
+  const setCSRFToken = async function (
+    request: express.Request,
+    response: express.Response,
+    next: NextFunction
+  ) {
+    const csrfToken = generateCsrfToken(request, response);
+    request.generatedCSRFToken = csrfToken;
+    next();
+  };
+
+  const errorHandling: ErrorRequestHandler = async function (
+    error,
+    request: express.Request,
+    response: express.Response,
+    next: NextFunction
+  ) {
+    log.error(error.stack);
+    if (error.status === 400) {
+      response.status(400).render(__dirname + "/server/views/pages/400");
+      return;
+    }
+    if (error.status === 403) {
+      response.status(403).render(__dirname + "/server/views/pages/403");
+      return;
+    }
+    if (error.status === 404) {
+      response.status(404).render(__dirname + "/server/views/pages/404");
+      return;
+    }
+    if (error.status === 429) {
+      response.status(429).render(__dirname + "/server/views/pages/429");
+      return;
+    }
+    if (error.status === 500) {
+      response.status(500).render(__dirname + "/server/views/pages/500");
+      return;
+    }
+    response.status(500).render(__dirname + "/server/views/pages/500");
+  };
+
+  const app = express();
+  const cookieParser = require("cookie-parser");
+  app.use(
+    helmet({
+      contentSecurityPolicy: {
+        directives: {
+          "script-src": [
+            "'self'",
+            "https://www.google.com/recaptcha/",
+            "https://www.gstatic.com/recaptcha/"
+          ],
+          "frame-src": [
+            "'self'",
+            "https://www.google.com/recaptcha/",
+            "https://recaptcha.google.com/recaptcha/"
+          ]
+        }
+      }
+    })
+  );
+  app.set("trust proxy", 2);
+  app.set("view engine", "ejs");
+  app.set("views", path.join(__dirname, "server/views"));
+  app.use(express.urlencoded({ extended: true }));
+  app.use(express.static(__dirname + "/public"));
+  app.use(
+    session({
+      secret: crypto.randomBytes(32).toString("hex"),
+      resave: false,
+      saveUninitialized: true,
+      cookie: { secure: process.env.ENVIRONMENT === "production" }
+    })
+  );
+  app.use(cookieParser());
+  app.use(bodyParser.json());
+  app.use(setCSRFToken);
+  app.use(loggedIn);
+  app.use(doubleCsrfProtection);
+  app.use(limiter);
+  app.use(mongoSanitize());
+  app.use(errorHandling);
+  app.use(favicon(path.join(__dirname, "public", "assets", "favicon.png")));
+
+  const directories = ["administrator-dashboard"];
+
+  // Routes
   require("fs")
-    .readdirSync(path.join(__dirname, "./server/routes/", directory))
+    .readdirSync(path.join(__dirname, "./server/routes"))
     .forEach((file: string) => {
-      const route = require("path").join(
-        __dirname,
-        "./server/routes/",
-        directory,
-        file
-      );
+      if (directories.find((e) => e === file)) {
+        return;
+      }
+      const route = require("path").join(__dirname, "./server/routes", file);
       app.use(require(route).router);
     });
+
+  for (const directory of directories) {
+    require("fs")
+      .readdirSync(path.join(__dirname, "./server/routes/", directory))
+      .forEach((file: string) => {
+        const route = require("path").join(
+          __dirname,
+          "./server/routes/",
+          directory,
+          file
+        );
+        app.use(require(route).router);
+      });
+  }
+
+  // PUT THIS LAST (404 page)
+  app.get("*", function (request: Request, response: Response) {
+    response.status(404).render(__dirname + "/server/views/pages/404");
+  });
+
+  app.all("*", function (request: Request, response: Response) {
+    response.status(404).render(__dirname + "/server/views/pages/404");
+  });
+
+  return app;
 }
 
-// PUT THIS LAST (404 page)
-app.get("*", function (request: Request, response: Response) {
-  response.status(404).render(__dirname + "/server/views/pages/404");
-});
+function initialize() {
+  require("@dotenvx/dotenvx").config();
 
-app.all("*", function (request: Request, response: Response) {
-  response.status(404).render(__dirname + "/server/views/pages/404");
-});
+  const app = createWebServer();
+  app.listen(process.env.PORT, () => {
+    mongoose.connect(process.env.DATABASE_URI as string);
+    log.info(`App listening at http://localhost:${process.env.PORT}`);
+  });
+}
 
-app.listen(process.env.PORT, () => {
-  mongoose.connect(process.env.DATABASE_URI as string);
-  log.info(`App listening at http://localhost:${process.env.PORT}`);
-});
+export { createWebServer, initialize };
