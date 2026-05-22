@@ -29,6 +29,8 @@
     "@types/markdown-it": "^14.1.2",
     "@types/mocha": "^10.0.10",
     "@types/node": "^22.15.3",
+    "@types/supertest": "^7.2.0",
+    "cheerio": "^1.2.0",
     "mocha": "^11.7.5",
     "mongodb-memory-server": "^11.1.0",
     "nyc": "^18.0.0",
