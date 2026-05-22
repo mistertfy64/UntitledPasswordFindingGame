@@ -64,12 +64,17 @@ function createWebServer() {
     doubleCsrfProtection
   } = doubleCsrf({
     getSecret: () => process.env.CSRF_SECRET as string,
-    getSessionIdentifier: (request: express.Request) => request.session,
+    getSessionIdentifier: (request: express.Request) => request.session ?? "",
     cookieName:
       process.env.ENVIRONMENT === "production"
         ? "__Host-psifi.x-csrf-token"
         : "testing",
-    getCsrfTokenFromRequest: (request) => request.body?.["x-csrf-token"]
+    getCsrfTokenFromRequest: (request) => request.body?.["x-csrf-token"],
+    cookieOptions: {
+      secure: process.env.ENVIRONMENT === "production",
+      sameSite: "strict",
+      path: "/"
+    }
   });
 
   const loggedIn = async function (
