@@ -37,17 +37,95 @@ describe("/login", () => {
     const $ = cheerio.load(response1.text);
     const csrfToken = $("input[name='x-csrf-token']").val();
 
-    const response2 = await agent
-      .post("/login")
-      .send({
-        username: TESTING_CONSTANTS.TESTING_USER_USERNAME,
-        password: TESTING_CONSTANTS.TESTING_USER_PASSWORD,
-        "x-csrf-token": csrfToken
-      })
-      .expect(302)
-      .expect("Location", "/");
+    const response2 = await agent.post("/login").send({
+      username: TESTING_CONSTANTS.TESTING_USER_USERNAME,
+      password: TESTING_CONSTANTS.TESTING_USER_PASSWORD,
+      "x-csrf-token": csrfToken
+    });
 
-    console.log(response2);
+    assert.equal(response2.status, 302);
+  });
+
+  it("should not allow logging in with incorrect password", async () => {
+    const app = createWebServer();
+    const agent = request.agent(app);
+
+    const response1 = await agent.get("/login").expect(200);
+    const $ = cheerio.load(response1.text);
+    const csrfToken = $("input[name='x-csrf-token']").val();
+
+    const response2 = await agent.post("/login").send({
+      username: TESTING_CONSTANTS.TESTING_USER_USERNAME,
+      password: "incorrect-password",
+      "x-csrf-token": csrfToken
+    });
+    assert.equal(response2.status, 401);
+  });
+
+  it("should not allow logging in with incorrect username", async () => {
+    const app = createWebServer();
+    const agent = request.agent(app);
+
+    const response1 = await agent.get("/login").expect(200);
+    const $ = cheerio.load(response1.text);
+    const csrfToken = $("input[name='x-csrf-token']").val();
+
+    const response2 = await agent.post("/login").send({
+      username: "wrongUsername",
+      password: TESTING_CONSTANTS.TESTING_USER_PASSWORD,
+      "x-csrf-token": csrfToken
+    });
+    assert.equal(response2.status, 401);
+  });
+
+  it("should not allow logging in with invalid password", async () => {
+    const app = createWebServer();
+    const agent = request.agent(app);
+
+    const response1 = await agent.get("/login").expect(200);
+    const $ = cheerio.load(response1.text);
+    const csrfToken = $("input[name='x-csrf-token']").val();
+
+    const response2 = await agent.post("/login").send({
+      username: "",
+      password: TESTING_CONSTANTS.TESTING_USER_PASSWORD,
+      "x-csrf-token": csrfToken
+    });
+    assert.equal(response2.status, 400);
+  });
+
+
+  it("should not allow logging in with invalid password", async () => {
+    const app = createWebServer();
+    const agent = request.agent(app);
+
+    const response1 = await agent.get("/login").expect(200);
+    const $ = cheerio.load(response1.text);
+    const csrfToken = $("input[name='x-csrf-token']").val();
+
+    const response2 = await agent.post("/login").send({
+      username: TESTING_CONSTANTS.TESTING_USER_USERNAME,
+      password: "",
+      "x-csrf-token": csrfToken
+    });
+    assert.equal(response2.status, 400);
+  });
+
+  it("should not allow logging in with invalid csrf token", async () => {
+    const app = createWebServer();
+    const agent = request.agent(app);
+
+    const response1 = await agent.get("/login").expect(200);
+    const $ = cheerio.load(response1.text);
+    const csrfToken = $("input[name='x-csrf-token']").val();
+
+    const response2 = await agent.post("/login").send({
+      username: TESTING_CONSTANTS.TESTING_USER_USERNAME,
+      password: TESTING_CONSTANTS.TESTING_USER_PASSWORD,
+      "x-csrf-token":"", 
+    });
+
+    assert.equal(response2.status, 403);
   });
 
   afterEach(async function () {
