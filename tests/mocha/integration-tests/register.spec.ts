@@ -52,6 +52,111 @@ describe("/register", () => {
 
     assert.equal(response2.status, 302);
   });
+ 
+  it("should not allow registering with invalid username, even a completed captcha", async () => {
+    const app = createWebServer();
+    const agent = request.agent(app);
+
+    const scope = nock("https://www.google.com")
+      .post("/recaptcha/api/siteverify")
+      .query(true)
+      .reply(200, { "success": true });
+
+    const response1 = await agent.get("/register").expect(200);
+    const $ = cheerio.load(response1.text);
+    const csrfToken = $("input[name='x-csrf-token']").val();
+
+    const response2 = await agent.post("/register").send({
+      username: "$$$$MONEY$$$$",
+      password: "test_user2",
+      "confirm-password": "test_user2",
+      "x-csrf-token": csrfToken
+    });
+
+    console.log(response2.text);
+
+    assert.equal(response2.status, 400);
+  });
+
+ 
+  it("should not allow registering with a username that is too short, even a completed captcha", async () => {
+    const app = createWebServer();
+    const agent = request.agent(app);
+
+    const scope = nock("https://www.google.com")
+      .post("/recaptcha/api/siteverify")
+      .query(true)
+      .reply(200, { "success": true });
+
+    const response1 = await agent.get("/register").expect(200);
+    const $ = cheerio.load(response1.text);
+    const csrfToken = $("input[name='x-csrf-token']").val();
+
+    const response2 = await agent.post("/register").send({
+      username: "aa",
+      password: "test_user2",
+      "confirm-password": "test_user2",
+      "x-csrf-token": csrfToken
+    });
+
+    console.log(response2.text);
+
+    assert.equal(response2.status, 400);
+  });
+
+
+
+  
+  it("should not allow registering with invalid password, even a completed captcha", async () => {
+    const app = createWebServer();
+    const agent = request.agent(app);
+
+    const scope = nock("https://www.google.com")
+      .post("/recaptcha/api/siteverify")
+      .query(true)
+      .reply(200, { "success": true });
+
+    const response1 = await agent.get("/register").expect(200);
+    const $ = cheerio.load(response1.text);
+    const csrfToken = $("input[name='x-csrf-token']").val();
+
+    const response2 = await agent.post("/register").send({
+      username: "test_user2",
+      password: "123",
+      "confirm-password": "123",
+      "x-csrf-token": csrfToken
+    });
+
+    console.log(response2.text);
+
+    assert.equal(response2.status, 400);
+  });
+
+ it("should not allow registering with password and confirm password doesn't match, even a completed captcha", async () => {
+    const app = createWebServer();
+    const agent = request.agent(app);
+
+    const scope = nock("https://www.google.com")
+      .post("/recaptcha/api/siteverify")
+      .query(true)
+      .reply(200, { "success": true });
+
+    const response1 = await agent.get("/register").expect(200);
+    const $ = cheerio.load(response1.text);
+    const csrfToken = $("input[name='x-csrf-token']").val();
+
+    const response2 = await agent.post("/register").send({
+      username: "test_user2",
+      password: "12345678aaaaa",
+      "confirm-password": "test_user2",
+      "x-csrf-token": csrfToken
+    });
+
+    console.log(response2.text);
+
+    assert.equal(response2.status, 400);
+  });
+
 
   afterEach(async function () {
     await nock.cleanAll();
