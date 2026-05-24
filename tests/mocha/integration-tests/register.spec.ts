@@ -54,6 +54,7 @@ describe("/register", () => {
   });
 
   afterEach(async function () {
+    await nock.cleanAll();
     await databaseConnection.connection.db.dropDatabase();
   });
 
