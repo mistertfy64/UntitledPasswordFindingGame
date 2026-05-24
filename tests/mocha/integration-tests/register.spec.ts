@@ -7,6 +7,7 @@ const bcrypt = require("bcrypt");
 import { createWebServer } from "../../../src/server";
 const request = require("supertest");
 const cheerio = require("cheerio");
+const nock = require("nock");
 
 describe("/register", () => {
   let databaseConnection: mongoose.Mongoose;
@@ -17,7 +18,6 @@ describe("/register", () => {
       console.log(`Connected to test database!`);
     });
   });
-
 
   beforeEach(async function () {
     // add test user
@@ -30,7 +30,28 @@ describe("/register", () => {
     await user.save();
   });
 
+  it("should allow registering with valid credentials and a completed captcha", async () => {
+    const app = createWebServer();
+    const agent = request.agent(app);
 
+    const scope = nock("https://www.google.com")
+      .post("/recaptcha/api/siteverify")
+      .query(true)
+      .reply(200, { "success": true });
+
+    const response1 = await agent.get("/register").expect(200);
+    const $ = cheerio.load(response1.text);
+    const csrfToken = $("input[name='x-csrf-token']").val();
+
+    const response2 = await agent.post("/register").send({
+      username: "test_user2",
+      password: "test_user2",
+      "confirm-password": "test_user2",
+      "x-csrf-token": csrfToken
+    });
+
+    assert.equal(response2.status, 302);
+  });
 
   afterEach(async function () {
     await databaseConnection.connection.db.dropDatabase();
@@ -39,6 +60,4 @@ describe("/register", () => {
   after(async function () {
     await databaseConnection.connection.close();
   });
-}
-
 });
