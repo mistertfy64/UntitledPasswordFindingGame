@@ -38,7 +38,10 @@ describe("/problemset", () => {
       releaseDateAndTime: null
     });
 
-    const response = await request(createWebServer()).get("/problemset").expect(200);
+    const response = await request(createWebServer())
+      .get("/problemset")
+      .redirects(5)
+      .expect(200);
     const $ = cheerio.load(response.text);
     const problemIDs = $("#problemset tr")
       .slice(1)
@@ -56,7 +59,10 @@ describe("/problemset", () => {
       releaseDateAndTime: new Date(Date.now() + 86_400_000)
     });
 
-    const response = await request(createWebServer()).get("/problemset").expect(200);
+    const response = await request(createWebServer())
+      .get("/problemset")
+      .redirects(5)
+      .expect(200);
 
     assert.match(response.text, /visible-problem/);
     assert.doesNotMatch(response.text, /hidden-problem/);
@@ -68,6 +74,7 @@ describe("/problemset", () => {
 
     const response = await request(createWebServer())
       .get("/problemset?detail=difficulty")
+      .redirects(5)
       .expect(200);
     const $ = cheerio.load(response.text);
 
@@ -80,6 +87,7 @@ describe("/problemset", () => {
 
     const response = await request(createWebServer())
       .get("/problemset?detail=categories")
+      .redirects(5)
       .expect(200);
     const $ = cheerio.load(response.text);
 
@@ -103,7 +111,7 @@ describe("/problemset", () => {
     const agent = request.agent(createWebServer());
     await logIn(agent);
 
-    const response = await agent.get("/problemset").expect(200);
+    const response = await agent.get("/problemset").redirects(5).expect(200);
     const $ = cheerio.load(response.text);
     const row = $("a[href='/problem/solved-problem']").closest("tr");
 
@@ -115,6 +123,7 @@ describe("/problemset", () => {
 
     const response = await request(createWebServer())
       .get("/problemset?detail=unsupported")
+      .redirects(5)
       .expect(200);
     const $ = cheerio.load(response.text);
 
