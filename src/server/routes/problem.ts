@@ -30,7 +30,7 @@ router.get(
     );
 
     if (!problem) {
-      response.render("pages/404", {
+      response.status(404).render("pages/404", {
         authentication: request.authentication
       });
       return;
@@ -106,7 +106,7 @@ router.post(
     });
 
     if (!problem) {
-      response.render("pages/404", {
+      response.status(404).render("pages/404", {
         authentication: request.authentication
       });
       return;
