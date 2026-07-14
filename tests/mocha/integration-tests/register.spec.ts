@@ -73,8 +73,6 @@ describe("/register", () => {
       "x-csrf-token": csrfToken
     });
 
-    console.log(response2.text);
-
     assert.equal(response2.status, 400);
   });
 
@@ -98,8 +96,6 @@ describe("/register", () => {
       "confirm-password": "test_user2",
       "x-csrf-token": csrfToken
     });
-
-    console.log(response2.text);
 
     assert.equal(response2.status, 400);
   });
@@ -127,8 +123,6 @@ describe("/register", () => {
       "x-csrf-token": csrfToken
     });
 
-    console.log(response2.text);
-
     assert.equal(response2.status, 400);
   });
 
@@ -151,8 +145,6 @@ describe("/register", () => {
       "confirm-password": "test_user2",
       "x-csrf-token": csrfToken
     });
-
-    console.log(response2.text);
 
     assert.equal(response2.status, 400);
   });
