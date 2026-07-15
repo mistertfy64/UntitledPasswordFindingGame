@@ -1,5 +1,7 @@
 import assert from "node:assert";
 import * as cheerio from "cheerio";
+import request from "supertest";
+import { createWebServer } from "../../src/server";
 import { Problem } from "../../src/server/models/Problem";
 import { User } from "../../src/server/models/User";
 const bcrypt = require("bcrypt");
@@ -91,4 +93,17 @@ async function logIn(
     .expect("Location", "/");
 }
 
-export { createTestProblem, createTestUser, extractCsrfToken, logIn };
+async function createAdministratorAgent() {
+  await createTestUser({ isAdministrator: true });
+  const agent = request.agent(createWebServer());
+  await logIn(agent);
+  return agent;
+}
+
+export {
+  createAdministratorAgent,
+  createTestProblem,
+  createTestUser,
+  extractCsrfToken,
+  logIn
+};
