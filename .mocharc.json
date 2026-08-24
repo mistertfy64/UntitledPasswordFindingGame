@@ -1,0 +1,12 @@
+{
+  "extensions": [
+    "cjs",
+    "js",
+    "ts",
+    "tsx"
+  ],
+  "import": [
+    "tsx"
+  ],
+  "recursive": true
+}

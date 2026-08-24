@@ -24,7 +24,7 @@ router.post("/login", async (request: express.Request, response) => {
   const password = request.body["password"];
 
   if (!username) {
-    response.render("pages/login", {
+    response.status(400).render("pages/login", {
       diagnosticMessage: "Username field is empty.",
       authentication: request.authentication,
       csrfToken: request.generatedCSRFToken,
@@ -34,7 +34,7 @@ router.post("/login", async (request: express.Request, response) => {
   }
 
   if (!password) {
-    response.render("pages/login", {
+    response.status(400).render("pages/login", {
       diagnosticMessage: "Password field is empty.",
       authentication: request.authentication,
       csrfToken: request.generatedCSRFToken,
@@ -47,7 +47,7 @@ router.post("/login", async (request: express.Request, response) => {
   const user = await User.findOne({ username: sanitizedUsername });
 
   if (!user) {
-    response.render("pages/login", {
+    response.status(401).render("pages/login", {
       diagnosticMessage: "Username or password is incorrect.",
       authentication: request.authentication,
       csrfToken: request.generatedCSRFToken,
@@ -58,7 +58,7 @@ router.post("/login", async (request: express.Request, response) => {
 
   const passwordResult = await bcrypt.compare(password, user.passwordHash);
   if (!passwordResult) {
-    response.render("pages/login", {
+    response.status(401).render("pages/login", {
       diagnosticMessage: "Username or password is incorrect.",
       authentication: request.authentication,
       csrfToken: request.generatedCSRFToken,

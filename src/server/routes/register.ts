@@ -50,7 +50,7 @@ router.post("/register", async (request: express.Request, response) => {
     // TODO: DRY
     if (process.env.ENVIRONMENT !== "production") {
       // testing credentials
-      response.render("pages/register", {
+      response.status(400).render("pages/register", {
         recaptchaSiteKey: process.env.TESTING_RECAPTCHA_SITE_KEY,
         diagnosticMessage: result.reason,
         authentication: request.authentication,
@@ -59,7 +59,7 @@ router.post("/register", async (request: express.Request, response) => {
       });
     } else {
       // real credentials
-      response.render("pages/register", {
+      response.status(400).render("pages/register", {
         recaptchaSiteKey: process.env.RECAPTCHA_SITE_KEY,
         diagnosticMessage: result.reason,
         authentication: request.authentication,
@@ -76,7 +76,7 @@ router.post("/register", async (request: express.Request, response) => {
     // TODO: DRY
     if (process.env.ENVIRONMENT !== "production") {
       // testing credentials
-      response.render("pages/register", {
+      response.status(500).render("pages/register", {
         recaptchaSiteKey: process.env.TESTING_RECAPTCHA_SITE_KEY,
         diagnosticMessage:
           "Unable to create user account due to an internal error. If this persists, please contact mistertfy64.",
@@ -86,7 +86,7 @@ router.post("/register", async (request: express.Request, response) => {
       });
     } else {
       // real credentials
-      response.render("pages/register", {
+      response.status(500).render("pages/register", {
         recaptchaSiteKey: process.env.RECAPTCHA_SITE_KEY,
         diagnosticMessage:
           "Unable to create user account due to an internal error. If this persists, please contact mistertfy64.",

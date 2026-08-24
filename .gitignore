@@ -2,3 +2,4 @@ node_modules
 .env
 src/public/problemset
 dist
+.nyc_output
