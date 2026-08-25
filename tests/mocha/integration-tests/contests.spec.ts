@@ -92,16 +92,13 @@ describe("/contests", () => {
   it("shows only contest problems and marks an authenticated solve", async () => {
     const start = new Date(Date.now() - 60_000);
     const end = new Date(Date.now() + 60_000);
-    await createTestUser({
-      correctAnswers: [
-        { problemID: "included-problem", timestamp: new Date() }
-      ]
-    });
+    const user = await createTestUser();
     const includedProblem = await createTestProblem({
       problemID: "included-problem",
       problemName: "Included Problem",
       correctAnswers: [{ username: "test_user", timestamp: new Date() }]
     });
+    await user.addCorrectAnswer(includedProblem._id, new Date());
     await createTestProblem({
       problemID: "unrelated-problem",
       problemName: "Unrelated Problem",

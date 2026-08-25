@@ -8,7 +8,7 @@ import { Types } from "mongoose";
 const bcrypt = require("bcrypt");
 
 type CorrectAnswer = {
-  problemID: string;
+  problem: Types.ObjectId;
   timestamp: Date;
 };
 

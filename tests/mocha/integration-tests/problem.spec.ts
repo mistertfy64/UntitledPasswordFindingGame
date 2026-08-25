@@ -66,13 +66,12 @@ describe("/problem", () => {
 
   it("reveals the password to the user who solved the problem", async () => {
     const solvedAt = new Date();
-    await createTestUser({
-      correctAnswers: [{ problemID: "test-problem", timestamp: solvedAt }]
-    });
-    await createTestProblem({
+    const user = await createTestUser();
+    const problem = await createTestProblem({
       correctPassword: "revealed-password",
       correctAnswers: [{ username: "test_user", timestamp: solvedAt }]
     });
+    await user.addCorrectAnswer(problem._id, solvedAt);
     const agent = request.agent(createWebServer());
     await logIn(agent);
 
@@ -210,7 +209,11 @@ describe("/problem", () => {
     assert.equal(submissions.length, 1);
     assert.equal(submissions[0].verdict, "correct answer");
     assert.equal(user?.correctAnswers.length, 1);
-    assert.equal(user?.correctAnswers[0].problemID, "test-problem");
+    assert.ok(user?.correctAnswers[0].problem instanceof mongoose.Types.ObjectId);
+    assert.equal(
+      user?.correctAnswers[0].problem.toString(),
+      problem?._id.toString()
+    );
     assert.equal(problem?.correctAnswers.length, 1);
     assert.equal(
       problem?.correctAnswers[0].user.toString(),

@@ -101,13 +101,12 @@ describe("/problemset", () => {
 
   it("marks a problem solved for its authenticated solver", async () => {
     const solvedAt = new Date();
-    await createTestUser({
-      correctAnswers: [{ problemID: "solved-problem", timestamp: solvedAt }]
-    });
-    await createTestProblem({
+    const user = await createTestUser();
+    const problem = await createTestProblem({
       problemID: "solved-problem",
       correctAnswers: [{ username: "test_user", timestamp: solvedAt }]
     });
+    await user.addCorrectAnswer(problem._id, solvedAt);
     const agent = request.agent(createWebServer());
     await logIn(agent);
 

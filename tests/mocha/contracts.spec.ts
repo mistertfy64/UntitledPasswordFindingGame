@@ -65,9 +65,12 @@ describe("utility and model contracts", () => {
 
     it("returns identity, role, and solve statistics for a valid token", async () => {
       const solvedAt = new Date();
+      const solvedProblem = await createTestProblem({
+        problemID: "solved-problem"
+      });
       const user = await createTestUser({
         isAdministrator: true,
-        correctAnswers: [{ problemID: "solved-problem", timestamp: solvedAt }]
+        correctAnswers: [{ problem: solvedProblem._id, timestamp: solvedAt }]
       });
       await user.addToken("correct-token");
 
@@ -78,8 +81,8 @@ describe("utility and model contracts", () => {
       assert.equal(result.isAdministrator, true);
       assert.equal(result.statistics.correctAnswers.length, 1);
       assert.equal(
-        result.statistics.correctAnswers[0].problemID,
-        "solved-problem"
+        result.statistics.correctAnswers[0].problem.toString(),
+        solvedProblem._id.toString()
       );
     });
   });
