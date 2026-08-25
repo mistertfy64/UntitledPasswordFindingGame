@@ -4,6 +4,7 @@ import request from "supertest";
 import { createWebServer } from "../../src/server";
 import { Problem } from "../../src/server/models/Problem";
 import { User } from "../../src/server/models/User";
+import { Types } from "mongoose";
 const bcrypt = require("bcrypt");
 
 type CorrectAnswer = {
@@ -27,7 +28,7 @@ type CreateProblemOptions = {
   correctAnswers?: Array<{ username: string; timestamp: Date }>;
   releaseDateAndTime?: Date | null;
   hidden?: boolean;
-  author?: string;
+  author?: string | Types.ObjectId;
   difficulty?: number;
   categories?: Array<string>;
 };
@@ -49,16 +50,24 @@ async function createTestUser(options: CreateUserOptions = {}) {
 }
 
 async function createTestProblem(options: CreateProblemOptions = {}) {
+  const author = await resolveTestUserReference(options.author ?? "test_author");
+  const correctAnswers = await Promise.all(
+    (options.correctAnswers ?? []).map(async (answer) => ({
+      user: await resolveTestUserReference(answer.username),
+      timestamp: answer.timestamp
+    }))
+  );
+
   const problem = new Problem({
     problemName: options.problemName ?? "Test Problem",
     problemStatement: options.problemStatement ?? "Find the password.",
     problemID: options.problemID ?? "test-problem",
     correctPassword: options.correctPassword ?? "correct-password",
     problemNumber: options.problemNumber ?? 1,
-    correctAnswers: options.correctAnswers ?? [],
+    correctAnswers,
     creationDateAndTime: new Date(),
     hidden: options.hidden ?? false,
-    author: options.author ?? "Test Author",
+    author,
     difficulty: options.difficulty,
     categories: options.categories ?? []
   });
@@ -69,6 +78,20 @@ async function createTestProblem(options: CreateProblemOptions = {}) {
   }
 
   return await problem.save();
+}
+
+async function resolveTestUserReference(usernameOrID: string | Types.ObjectId) {
+  if (usernameOrID instanceof Types.ObjectId) {
+    return usernameOrID;
+  }
+
+  const existing = await User.findOne({ username: usernameOrID });
+  if (existing) {
+    return existing._id;
+  }
+
+  const user = await createTestUser({ username: usernameOrID });
+  return user._id;
 }
 
 function extractCsrfToken(html: string) {

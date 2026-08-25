@@ -3,9 +3,11 @@ import { describe, it } from "mocha";
 import mongoose from "mongoose";
 import { Announcement } from "../../../src/server/models/Announcement";
 import { Problem } from "../../../src/server/models/Problem";
+import { User } from "../../../src/server/models/User";
 import {
   createAdministratorAgent,
   createTestProblem,
+  createTestUser,
   extractCsrfToken
 } from "../helpers";
 
@@ -42,9 +44,10 @@ describe("administrator content management", () => {
         .expect("Location", "/");
 
       const announcement = await Announcement.findOne({}).lean();
+      const administrator = await User.findOne({ username: "test_user" });
       assert.equal(announcement?.title, "Contest Update");
       assert.equal(announcement?.body, "The contest starts **soon**.");
-      assert.equal(announcement?.author, "test_user");
+      assert.equal(announcement?.author.toString(), administrator?._id.toString());
       assert.ok(announcement?.creationDateAndTime instanceof Date);
     });
 
@@ -96,6 +99,7 @@ describe("administrator content management", () => {
 
   describe("adding problems", () => {
     it("creates a problem with all optional fields", async () => {
+      const creditedUser = await createTestUser({ username: "Guest Author" });
       const agent = await createAdministratorAgent();
       const page = await agent.get("/administrator/add-problem").expect(200);
       const releaseTimestamp = Date.now() + 60_000;
@@ -119,7 +123,7 @@ describe("administrator content management", () => {
       assert.equal(problem?.problemStatement, "Find the password.");
       assert.equal(problem?.correctPassword, "answer");
       assert.equal(problem?.problemNumber, 10);
-      assert.equal(problem?.author, "Guest Author");
+      assert.equal(problem?.author.toString(), creditedUser._id.toString());
       assert.equal(problem?.difficulty, 8);
       assert.deepEqual(problem?.categories, ["web", "cryptography"]);
       assert.equal(problem?.hidden, true);
@@ -143,9 +147,30 @@ describe("administrator content management", () => {
       const problem = await Problem.findOne({
         problemID: "self-authored"
       }).lean();
-      assert.equal(problem?.author, "test_user");
+      const administrator = await User.findOne({ username: "test_user" });
+      assert.equal(problem?.author.toString(), administrator?._id.toString());
       assert.equal(problem?.hidden, false);
       assert.deepEqual(problem?.categories, []);
+    });
+
+    it("rejects an unknown author username", async () => {
+      const agent = await createAdministratorAgent();
+      const page = await agent.get("/administrator/add-problem").expect(200);
+
+      const response = await agent
+        .post("/administrator/add-problem")
+        .send({
+          ...validProblemPayload("unknown-author"),
+          "problem-author": "missing-user",
+          "x-csrf-token": extractCsrfToken(page.text)
+        })
+        .expect(200);
+
+      assert.match(response.text, /Unable to find a user with username missing-user/);
+      assert.equal(
+        await Problem.countDocuments({ problemID: "unknown-author" }),
+        0
+      );
     });
 
     it("rejects duplicate, missing, oversized, and invalid numeric fields", async () => {
@@ -233,6 +258,7 @@ describe("administrator content management", () => {
 
     it("persists mutable fields while retaining the problem ID and number", async () => {
       await createTestProblem({ problemNumber: 27 });
+      const creditedUser = await createTestUser({ username: "New Author" });
       const agent = await createAdministratorAgent();
       const page = await agent
         .get("/administrator/edit-problem/test-problem")
@@ -259,7 +285,7 @@ describe("administrator content management", () => {
       assert.equal(problem?.problemName, "Edited Problem");
       assert.equal(problem?.problemStatement, "Edited statement");
       assert.equal(problem?.correctPassword, "edited-answer");
-      assert.equal(problem?.author, "New Author");
+      assert.equal(problem?.author.toString(), creditedUser._id.toString());
       assert.equal(problem?.difficulty, 9);
       assert.deepEqual(problem?.categories, ["osint", "web"]);
       assert.equal(problem?.hidden, true);
@@ -286,6 +312,28 @@ describe("administrator content management", () => {
       const problem = await Problem.findOne({ problemID: "test-problem" }).lean();
       assert.equal(problem?.problemName, "Test Problem");
       assert.equal(problem?.correctPassword, "correct-password");
+    });
+
+    it("does not change a problem when the edited author is unknown", async () => {
+      const original = await createTestProblem();
+      const agent = await createAdministratorAgent();
+      const page = await agent
+        .get("/administrator/edit-problem/test-problem")
+        .expect(200);
+
+      const response = await agent
+        .post("/administrator/edit-problem/test-problem")
+        .send({
+          ...validEditPayload(),
+          "problem-author": "missing-user",
+          "x-csrf-token": extractCsrfToken(page.text)
+        })
+        .expect(200);
+
+      assert.match(response.text, /Unable to find a user with username missing-user/);
+      const problem = await Problem.findOne({ problemID: "test-problem" }).lean();
+      assert.equal(problem?.problemName, "Test Problem");
+      assert.equal(problem?.author.toString(), original.author.toString());
     });
 
     it("redirects missing problems and rejects invalid CSRF", async () => {

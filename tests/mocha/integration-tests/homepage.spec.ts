@@ -4,6 +4,7 @@ import mongoose from "mongoose";
 import request from "supertest";
 import { createWebServer } from "../../../src/server";
 import { Announcement } from "../../../src/server/models/Announcement";
+import { createTestUser } from "../helpers";
 
 describe("/", () => {
   let databaseConnection: mongoose.Mongoose;
@@ -27,11 +28,12 @@ describe("/", () => {
   });
 
   it("shows only the five newest announcements in newest-first order", async () => {
+    const author = await createTestUser({ username: "Test Author" });
     for (let number = 1; number <= 6; number++) {
       await Announcement.create({
         title: `Announcement ${number}`,
         body: `Body ${number}`,
-        author: "Test Author",
+        author: author._id,
         creationDateAndTime: new Date(2025, 0, number)
       });
     }
@@ -53,10 +55,11 @@ describe("/", () => {
   });
 
   it("renders Markdown without executing raw HTML", async () => {
+    const author = await createTestUser({ username: "Test Author" });
     await Announcement.create({
       title: "Safe announcement",
       body: "**Important** <script>alert('unsafe')</script>",
-      author: "Test Author",
+      author: author._id,
       creationDateAndTime: new Date()
     });
 

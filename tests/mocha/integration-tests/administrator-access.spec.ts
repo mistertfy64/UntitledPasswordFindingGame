@@ -59,8 +59,9 @@ describe("administrator access", () => {
 
   it("allows an administrator to open every management page", async () => {
     const problem = await createTestProblem();
+    const participant = await createTestUser({ username: "participant" });
     const clarification = await Clarification.create({
-      questionAskedBy: "participant",
+      questionAskedBy: participant._id,
       question: "A question",
       response: null,
       timestampOnAsk: new Date()
@@ -84,10 +85,10 @@ describe("administrator access", () => {
   });
 
   it("rejects non-administrator mutations even with a valid CSRF token", async () => {
-    await createTestUser();
+    const user = await createTestUser();
     await createTestProblem();
     const clarification = await Clarification.create({
-      questionAskedBy: "participant",
+      questionAskedBy: user._id,
       question: "Original question",
       response: null,
       timestampOnAsk: new Date()

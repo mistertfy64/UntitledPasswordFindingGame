@@ -4,8 +4,11 @@ import * as cheerio from "cheerio";
 import mongoose from "mongoose";
 import { Clarification } from "../../../src/server/models/Clarification";
 import { Submission } from "../../../src/server/models/Submission";
+import { User } from "../../../src/server/models/User";
 import {
   createAdministratorAgent,
+  createTestProblem,
+  createTestUser,
   extractCsrfToken
 } from "../helpers";
 
@@ -26,7 +29,7 @@ describe("administrator review queues", () => {
 
   describe("submissions", () => {
     it("shows newest submissions first and paginates them", async () => {
-      await Submission.create([
+      await createSubmissions([
         submission("alice", "problem-a", 1),
         submission("bob", "problem-b", 2),
         submission("carol", "problem-c", 3)
@@ -61,7 +64,7 @@ describe("administrator review queues", () => {
     });
 
     it("filters submissions by problem ID and username", async () => {
-      await Submission.create([
+      await createSubmissions([
         submission("alice", "target-problem", 1),
         submission("bob", "target-problem", 2),
         submission("alice", "other-problem", 3)
@@ -86,7 +89,7 @@ describe("administrator review queues", () => {
     });
 
     it("renders correct, wrong, and ignored verdicts", async () => {
-      await Submission.create([
+      await createSubmissions([
         { ...submission("alice", "problem-a", 1), verdict: "correct answer" },
         { ...submission("bob", "problem-b", 2), verdict: "wrong answer" },
         { ...submission("carol", "problem-c", 3), verdict: "ignored" }
@@ -103,11 +106,13 @@ describe("administrator review queues", () => {
 
   describe("clarifications", () => {
     it("shows only unanswered clarifications in newest-first order", async () => {
-      await Clarification.create([
-        clarification("old unanswered", 1),
-        clarification("already answered", 2, "An answer"),
-        clarification("new unanswered", 3)
-      ]);
+      await Clarification.create(
+        await Promise.all([
+          clarification("old unanswered", 1),
+          clarification("already answered", 2, "An answer"),
+          clarification("new unanswered", 3)
+        ])
+      );
       const agent = await createAdministratorAgent();
 
       const response = await agent
@@ -122,11 +127,13 @@ describe("administrator review queues", () => {
     });
 
     it("paginates unanswered clarifications", async () => {
-      await Clarification.create([
-        clarification("old question", 1),
-        clarification("middle question", 2),
-        clarification("new question", 3)
-      ]);
+      await Clarification.create(
+        await Promise.all([
+          clarification("old question", 1),
+          clarification("middle question", 2),
+          clarification("new question", 3)
+        ])
+      );
       const agent = await createAdministratorAgent();
 
       const response = await agent
@@ -141,7 +148,7 @@ describe("administrator review queues", () => {
 
     it("renders existing and nonexistent clarification detail states", async () => {
       const existing = await Clarification.create(
-        clarification("Can I have a hint?", 1)
+        await clarification("Can I have a hint?", 1)
       );
       const missingID = new mongoose.Types.ObjectId();
       const agent = await createAdministratorAgent();
@@ -163,7 +170,7 @@ describe("administrator review queues", () => {
 
     it("records a response, administrator identity, and answer timestamp", async () => {
       const item = await Clarification.create(
-        clarification("What is the format?", 1)
+        await clarification("What is the format?", 1)
       );
       const agent = await createAdministratorAgent();
       const page = await agent
@@ -180,14 +187,20 @@ describe("administrator review queues", () => {
         .expect("Location", "/administrator/clarifications");
 
       const answered = await Clarification.findById(item._id).lean();
+      const administrator = await User.findOne({
+        username: "test_user"
+      });
       assert.equal(answered?.response, "Use lowercase letters.");
-      assert.equal(answered?.responseAnsweredBy, "test_user");
+      assert.equal(
+        answered?.responseAnsweredBy?.toString(),
+        administrator?._id.toString()
+      );
       assert.ok(answered?.timestampOnAnswer instanceof Date);
     });
 
     it("rejects wrong-type and oversized responses without mutation", async () => {
       const item = await Clarification.create(
-        clarification("What is the format?", 1)
+        await clarification("What is the format?", 1)
       );
       const agent = await createAdministratorAgent();
       const page = await agent
@@ -214,7 +227,7 @@ describe("administrator review queues", () => {
 
     it("redirects nonexistent responses and rejects invalid CSRF", async () => {
       const item = await Clarification.create(
-        clarification("What is the format?", 1)
+        await clarification("What is the format?", 1)
       );
       const missingID = new mongoose.Types.ObjectId();
       const agent = await createAdministratorAgent();
@@ -250,12 +263,59 @@ function submission(username: string, problemID: string, minute: number) {
   };
 }
 
-function clarification(question: string, minute: number, response?: string) {
+async function createSubmissions(
+  submissions: Array<ReturnType<typeof submission>>
+) {
+  const users = new Map<string, mongoose.Types.ObjectId>();
+  const problems = new Map<string, mongoose.Types.ObjectId>();
+
+  for (const entry of submissions) {
+    if (!users.has(entry.username)) {
+      users.set(
+        entry.username,
+        (await createTestUser({ username: entry.username }))._id
+      );
+    }
+    if (!problems.has(entry.problemID)) {
+      problems.set(
+        entry.problemID,
+        (await createTestProblem({ problemID: entry.problemID }))._id
+      );
+    }
+  }
+
+  return await Submission.create(
+    submissions.map((entry) => ({
+      user: users.get(entry.username),
+      problem: problems.get(entry.problemID),
+      answer: entry.answer,
+      verdict: entry.verdict,
+      timestamp: entry.timestamp
+    }))
+  );
+}
+
+async function clarification(question: string, minute: number, response?: string) {
+  let participant = await User.findOne({
+    username: "participant"
+  });
+  participant ??= await createTestUser({ username: "participant" });
+
+  let previousAdministrator = null;
+  if (response) {
+    previousAdministrator = await User.findOne({
+      username: "previous-admin"
+    });
+    previousAdministrator ??= await createTestUser({
+      username: "previous-admin"
+    });
+  }
+
   return {
-    questionAskedBy: "participant",
+    questionAskedBy: participant._id,
     question,
     response: response ?? null,
-    responseAnsweredBy: response ? "previous-admin" : null,
+    responseAnsweredBy: previousAdministrator?._id ?? null,
     timestampOnAsk: new Date(2025, 0, 1, 0, minute),
     timestampOnAnswer: response ? new Date(2025, 0, 1, 1, minute) : null
   };

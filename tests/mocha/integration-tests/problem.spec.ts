@@ -182,6 +182,8 @@ describe("/problem", () => {
     const problem = await Problem.findOne({ problemID: "test-problem" }).lean();
     assert.equal(submissions.length, 1);
     assert.equal(submissions[0].verdict, "wrong answer");
+    assert.equal(submissions[0].user.toString(), user?._id.toString());
+    assert.equal(submissions[0].problem.toString(), problem?._id.toString());
     assert.equal(user?.correctAnswers.length, 0);
     assert.equal(problem?.correctAnswers.length, 0);
   });
@@ -210,7 +212,10 @@ describe("/problem", () => {
     assert.equal(user?.correctAnswers.length, 1);
     assert.equal(user?.correctAnswers[0].problemID, "test-problem");
     assert.equal(problem?.correctAnswers.length, 1);
-    assert.equal(problem?.correctAnswers[0].username, "test_user");
+    assert.equal(
+      problem?.correctAnswers[0].user.toString(),
+      user?._id.toString()
+    );
   });
 
   it("does not duplicate solve records for a repeated correct answer", async () => {

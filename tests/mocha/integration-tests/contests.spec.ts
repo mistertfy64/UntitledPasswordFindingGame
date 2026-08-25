@@ -72,8 +72,12 @@ describe("/contests", () => {
   it("hides problems and leaderboards before a contest starts", async () => {
     const start = new Date(Date.now() + 60_000);
     const end = new Date(Date.now() + 120_000);
-    await createContest({ start, end });
-    await createTestProblem({ problemID: "contest-problem" });
+    const problem = await createTestProblem({ problemID: "contest-problem" });
+    await createContest({
+      start,
+      end,
+      problems: [{ problem: problem._id, maximumPoints: 100 }]
+    });
 
     const response = await request(createWebServer())
       .get("/contests/test-contest")
@@ -88,12 +92,12 @@ describe("/contests", () => {
   it("shows only contest problems and marks an authenticated solve", async () => {
     const start = new Date(Date.now() - 60_000);
     const end = new Date(Date.now() + 60_000);
-    await createContest({
-      start,
-      end,
-      problems: [{ problemID: "included-problem", maximumPoints: 100 }]
+    await createTestUser({
+      correctAnswers: [
+        { problemID: "included-problem", timestamp: new Date() }
+      ]
     });
-    await createTestProblem({
+    const includedProblem = await createTestProblem({
       problemID: "included-problem",
       problemName: "Included Problem",
       correctAnswers: [{ username: "test_user", timestamp: new Date() }]
@@ -103,10 +107,10 @@ describe("/contests", () => {
       problemName: "Unrelated Problem",
       problemNumber: 2
     });
-    await createTestUser({
-      correctAnswers: [
-        { problemID: "included-problem", timestamp: new Date() }
-      ]
+    await createContest({
+      start,
+      end,
+      problems: [{ problem: includedProblem._id, maximumPoints: 100 }]
     });
     const agent = request.agent(createWebServer());
     await logIn(agent);
@@ -124,12 +128,31 @@ describe("/contests", () => {
   it("calculates penalties, minimum scores, and leaderboard order", async () => {
     const start = new Date(Date.now() - 60 * 60_000);
     const end = new Date(Date.now() + 60 * 60_000);
+    const problemOne = await createTestProblem({
+      problemID: "problem-one",
+      problemNumber: 1
+    });
+    const problemTwo = await createTestProblem({
+      problemID: "problem-two",
+      problemNumber: 2
+    });
+    const otherProblem = await createTestProblem({ problemID: "other-problem" });
+    const users = new Map(
+      await Promise.all(
+        ["alice", "bob", "charlie", "outsider", "too-early", "too-late"].map(
+          async (username) => [
+            username,
+            (await createTestUser({ username }))._id
+          ] as const
+        )
+      )
+    );
     await createContest({
       start,
       end,
       problems: [
-        { problemID: "problem-one", maximumPoints: 100 },
-        { problemID: "problem-two", maximumPoints: 60 }
+        { problem: problemOne._id, maximumPoints: 100 },
+        { problem: problemTwo._id, maximumPoints: 60 }
       ],
       rules: {
         pointsLostPer: {
@@ -141,30 +164,58 @@ describe("/contests", () => {
         minimumPointsPerProblem: 20
       }
     });
-    await createTestProblem({ problemID: "problem-one", problemNumber: 1 });
-    await createTestProblem({ problemID: "problem-two", problemNumber: 2 });
     await Submission.create([
-      contestSubmission("alice", "problem-one", "wrong answer", at(start, 5)),
       contestSubmission(
-        "alice",
-        "problem-one",
+        users.get("alice")!,
+        problemOne._id,
+        "wrong answer",
+        at(start, 5)
+      ),
+      contestSubmission(
+        users.get("alice")!,
+        problemOne._id,
         "correct answer",
         at(start, 25)
       ),
-      contestSubmission("alice", "problem-one", "wrong answer", at(start, 30)),
-      contestSubmission("bob", "problem-one", "correct answer", at(start, 55)),
-      contestSubmission("bob", "problem-two", "correct answer", at(start, 59)),
-      contestSubmission("charlie", "problem-one", "wrong answer", at(start, 10)),
-      contestSubmission("outsider", "other-problem", "correct answer", at(start, 5)),
       contestSubmission(
-        "too-early",
-        "problem-one",
+        users.get("alice")!,
+        problemOne._id,
+        "wrong answer",
+        at(start, 30)
+      ),
+      contestSubmission(
+        users.get("bob")!,
+        problemOne._id,
+        "correct answer",
+        at(start, 55)
+      ),
+      contestSubmission(
+        users.get("bob")!,
+        problemTwo._id,
+        "correct answer",
+        at(start, 59)
+      ),
+      contestSubmission(
+        users.get("charlie")!,
+        problemOne._id,
+        "wrong answer",
+        at(start, 10)
+      ),
+      contestSubmission(
+        users.get("outsider")!,
+        otherProblem._id,
+        "correct answer",
+        at(start, 5)
+      ),
+      contestSubmission(
+        users.get("too-early")!,
+        problemOne._id,
         "correct answer",
         new Date(start.getTime() - 1)
       ),
       contestSubmission(
-        "too-late",
-        "problem-one",
+        users.get("too-late")!,
+        problemOne._id,
         "correct answer",
         new Date(end.getTime() + 1)
       )
@@ -198,12 +249,17 @@ describe("/contests", () => {
   it("labels ended contests and ignores submissions outside the contest window", async () => {
     const start = new Date(Date.now() - 120_000);
     const end = new Date(Date.now() - 60_000);
-    await createContest({ start, end });
-    await createTestProblem({ problemID: "contest-problem" });
+    const problem = await createTestProblem({ problemID: "contest-problem" });
+    const user = await createTestUser({ username: "late-user" });
+    await createContest({
+      start,
+      end,
+      problems: [{ problem: problem._id, maximumPoints: 100 }]
+    });
     await Submission.create(
       contestSubmission(
-        "late-user",
-        "contest-problem",
+        user._id,
+        problem._id,
         "correct answer",
         new Date(end.getTime() + 1)
       )
@@ -224,7 +280,7 @@ type ContestOptions = {
   contestName?: string;
   start?: Date;
   end?: Date;
-  problems?: Array<{ problemID: string; maximumPoints: number }>;
+  problems?: Array<{ problem: mongoose.Types.ObjectId; maximumPoints: number }>;
   rules?: {
     pointsLostPer: {
       interval: number;
@@ -252,25 +308,22 @@ async function createContest(options: ContestOptions = {}) {
       minimumPointsPerProblem: 10
     },
     participants: [],
-    problems: options.problems ?? [
-      { problemID: "contest-problem", maximumPoints: 100 }
-    ],
+    problems: options.problems ?? [],
     timestamp: new Date()
   });
 }
 
 function contestSubmission(
-  username: string,
-  problemID: string,
+  user: mongoose.Types.ObjectId,
+  problem: mongoose.Types.ObjectId,
   verdict: "correct answer" | "wrong answer",
   timestamp: Date
 ) {
   return {
-    username,
+    user,
+    problem,
     answer: "submitted-answer",
     verdict,
-    problemNumber: 1,
-    problemID,
     timestamp
   };
 }
