@@ -229,14 +229,14 @@ async function handleCorrectAnswer(
 
   // user must not have solved problem before
   const userSolvedProblem = user.correctAnswers.some(
-    (e: UserCorrectAnswerInterface) => e.problemID === problem.problemID
+    (e: UserCorrectAnswerInterface) => e.problem.equals(problem._id)
   );
   const problemHasUserAsSolved = problem.correctAnswers.some(
     (e: ProblemCorrectAnswerInterface) => e.user.equals(user._id)
   );
 
   if (!userSolvedProblem && !problemHasUserAsSolved) {
-    await user.addCorrectAnswer(problemID, submission.timestamp);
+    await user.addCorrectAnswer(problem._id, submission.timestamp);
     await problem.addCorrectAnswer(user._id, submission.timestamp);
 
     log.info(

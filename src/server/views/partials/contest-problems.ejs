@@ -8,7 +8,7 @@
       <th>Solved</th>
     </tr>
     <% for (const problem of contestData.contestProblems) { %>
-    <% if (authentication.ok && authentication.statistics.correctAnswers.find((answer)=>answer.problemID===problem.problemID) ) { %>
+    <% if (authentication.ok && authentication.statistics.correctAnswers.find((answer)=>answer.problem.toString()===problem._id.toString()) ) { %>
     <tr class="cell--solved">
       <% } else { %>
     <tr>
