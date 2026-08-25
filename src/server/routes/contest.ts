@@ -1,8 +1,9 @@
 import express from "express";
 import mongoSanitize from "express-mongo-sanitize";
-import { Contest, ContestInterface } from "../models/Contest";
-import { Submission, SubmissionInterface } from "../models/Submission";
+import { Contest, PopulatedContestInterface } from "../models/Contest";
+import { Submission, PopulatedSubmissionInterface } from "../models/Submission";
 import { Problem, ProblemInterface } from "../models/Problem";
+import { UserInterface } from "../models/User";
 const router = express.Router();
 
 type LeaderboardsScore = {
@@ -18,7 +19,7 @@ type TotalScoreInterface = {
   solved: boolean;
 };
 
-interface ExtendedContestInterface extends ContestInterface {
+interface ExtendedPopulatedContestInterface extends PopulatedContestInterface {
   scores: Array<LeaderboardsScore>;
   contestProblems: Array<ProblemInterface>;
 }
@@ -49,7 +50,7 @@ router.get(
 
     const contest = (await Contest.findOne({
       contestID: sanitizedContestID
-    })) as ExtendedContestInterface;
+    })) as ExtendedPopulatedContestInterface;
 
     if (!contest) {
       response.redirect("/contests");
@@ -59,7 +60,7 @@ router.get(
     if (contest.startDateAndTime <= new Date()) {
       // contest has already started, get data as well
       contest.scores = await getContestScores(contest);
-      const problemIDs = contest.problems.map((e) => e.problemID);
+      const problemIDs = contest.problems.map((e) => e.problem.problemID);
       contest.contestProblems = await Problem.find({
         problemID: { $in: problemIDs }
       }).lean();
@@ -74,7 +75,7 @@ router.get(
   }
 );
 
-async function getContestScores(contest: ExtendedContestInterface) {
+async function getContestScores(contest: ExtendedPopulatedContestInterface) {
   const submissions = await getContestSubmissions(contest);
   const scores = formatScores(submissions, contest);
   return scores;
@@ -84,8 +85,8 @@ async function getContestScores(contest: ExtendedContestInterface) {
  * Gets all submissions to contest problems within time period.
  * @param contest
  */
-async function getContestSubmissions(contest: ExtendedContestInterface) {
-  const problems = contest.problems.map((e) => e.problemID);
+async function getContestSubmissions(contest: ExtendedPopulatedContestInterface) {
+  const problems = contest.problems.map((e) => e.problem.problemID);
   const submissions = await Submission.find({
     $and: [
       { problemID: { $in: problems } },
@@ -96,13 +97,20 @@ async function getContestSubmissions(contest: ExtendedContestInterface) {
         }
       }
     ]
-  });
+  }).populate<{ user: UserInterface; problem: ProblemInterface }>([
+    {
+      path: "user"
+    },
+    {
+      path: "problem"
+    }
+  ]);
   return submissions;
 }
 
 function formatScores(
-  submissions: Array<SubmissionInterface>,
-  contest: ExtendedContestInterface
+  submissions: Array<PopulatedSubmissionInterface>,
+  contest: ExtendedPopulatedContestInterface
 ) {
   const scores: { [key: string]: { [key: string]: TotalScoreInterface } } = {};
   const penalties: {
@@ -117,12 +125,12 @@ function formatScores(
   submissions.sort((a, b) => a.timestamp.getTime() - b.timestamp.getTime());
   for (const submission of submissions) {
     // add keys to new users
-    if (!penalties[submission.username]) {
-      penalties[submission.username] = {};
+    if (!penalties[submission.user.username]) {
+      penalties[submission.user.username] = {};
     }
 
-    if (!penalties[submission.username][submission.problemID]) {
-      penalties[submission.username][submission.problemID] = {
+    if (!penalties[submission.user.username][submission.problem.problemID]) {
+      penalties[submission.user.username][submission.problem.problemID] = {
         solved: false,
         wrongAnswers: 0,
         timeTaken: 0
@@ -130,16 +138,16 @@ function formatScores(
     }
 
     // skip users who already found solutions
-    if (penalties[submission.username][submission.problemID].solved) {
+    if (penalties[submission.user.username][submission.problem.problemID].solved) {
       continue;
     }
 
     if (submission.verdict === "correct answer") {
-      penalties[submission.username][submission.problemID].solved = true;
-      penalties[submission.username][submission.problemID].timeTaken =
+      penalties[submission.user.username][submission.problem.problemID].solved = true;
+      penalties[submission.user.username][submission.problem.problemID].timeTaken =
         submission.timestamp.getTime() - contest.startDateAndTime.getTime();
     } else if (submission.verdict === "wrong answer") {
-      penalties[submission.username][submission.problemID].wrongAnswers++;
+      penalties[submission.user.username][submission.problem.problemID].wrongAnswers++;
     }
   }
 
@@ -150,8 +158,8 @@ function formatScores(
     }
 
     for (const problem of contest.problems) {
-      if (!scores[username][problem.problemID]) {
-        scores[username][problem.problemID] = {
+      if (!scores[username][problem.problem.problemID]) {
+        scores[username][problem.problem.problemID] = {
           solved: false,
           wrongAnswers: 0,
           timeTaken: 0,
@@ -159,11 +167,11 @@ function formatScores(
         };
       }
 
-      const penalty = penalties[username][problem.problemID];
+      const penalty = penalties[username][problem.problem.problemID];
 
       // in case user hasn't attempted problem, assume everything is 0.
       if (!penalty) {
-        scores[username][problem.problemID] = {
+        scores[username][problem.problem.problemID] = {
           score: 0,
           wrongAnswers: 0,
           timeTaken: 0,
@@ -191,7 +199,7 @@ function formatScores(
           )
         : 0;
 
-      scores[username][problem.problemID] = {
+      scores[username][problem.problem.problemID] = {
         score: score,
         wrongAnswers: penalty.wrongAnswers,
         timeTaken: penalty.timeTaken,

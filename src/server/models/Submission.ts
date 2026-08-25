@@ -1,4 +1,6 @@
 import { Model, Schema, model, Types } from "mongoose";
+import { ProblemInterface } from "./Problem";
+import { UserInterface } from "./User";
 
 interface SubmissionInterface {
   answer: string;
@@ -7,6 +9,14 @@ interface SubmissionInterface {
   problem: Types.ObjectId;
   user: Types.ObjectId;
 }
+
+type PopulatedSubmissionInterface = Omit<
+  SubmissionInterface,
+  "problem" | "user"
+> & {
+  user: UserInterface;
+  problem: ProblemInterface;
+};
 
 interface SubmissionModel extends Model<SubmissionInterface, SubmissionModel> {
   getAccordingToQuery(
@@ -94,4 +104,9 @@ const Submission = model<SubmissionModel, SubmissionModel>(
   "submissions"
 );
 
-export { Submission, SubmissionInterface, SubmissionModel };
+export {
+  Submission,
+  SubmissionInterface,
+  SubmissionModel,
+  PopulatedSubmissionInterface
+};

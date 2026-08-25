@@ -1,9 +1,16 @@
 import { Model, Schema, model, Types } from "mongoose";
+import { UserInterface } from "./User";
 
 interface ProblemCorrectAnswerInterface {
-  username: string;
+  user: Types.ObjectId;
   timestamp: Date;
 }
+
+interface PopulatedProblemCorrectAnswerInterface {
+  user: UserInterface;
+  timestamp: Date;
+}
+
 interface ProblemInterface {
   problemName: string;
   problemStatement: string;
@@ -20,7 +27,7 @@ interface ProblemInterface {
 }
 
 interface ProblemMethods {
-  addCorrectAnswer(username: string, timestamp: Date): void;
+  addCorrectAnswer(user: UserInterface, timestamp: Date): void;
 }
 
 interface ProblemModel
@@ -94,10 +101,10 @@ problemSchema.static("getVisibleProblems", async function (problemID: string) {
 
 problemSchema.method(
   "addCorrectAnswer",
-  async function addCorrectAnswer(username: string, timestamp: Date) {
+  async function addCorrectAnswer(user: UserInterface, timestamp: Date) {
     await this.updateOne({
       $push: {
-        correctAnswers: { username: username, timestamp: timestamp }
+        correctAnswers: { user: user, timestamp: timestamp }
       }
     });
   }
@@ -109,4 +116,4 @@ const Problem = model<ProblemInterface, ProblemModel>(
   "problems"
 );
 
-export { Problem, ProblemInterface, ProblemModel };
+export { Problem, ProblemInterface, ProblemModel, ProblemCorrectAnswerInterface };

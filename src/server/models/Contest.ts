@@ -1,9 +1,15 @@
 import { Model, Schema, model, Types } from "mongoose";
+import { ProblemInterface } from "./Problem";
 
 // TODO: Add proper contest interface
 interface ContestProblemInterface {
-  problemID: Types.ObjectId;
+  problem: Types.ObjectId;
   maximumPoints: number;
+}
+
+interface PopulatedContestProblemInterface {
+  problem: ProblemInterface,
+  maximumPoints: number
 }
 
 interface ContestInterface {
@@ -24,6 +30,26 @@ interface ContestInterface {
   problems: Array<ContestProblemInterface>;
   timestamp: Date;
 }
+
+interface PopulatedContestInterface {
+  contestID: string;
+  contestName: string;
+  startDateAndTime: Date;
+  endDateAndTime: Date;
+  rules: {
+    pointsLostPer: {
+      interval: number; // milliseconds
+      intervalAmount: number;
+      wrongAnswers: number;
+      wrongAnswersAmount: number;
+    };
+    minimumPointsPerProblem: number;
+  };
+  participants: Array<Types.ObjectId>;
+  problems: Array<PopulatedContestProblemInterface>;
+  timestamp: Date;
+}
+
 
 interface ContestModel extends Model<ContestInterface, ContestModel> {}
 
@@ -58,4 +84,4 @@ const Contest = model<ContestModel, ContestModel>(
   "contests"
 );
 
-export { Contest, ContestInterface };
+export { Contest, ContestInterface, PopulatedContestInterface };

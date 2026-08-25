@@ -149,7 +149,7 @@ router.post(
         return;
       }
 
-      clarification.responseAnsweredBy = request.authentication.username;
+      clarification.responseAnsweredBy = request.authentication._id;
       clarification.response = request.body["response"];
       clarification.timestampOnAnswer = new Date();
 

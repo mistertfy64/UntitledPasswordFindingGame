@@ -13,7 +13,7 @@ router.get("/clarifications", async (request: express.Request, response) => {
 });
 
 router.post("/clarifications", async (request: express.Request, response) => {
-  if (!request.authentication.ok) {
+  if (!request.authentication.ok || !request.authentication._id) {
     response.redirect("/login");
     return;
   }
@@ -59,7 +59,7 @@ router.post("/clarifications", async (request: express.Request, response) => {
     // create clarification
     const clarification = new Clarification();
     clarification.question = request.body["question"];
-    clarification.questionAskedBy = request.authentication.username;
+    clarification.questionAskedBy = request.authentication._id;
     clarification.timestampOnAsk = new Date();
     await clarification.save();
 

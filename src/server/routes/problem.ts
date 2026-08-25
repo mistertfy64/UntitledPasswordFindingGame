@@ -1,8 +1,17 @@
 import express from "express";
-import { Problem, ProblemInterface } from "../models/Problem";
+import {
+  Problem,
+  ProblemCorrectAnswerInterface,
+  ProblemInterface
+} from "../models/Problem";
 import markdownit from "markdown-it";
 import mongoSanitize from "express-mongo-sanitize";
-import { User } from "../models/User";
+import {
+  User,
+  UserCorrectAnswerInterface,
+  UserInterface,
+  UserMethods
+} from "../models/User";
 import { log } from "../utilities/log";
 import { Submission, SubmissionInterface } from "../models/Submission";
 import { alreadySolved } from "../utilities/already-solved";
@@ -121,7 +130,7 @@ router.post(
     }
 
     const username = request.authentication.username;
-    const user = await User.exists({ username: username });
+    const user = await User.findOne({ username: username });
 
     if (!user) {
       response.redirect("/login");
@@ -131,12 +140,7 @@ router.post(
     const timestamp = new Date();
 
     // create submission object
-    const submission = createSubmissionObject(
-      problem,
-      answer,
-      request.authentication.username,
-      timestamp
-    );
+    const submission = createSubmissionObject(problem, answer, user, timestamp);
 
     if (problem.correctPassword !== answer) {
       // wrong answer
@@ -155,7 +159,7 @@ router.post(
 
     // correct answer + passed all checks
     log.info(`[AC] ${username} answered ${answer} to problem ${problemID}.`);
-    await handleCorrectAnswer(submission, username, problemID);
+    await handleCorrectAnswer(submission, user, problemID);
     response.render("pages/correct-answer", {
       answer: answer,
       number: problem.problemNumber,
@@ -168,19 +172,17 @@ router.post(
 );
 
 function createSubmissionObject(
-  problem: ProblemInterface,
+  problem: HydratedDocument<ProblemInterface>,
   answer: string,
-  username: string,
+  user: HydratedDocument<UserInterface>,
   timestamp: Date
 ) {
   const submission = new Submission();
 
-  const number = problem?.problemNumber;
   const correctAnswer = problem.correctPassword;
 
-  submission.problemNumber = number;
-  submission.problemID = problem.problemID;
-  submission.username = username;
+  submission.problem = problem._id;
+  submission.user = user._id;
   submission.answer = answer;
   submission.timestamp = timestamp;
   submission.verdict =
@@ -209,10 +211,9 @@ async function handleWrongAnswer(
 
 async function handleCorrectAnswer(
   submission: HydratedDocument<SubmissionInterface>,
-  username: string,
+  user: HydratedDocument<UserInterface, UserMethods>,
   problemID: string
 ) {
-  const user = await User.findOne({ username: username });
   const problem = await Problem.findOne({ problemID: problemID });
   const isoTimestamp = submission.timestamp.toISOString();
 
@@ -228,15 +229,15 @@ async function handleCorrectAnswer(
 
   // user must not have solved problem before
   const userSolvedProblem = user.correctAnswers.some(
-    (e) => e.problemID === problem.problemID
+    (e: UserCorrectAnswerInterface) => e.problemID === problem.problemID
   );
   const problemHasUserAsSolved = problem.correctAnswers.some(
-    (e) => e.username === user.username
+    (e: ProblemCorrectAnswerInterface) => e.user._id === user._id
   );
 
   if (!userSolvedProblem && !problemHasUserAsSolved) {
     user.addCorrectAnswer(problemID, submission.timestamp);
-    problem.addCorrectAnswer(username, submission.timestamp);
+    problem.addCorrectAnswer(user, submission.timestamp);
 
     log.info(
       `${user.username} solved problem with ID ${problem.problemID} on ${isoTimestamp}.`

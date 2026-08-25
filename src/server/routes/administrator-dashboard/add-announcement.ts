@@ -2,6 +2,7 @@ import express from "express";
 import { log } from "../../utilities/log";
 import { Announcement } from "../../models/Announcement";
 import { JSDOM } from "jsdom";
+import { Schema } from "mongoose";
 import DOMPurify from "dompurify";
 
 const window = new JSDOM("").window;
@@ -104,14 +105,19 @@ async function validateAnnouncement(request: express.Request) {
 }
 
 async function addAnnouncement(request: express.Request) {
-  const announcement = new Announcement();
-  const body = request.body;
-  announcement.title = purify.sanitize(body["announcement-title"]);
-  announcement.body = body["announcement-body"];
-  announcement.creationDateAndTime = new Date();
-  announcement.author = request.authentication.username;
-
   try {
+    const announcement = new Announcement();
+    const body = request.body;
+    announcement.title = purify.sanitize(body["announcement-title"]);
+    announcement.body = body["announcement-body"];
+    announcement.creationDateAndTime = new Date();
+
+    if (!request.authentication._id) {
+      throw new Error("Unable to add announcement.");
+    }
+
+    announcement.author = request.authentication._id;
+
     await announcement.save();
   } catch (error) {
     log.error("Unable to add announcement.");

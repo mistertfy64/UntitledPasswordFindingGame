@@ -90,4 +90,4 @@ userSchema.method("setNewEmail", async function setNewEmail(newEmail) {
 
 const User = model<UserInterface, UserModel>("User", userSchema, "users");
 
-export { User, UserCorrectAnswerInterface, UserInterface, UserModel };
+export { User, UserCorrectAnswerInterface, UserInterface, UserModel, UserMethods };
