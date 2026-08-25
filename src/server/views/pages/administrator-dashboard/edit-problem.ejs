@@ -29,7 +29,7 @@
         <br>
         Timestamp to release: <input type="number" name="problem-release-timestamp" placeholder="Timestamp to release" value="<%=problemToEdit?.releaseDateAndTime?.getTime() ?? 1%>">
         <br>
-        Person to credit (optional, leave blank for self): <input type="text" name="problem-author" placeholder="Person to credit. Leave blank for current user." value="<%=problemToEdit.author ?? ""%>">
+        Username to credit (optional, leave blank for self): <input type="text" name="problem-author" placeholder="Username to credit. Leave blank for current user." value="<%=problemToEdit.author?.username ?? ""%>">
         <br>
         Difficulty (optional): <input type="number" name="problem-difficulty" placeholder="Problem Difficulty" value="<%=problemToEdit.difficulty%>">
         <br>

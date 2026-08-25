@@ -14,7 +14,7 @@
       <th>Username</th>
       <th>Σ</th>
       <% for (const problem of contestData.problems) { %>
-      <th><%=problem.problemID%></th>
+      <th><%=problem.problem.problemID%></th>
       <% } %>
     </tr>
     <% for (let order = 0; order < contestData.scores.length; order++){ %>
@@ -23,14 +23,14 @@
       <td><%=contestData.scores[order].username%></td>
       <td class="cell--text"><span class="score--total"><%=contestData.scores[order].totalScore%></span></td>
       <% for (const problem of contestData.problems) { %>
-      <% if (contestData.scores[order].detailed[problem.problemID].solved) { %>
+      <% if (contestData.scores[order].detailed[problem.problem.problemID].solved) { %>
       <td class="cell--text">
-        <span title="Solved after <%=contestData.scores[order].detailed[problem.problemID].timeTaken%> milliseconds and <%=contestData.scores[order].detailed[problem.problemID].wrongAnswers%> wrong answer(s)." class="score--correct-answer">
-          <%=contestData.scores[order].detailed[problem.problemID].score%>
+        <span title="Solved after <%=contestData.scores[order].detailed[problem.problem.problemID].timeTaken%> milliseconds and <%=contestData.scores[order].detailed[problem.problem.problemID].wrongAnswers%> wrong answer(s)." class="score--correct-answer">
+          <%=contestData.scores[order].detailed[problem.problem.problemID].score%>
         </span>
       </td>
-      <% }else if (contestData.scores[order].detailed[problem.problemID].wrongAnswers > 0) {%>
-      <td class="cell--text"><span title="<%=contestData.scores[order].detailed[problem.problemID].wrongAnswers%> wrong answer(s) so far." class="score--wrong-answer">-<%=contestData.scores[order].detailed[problem.problemID].wrongAnswers%></span></td>
+      <% }else if (contestData.scores[order].detailed[problem.problem.problemID].wrongAnswers > 0) {%>
+      <td class="cell--text"><span title="<%=contestData.scores[order].detailed[problem.problem.problemID].wrongAnswers%> wrong answer(s) so far." class="score--wrong-answer">-<%=contestData.scores[order].detailed[problem.problem.problemID].wrongAnswers%></span></td>
       <%}else{%>
       <td class="cell--text"><span title="Did not attempt yet."></span></td>
       <%}%>

@@ -1,4 +1,5 @@
 import { Model, Schema, model, Types } from "mongoose";
+import { UserInterface } from "./User";
 
 interface ClarificationInterface {
   questionAskedBy: Types.ObjectId;
@@ -9,13 +10,21 @@ interface ClarificationInterface {
   timestampOnAnswer: Date | null;
 }
 
+type PopulatedClarificationInterface = Omit<
+  ClarificationInterface,
+  "questionAskedBy" | "responseAnsweredBy"
+> & {
+  questionAskedBy: Pick<UserInterface, "username">;
+  responseAnsweredBy: Pick<UserInterface, "username"> | null;
+};
+
 interface ClarificationModel
   extends Model<ClarificationInterface, ClarificationModel> {
   getAccordingToQuery(
     page: number,
     amount: number,
     keepOrder?: boolean
-  ): Promise<Array<ClarificationInterface>>;
+  ): Promise<Array<PopulatedClarificationInterface>>;
 }
 
 const clarificationSchema = new Schema({
@@ -29,7 +38,7 @@ const clarificationSchema = new Schema({
   responseAnsweredBy: {
     type: Schema.Types.ObjectId,
     ref: "User",
-    required: true
+    default: null
   },
   timestampOnAsk: Date,
   timestampOnAnswer: Date
@@ -43,6 +52,7 @@ clarificationSchema.static(
   "getAccordingToQuery",
   async function (page: number, amount: number, keepOrder?: boolean) {
     return await this.find({ response: null })
+      .populate({ path: "questionAskedBy", select: "username" })
       .sort({ timestampOnAsk: keepOrder ? 1 : -1 })
       .skip((page - 1) * amount)
       .limit(amount);
@@ -55,4 +65,8 @@ const Clarification = model<ClarificationModel, ClarificationModel>(
   "clarifications"
 );
 
-export { Clarification, ClarificationInterface };
+export {
+  Clarification,
+  ClarificationInterface,
+  PopulatedClarificationInterface
+};

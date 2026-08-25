@@ -7,9 +7,17 @@ interface ProblemCorrectAnswerInterface {
 }
 
 interface PopulatedProblemCorrectAnswerInterface {
-  user: UserInterface;
+  user: Pick<UserInterface, "username"> | null;
   timestamp: Date;
 }
+
+type PopulatedProblemInterface = Omit<
+  ProblemInterface,
+  "author" | "correctAnswers"
+> & {
+  author: Pick<UserInterface, "username"> | null;
+  correctAnswers: Array<PopulatedProblemCorrectAnswerInterface>;
+};
 
 interface ProblemInterface {
   problemName: string;
@@ -27,7 +35,7 @@ interface ProblemInterface {
 }
 
 interface ProblemMethods {
-  addCorrectAnswer(user: UserInterface, timestamp: Date): void;
+  addCorrectAnswer(user: Types.ObjectId, timestamp: Date): Promise<void>;
 }
 
 interface ProblemModel
@@ -35,7 +43,7 @@ interface ProblemModel
   findProblemWithProblemID(
     problemID: string,
     solvedProblem?: boolean
-  ): Promise<ProblemInterface>;
+  ): Promise<PopulatedProblemInterface>;
   getVisibleProblems(): Promise<Array<ProblemInterface>>;
 }
 
@@ -45,7 +53,19 @@ const problemSchema = new Schema<ProblemInterface>({
   problemID: String,
   correctPassword: String,
   problemNumber: Number,
-  correctAnswers: Array<ProblemCorrectAnswerInterface>,
+  correctAnswers: [
+    new Schema<ProblemCorrectAnswerInterface>(
+      {
+        user: {
+          type: Schema.Types.ObjectId,
+          ref: "User",
+          required: true
+        },
+        timestamp: { type: Date, required: true }
+      },
+      { _id: false }
+    )
+  ],
   creationDateAndTime: Date,
   releaseDateAndTime: Date,
   hidden: Boolean,
@@ -68,12 +88,21 @@ problemSchema.static(
   "findProblemWithProblemID",
   async function (problemID: string, showCorrectPassword?: boolean) {
     if (showCorrectPassword) {
-      return await this.findOne({ problemID: problemID }).lean();
+      return await this.findOne({ problemID: problemID })
+        .populate([
+          { path: "author", select: "username" },
+          { path: "correctAnswers.user", select: "username" }
+        ])
+        .lean();
     } else {
       return await this.findOne({ problemID: problemID })
         .select({
           "correctPassword": 0
         })
+        .populate([
+          { path: "author", select: "username" },
+          { path: "correctAnswers.user", select: "username" }
+        ])
         .lean();
     }
   }
@@ -101,10 +130,10 @@ problemSchema.static("getVisibleProblems", async function (problemID: string) {
 
 problemSchema.method(
   "addCorrectAnswer",
-  async function addCorrectAnswer(user: UserInterface, timestamp: Date) {
+  async function addCorrectAnswer(user: Types.ObjectId, timestamp: Date) {
     await this.updateOne({
       $push: {
-        correctAnswers: { user: user, timestamp: timestamp }
+        correctAnswers: { user, timestamp }
       }
     });
   }
@@ -116,4 +145,11 @@ const Problem = model<ProblemInterface, ProblemModel>(
   "problems"
 );
 
-export { Problem, ProblemInterface, ProblemModel, ProblemCorrectAnswerInterface };
+export {
+  Problem,
+  ProblemInterface,
+  ProblemModel,
+  ProblemCorrectAnswerInterface,
+  PopulatedProblemCorrectAnswerInterface,
+  PopulatedProblemInterface
+};

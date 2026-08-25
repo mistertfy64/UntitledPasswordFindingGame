@@ -28,7 +28,7 @@
             <th><%= (detail && detail.header) ? detail.header : "Solved" %></th>
           </tr>
           <% for (const problem of problems) { %>
-          <% if (authentication.ok && problem.correctAnswers.find((e)=>e.username===authentication.username) ) { %>
+          <% if (authentication.ok && authentication.statistics.correctAnswers.find((answer)=>answer.problemID===problem.problemID) ) { %>
           <tr class="cell--solved">
             <% } else { %>
           <tr>

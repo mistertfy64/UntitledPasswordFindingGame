@@ -1,12 +1,12 @@
 <tr>
   <td class="monospaced"><%=submission._id || "???"%></td>
   <td>
-    <a href="/administrator/submissions/problem/<%=submission.problemID%>"><%=submission.problemID|| "???"%></a>
+    <a href="/administrator/submissions/problem/<%=submission.problem?.problemID%>"><%=submission.problem?.problemID || "???"%></a>
     <br>
-    <a class="smaller-text" href="/problem/<%=submission.problemID%>">view statement</a>
+    <a class="smaller-text" href="/problem/<%=submission.problem?.problemID%>">view statement</a>
   </td>
   <td>
-    <a href="/administrator/submissions/username/<%=submission.username%>"><%=submission.username|| "???"%></a>
+    <a href="/administrator/submissions/username/<%=submission.user?.username%>"><%=submission.user?.username || "???"%></a>
   </td>
   <td class="monospaced"><%=submission.answer|| "???"%></td>
   <td><%=submission.timestamp.toISOString()|| "???"%></td>

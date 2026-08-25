@@ -4,7 +4,7 @@ import { Clarification } from "../models/Clarification";
 const router = express.Router();
 
 router.get("/clarifications", async (request: express.Request, response) => {
-  if (!request.authentication.ok) {
+  if (!request.authentication.ok || !request.authentication._id) {
     response.redirect("/login");
     return;
   }
@@ -95,8 +95,12 @@ async function renderPage(
 ) {
   const CLARIFICATIONS_TO_SHOW = 10;
   const data = await Clarification.find({
-    questionAskedBy: request.authentication.username
+    questionAskedBy: request.authentication._id
   })
+    .populate([
+      { path: "questionAskedBy", select: "username" },
+      { path: "responseAnsweredBy", select: "username" }
+    ])
     .sort({ timestampOnAsk: -1 })
     .limit(CLARIFICATIONS_TO_SHOW)
     .lean();

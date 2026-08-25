@@ -71,7 +71,7 @@ router.get(
 
     response.render("pages/problem", {
       problemName: name,
-      problemAuthor: author ?? "(unknown)",
+      problemAuthor: author?.username ?? "(unknown)",
       problemStatement: statement,
       authentication: request.authentication,
       correctAnswers: problem.correctAnswers,
@@ -232,12 +232,12 @@ async function handleCorrectAnswer(
     (e: UserCorrectAnswerInterface) => e.problemID === problem.problemID
   );
   const problemHasUserAsSolved = problem.correctAnswers.some(
-    (e: ProblemCorrectAnswerInterface) => e.user._id === user._id
+    (e: ProblemCorrectAnswerInterface) => e.user.equals(user._id)
   );
 
   if (!userSolvedProblem && !problemHasUserAsSolved) {
-    user.addCorrectAnswer(problemID, submission.timestamp);
-    problem.addCorrectAnswer(user, submission.timestamp);
+    await user.addCorrectAnswer(problemID, submission.timestamp);
+    await problem.addCorrectAnswer(user._id, submission.timestamp);
 
     log.info(
       `${user.username} solved problem with ID ${problem.problemID} on ${isoTimestamp}.`

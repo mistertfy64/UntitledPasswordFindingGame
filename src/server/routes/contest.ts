@@ -50,7 +50,9 @@ router.get(
 
     const contest = (await Contest.findOne({
       contestID: sanitizedContestID
-    })) as ExtendedPopulatedContestInterface;
+    }).populate({
+      path: "problems.problem"
+    })) as unknown as ExtendedPopulatedContestInterface;
 
     if (!contest) {
       response.redirect("/contests");
@@ -60,9 +62,9 @@ router.get(
     if (contest.startDateAndTime <= new Date()) {
       // contest has already started, get data as well
       contest.scores = await getContestScores(contest);
-      const problemIDs = contest.problems.map((e) => e.problem.problemID);
+      const problemIDs = contest.problems.map((entry) => entry.problem._id);
       contest.contestProblems = await Problem.find({
-        problemID: { $in: problemIDs }
+        _id: { $in: problemIDs }
       }).lean();
     }
 
@@ -86,10 +88,10 @@ async function getContestScores(contest: ExtendedPopulatedContestInterface) {
  * @param contest
  */
 async function getContestSubmissions(contest: ExtendedPopulatedContestInterface) {
-  const problems = contest.problems.map((e) => e.problem.problemID);
+  const problems = contest.problems.map((entry) => entry.problem._id);
   const submissions = await Submission.find({
     $and: [
-      { problemID: { $in: problems } },
+      { problem: { $in: problems } },
       {
         timestamp: {
           $gte: contest.startDateAndTime,

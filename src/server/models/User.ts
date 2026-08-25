@@ -18,9 +18,9 @@ interface UserInterface {
 }
 
 interface UserMethods {
-  addToken(token: string): void;
-  addCorrectAnswer(problemID: string, timestamp: Date): void;
-  setNewEmail(newEmail: string): void;
+  addToken(token: string): Promise<void>;
+  addCorrectAnswer(problemID: string, timestamp: Date): Promise<void>;
+  setNewEmail(newEmail: string): Promise<void>;
 }
 
 interface UserModel extends Model<UserInterface, UserModel, UserMethods> {

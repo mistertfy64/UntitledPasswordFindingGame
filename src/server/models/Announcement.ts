@@ -1,4 +1,5 @@
 import { Model, Schema, model, Types } from "mongoose";
+import { UserInterface } from "./User";
 
 interface AnnouncementInterface {
   body: string;
@@ -8,11 +9,15 @@ interface AnnouncementInterface {
   sanitizedBody: string;
 }
 
+type PopulatedAnnouncementInterface = Omit<AnnouncementInterface, "author"> & {
+  author: Pick<UserInterface, "username"> | null;
+};
+
 interface AnnouncementModel
   extends Model<AnnouncementInterface, AnnouncementModel> {
   getVisibleAnnouncements(
     amount: number
-  ): Promise<Array<AnnouncementInterface>>;
+  ): Promise<Array<PopulatedAnnouncementInterface>>;
 }
 
 const announcementSchema = new Schema({
@@ -29,7 +34,10 @@ const announcementSchema = new Schema({
 announcementSchema.static(
   "getVisibleAnnouncements",
   async function (amount: number) {
-    return await this.find({})
+    return await this.find({}).populate([{
+      path: "author",
+      select: "username"
+    }])
       .sort({ creationDateAndTime: -1 })
       .limit(amount)
       .lean();
@@ -42,4 +50,8 @@ const Announcement = model<AnnouncementInterface, AnnouncementModel>(
   "announcements"
 );
 
-export { Announcement, AnnouncementInterface };
+export {
+  Announcement,
+  AnnouncementInterface,
+  PopulatedAnnouncementInterface
+};

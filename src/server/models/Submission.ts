@@ -1,6 +1,6 @@
 import { Model, Schema, model, Types } from "mongoose";
-import { ProblemInterface } from "./Problem";
-import { UserInterface } from "./User";
+import { Problem, ProblemInterface } from "./Problem";
+import { User, UserInterface } from "./User";
 
 interface SubmissionInterface {
   answer: string;
@@ -23,19 +23,19 @@ interface SubmissionModel extends Model<SubmissionInterface, SubmissionModel> {
     page: number,
     amount: number,
     keepOrder?: boolean
-  ): Promise<Array<SubmissionInterface>>;
+  ): Promise<Array<PopulatedSubmissionInterface>>;
   getByProblemIDAccordingToQuery(
     problemID: string,
     page: number,
     amount: number,
     keepOrder?: boolean
-  ): Promise<Array<SubmissionInterface>>;
+  ): Promise<Array<PopulatedSubmissionInterface>>;
   getByUsernameAccordingToQuery(
     username: string,
     page: number,
     amount: number,
     keepOrder?: boolean
-  ): Promise<Array<SubmissionInterface>>;
+  ): Promise<Array<PopulatedSubmissionInterface>>;
 }
 
 const submissionSchema = new Schema({
@@ -62,6 +62,10 @@ submissionSchema.static(
   "getAccordingToQuery",
   async function (page: number, amount: number, keepOrder?: boolean) {
     return await this.find({})
+      .populate([
+        { path: "problem", select: "problemID problemNumber" },
+        { path: "user", select: "username" }
+      ])
       .sort({ timestamp: keepOrder ? 1 : -1 })
       .skip((page - 1) * amount)
       .limit(amount);
@@ -76,7 +80,16 @@ submissionSchema.static(
     amount: number,
     keepOrder?: boolean
   ) {
-    return await this.find({ problemID: problemID })
+    const problem = await Problem.findOne({ problemID }).select("_id").lean();
+    if (!problem) {
+      return [];
+    }
+
+    return await this.find({ problem: problem._id })
+      .populate([
+        { path: "problem", select: "problemID problemNumber" },
+        { path: "user", select: "username" }
+      ])
       .sort({ timestamp: keepOrder ? 1 : -1 })
       .skip((page - 1) * amount)
       .limit(amount);
@@ -91,7 +104,16 @@ submissionSchema.static(
     amount: number,
     keepOrder?: boolean
   ) {
-    return await this.find({ username: username })
+    const user = await User.findOne({ username }).select("_id").lean();
+    if (!user) {
+      return [];
+    }
+
+    return await this.find({ user: user._id })
+      .populate([
+        { path: "problem", select: "problemID problemNumber" },
+        { path: "user", select: "username" }
+      ])
       .sort({ timestamp: keepOrder ? 1 : -1 })
       .skip((page - 1) * amount)
       .limit(amount);

@@ -8,8 +8,8 @@ interface ContestProblemInterface {
 }
 
 interface PopulatedContestProblemInterface {
-  problem: ProblemInterface,
-  maximumPoints: number
+  problem: ProblemInterface & { _id: Types.ObjectId };
+  maximumPoints: number;
 }
 
 interface ContestInterface {
@@ -50,8 +50,19 @@ interface PopulatedContestInterface {
   timestamp: Date;
 }
 
-
 interface ContestModel extends Model<ContestInterface, ContestModel> {}
+
+const contestProblemSchema = new Schema<ContestProblemInterface>(
+  {
+    problem: {
+      type: Schema.Types.ObjectId,
+      ref: "Problem",
+      required: true
+    },
+    maximumPoints: { type: Number, required: true }
+  },
+  { _id: false }
+);
 
 const contestSchema = new Schema({
   contestID: String,
@@ -75,7 +86,7 @@ const contestSchema = new Schema({
       required: true
     }
   ],
-  problems: Array<ContestProblemInterface>
+  problems: [contestProblemSchema]
 });
 
 const Contest = model<ContestModel, ContestModel>(
