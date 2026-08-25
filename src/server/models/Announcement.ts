@@ -1,9 +1,9 @@
-import { Model, Schema, model } from "mongoose";
+import { Model, Schema, model, Types } from "mongoose";
 
 interface AnnouncementInterface {
   body: string;
   title: string;
-  author: string;
+  author: Types.ObjectId;
   creationDateAndTime: Date;
   sanitizedBody: string;
 }
@@ -18,7 +18,11 @@ interface AnnouncementModel
 const announcementSchema = new Schema({
   body: { type: String, required: true, maxlength: 16000 },
   title: { type: String, required: true, maxlength: 128 },
-  author: { type: String, required: true },
+  author: {
+    type: Schema.Types.ObjectId,
+    ref: "User",
+    required: true
+  },
   creationDateAndTime: { type: Date, required: true, default: Date.now }
 });
 

@@ -1,10 +1,10 @@
-import { Model, Schema, model } from "mongoose";
+import { Model, Schema, model, Types } from "mongoose";
 
 interface ClarificationInterface {
-  questionAskedBy: string;
+  questionAskedBy: Types.ObjectId;
   question: string;
   response: string | null;
-  responseAnsweredBy: string | null;
+  responseAnsweredBy: Types.ObjectId | null;
   timestampOnAsk: Date;
   timestampOnAnswer: Date | null;
 }
@@ -19,10 +19,18 @@ interface ClarificationModel
 }
 
 const clarificationSchema = new Schema({
-  questionAskedBy: String,
+  questionAskedBy: {
+    type: Schema.Types.ObjectId,
+    ref: "User",
+    required: true
+  },
   question: String,
   response: String,
-  responseAnsweredBy: String,
+  responseAnsweredBy: {
+    type: Schema.Types.ObjectId,
+    ref: "User",
+    required: true
+  },
   timestampOnAsk: Date,
   timestampOnAnswer: Date
 });

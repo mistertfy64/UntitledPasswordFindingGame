@@ -40,6 +40,12 @@ const userSchema = new Schema({
   isContributor: Boolean
 });
 
+userSchema.virtual("submissions",{
+  ref: "Submission",
+  localField: "_id",
+  foreignField: "user"
+})
+
 userSchema.static("safeFindByUsername", async function (username: string) {
   return await this.findOne({ username: username }).select({
     "passwordHash": 0,

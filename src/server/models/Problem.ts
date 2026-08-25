@@ -1,4 +1,4 @@
-import { Model, Schema, model } from "mongoose";
+import { Model, Schema, model, Types } from "mongoose";
 
 interface ProblemCorrectAnswerInterface {
   username: string;
@@ -14,7 +14,7 @@ interface ProblemInterface {
   creationDateAndTime: Date;
   releaseDateAndTime: Date;
   hidden: boolean;
-  author: string;
+  author: Types.ObjectId;
   difficulty?: number;
   categories?: Array<string>;
 }
@@ -32,7 +32,7 @@ interface ProblemModel
   getVisibleProblems(): Promise<Array<ProblemInterface>>;
 }
 
-const problemSchema = new Schema({
+const problemSchema = new Schema<ProblemInterface>({
   problemName: String,
   problemStatement: String,
   problemID: String,
@@ -42,10 +42,20 @@ const problemSchema = new Schema({
   creationDateAndTime: Date,
   releaseDateAndTime: Date,
   hidden: Boolean,
-  author: String,
+  author: {
+    type: Schema.Types.ObjectId,
+    ref: "User",
+    required: true
+  },
   difficulty: Number,
   categories: { type: [String], default: [] }
 });
+
+problemSchema.virtual("submissions", {
+  ref: "Submission",
+  localField: "_id",
+  foreignField: "problem"
+})
 
 problemSchema.static(
   "findProblemWithProblemID",

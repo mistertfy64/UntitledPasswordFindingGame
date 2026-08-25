@@ -1,7 +1,8 @@
-import { Model, Schema, model } from "mongoose";
+import { Model, Schema, model, Types } from "mongoose";
 
+// TODO: Add proper contest interface
 interface ContestProblemInterface {
-  problemID: string;
+  problemID: Types.ObjectId;
   maximumPoints: number;
 }
 
@@ -19,7 +20,7 @@ interface ContestInterface {
     };
     minimumPointsPerProblem: number;
   };
-  participants: Array<string>;
+  participants: Array<Types.ObjectId>;
   problems: Array<ContestProblemInterface>;
   timestamp: Date;
 }
@@ -41,7 +42,13 @@ const contestSchema = new Schema({
     },
     minimumPointsPerProblem: Number
   },
-  participants: Array<String>,
+  participants: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: "User",
+      required: true
+    }
+  ],
   problems: Array<ContestProblemInterface>
 });
 

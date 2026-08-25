@@ -1,12 +1,11 @@
-import { Model, Schema, model } from "mongoose";
+import { Model, Schema, model, Types } from "mongoose";
 
 interface SubmissionInterface {
-  username: string;
   answer: string;
   verdict: "correct answer" | "wrong answer" | "ignored";
-  problemNumber: number;
-  problemID: string;
   timestamp: Date;
+  problem: Types.ObjectId;
+  user: Types.ObjectId;
 }
 
 interface SubmissionModel extends Model<SubmissionInterface, SubmissionModel> {
@@ -30,12 +29,19 @@ interface SubmissionModel extends Model<SubmissionInterface, SubmissionModel> {
 }
 
 const submissionSchema = new Schema({
-  username: String,
   answer: String,
   verdict: String,
-  problemNumber: Number,
-  problemID: String,
-  timestamp: Date
+  problem: {
+    type: Schema.Types.ObjectId,
+    ref: "Problem",
+    required: true
+  },
+  timestamp: Date,
+  user: {
+    type: Schema.Types.ObjectId,
+    ref: "User",
+    required: true
+  }
 });
 
 /**
