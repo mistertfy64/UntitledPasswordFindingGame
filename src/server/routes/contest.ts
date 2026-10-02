@@ -101,10 +101,12 @@ async function getContestSubmissions(contest: ExtendedPopulatedContestInterface)
     ]
   }).populate<{ user: UserInterface; problem: ProblemInterface }>([
     {
-      path: "user"
+      path: "user",
+      select: "username",
     },
     {
-      path: "problem"
+      path: "problem",
+      select: "problemID"
     }
   ]);
   return submissions;
