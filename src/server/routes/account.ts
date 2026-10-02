@@ -7,7 +7,7 @@ import { log } from "../utilities/log";
 const router = express.Router();
 
 router.get("/account", async (request: express.Request, response) => {
-  if (!request.authentication.ok) {
+  if (!request.authentication.ok || !request.authentication.username) {
     response.redirect("/login");
     return;
   }

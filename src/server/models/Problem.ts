@@ -1,9 +1,24 @@
-import { Model, Schema, model } from "mongoose";
+import { Model, Schema, model, Types } from "mongoose";
+import { UserInterface } from "./User";
 
 interface ProblemCorrectAnswerInterface {
-  username: string;
+  user: Types.ObjectId;
   timestamp: Date;
 }
+
+interface PopulatedProblemCorrectAnswerInterface {
+  user: Pick<UserInterface, "username"> | null;
+  timestamp: Date;
+}
+
+type PopulatedProblemInterface = Omit<
+  ProblemInterface,
+  "author" | "correctAnswers"
+> & {
+  author: Pick<UserInterface, "username"> | null;
+  correctAnswers: Array<PopulatedProblemCorrectAnswerInterface>;
+};
+
 interface ProblemInterface {
   problemName: string;
   problemStatement: string;
@@ -14,13 +29,13 @@ interface ProblemInterface {
   creationDateAndTime: Date;
   releaseDateAndTime: Date;
   hidden: boolean;
-  author: string;
+  author: Types.ObjectId;
   difficulty?: number;
   categories?: Array<string>;
 }
 
 interface ProblemMethods {
-  addCorrectAnswer(username: string, timestamp: Date): void;
+  addCorrectAnswer(user: Types.ObjectId, timestamp: Date): Promise<void>;
 }
 
 interface ProblemModel
@@ -28,35 +43,66 @@ interface ProblemModel
   findProblemWithProblemID(
     problemID: string,
     solvedProblem?: boolean
-  ): Promise<ProblemInterface>;
+  ): Promise<PopulatedProblemInterface>;
   getVisibleProblems(): Promise<Array<ProblemInterface>>;
 }
 
-const problemSchema = new Schema({
+const problemSchema = new Schema<ProblemInterface>({
   problemName: String,
   problemStatement: String,
   problemID: String,
   correctPassword: String,
   problemNumber: Number,
-  correctAnswers: Array<ProblemCorrectAnswerInterface>,
+  correctAnswers: [
+    new Schema<ProblemCorrectAnswerInterface>(
+      {
+        user: {
+          type: Schema.Types.ObjectId,
+          ref: "User",
+          required: true
+        },
+        timestamp: { type: Date, required: true }
+      },
+      { _id: false }
+    )
+  ],
   creationDateAndTime: Date,
   releaseDateAndTime: Date,
   hidden: Boolean,
-  author: String,
+  author: {
+    type: Schema.Types.ObjectId,
+    ref: "User",
+    required: true
+  },
   difficulty: Number,
   categories: { type: [String], default: [] }
 });
+
+problemSchema.virtual("submissions", {
+  ref: "Submission",
+  localField: "_id",
+  foreignField: "problem"
+})
 
 problemSchema.static(
   "findProblemWithProblemID",
   async function (problemID: string, showCorrectPassword?: boolean) {
     if (showCorrectPassword) {
-      return await this.findOne({ problemID: problemID }).lean();
+      return await this.findOne({ problemID: problemID })
+        .populate([
+          { path: "author", select: "username" },
+          { path: "correctAnswers.user", select: "username" }
+        ])
+        .lean();
     } else {
       return await this.findOne({ problemID: problemID })
         .select({
           "correctPassword": 0
         })
+        .populate([
+          { path: "author", select: "username" },
+          { path: "correctAnswers.user", select: "username" }
+        ])
         .lean();
     }
   }
@@ -84,10 +130,10 @@ problemSchema.static("getVisibleProblems", async function (problemID: string) {
 
 problemSchema.method(
   "addCorrectAnswer",
-  async function addCorrectAnswer(username: string, timestamp: Date) {
+  async function addCorrectAnswer(user: Types.ObjectId, timestamp: Date) {
     await this.updateOne({
       $push: {
-        correctAnswers: { username: username, timestamp: timestamp }
+        correctAnswers: { user, timestamp }
       }
     });
   }
@@ -99,4 +145,11 @@ const Problem = model<ProblemInterface, ProblemModel>(
   "problems"
 );
 
-export { Problem, ProblemInterface, ProblemModel };
+export {
+  Problem,
+  ProblemInterface,
+  ProblemModel,
+  ProblemCorrectAnswerInterface,
+  PopulatedProblemCorrectAnswerInterface,
+  PopulatedProblemInterface
+};

@@ -9,7 +9,8 @@ async function isAuthenticated(username: string, token: string) {
     isAdministrator: false,
     statistics: {
       correctAnswers: []
-    }
+    },
+    _id: null
   };
   if (!username || !token) {
     return NOT_GOOD;
@@ -38,7 +39,8 @@ async function isAuthenticated(username: string, token: string) {
     isAdministrator: isAdministrator ?? false,
     statistics: {
       correctAnswers: user.correctAnswers
-    }
+    },
+    _id: user._id
   };
 }
 

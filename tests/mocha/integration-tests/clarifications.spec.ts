@@ -36,18 +36,19 @@ describe("/clarifications", () => {
   });
 
   it("shows only the user's ten newest clarifications", async () => {
-    await createTestUser();
+    const user = await createTestUser();
+    const anotherUser = await createTestUser({ username: "another_user" });
     const clarifications = [];
     for (let number = 1; number <= 12; number++) {
       clarifications.push({
-        questionAskedBy: "test_user",
+        questionAskedBy: user._id,
         question: `Question ${number}`,
         response: null,
         timestampOnAsk: new Date(2025, 0, 1, 0, number)
       });
     }
     clarifications.push({
-      questionAskedBy: "another_user",
+      questionAskedBy: anotherUser._id,
       question: "Another user's private question",
       response: null,
       timestampOnAsk: new Date(2025, 0, 1, 1)
@@ -74,7 +75,7 @@ describe("/clarifications", () => {
   });
 
   it("creates a clarification after successful CAPTCHA validation", async () => {
-    await createTestUser();
+    const user = await createTestUser();
     const agent = request.agent(createWebServer());
     await logIn(agent);
     const page = await agent.get("/clarifications").expect(200);
@@ -93,7 +94,7 @@ describe("/clarifications", () => {
     assert.match(response.text, /Could I have a hint/);
     const clarification = await Clarification.findOne({}).lean();
     assert.equal(clarification?.question, "Could I have a hint?");
-    assert.equal(clarification?.questionAskedBy, "test_user");
+    assert.equal(clarification?.questionAskedBy.toString(), user._id.toString());
     assert.ok(clarification?.timestampOnAsk instanceof Date);
   });
 

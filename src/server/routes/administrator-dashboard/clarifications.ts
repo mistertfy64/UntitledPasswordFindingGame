@@ -80,7 +80,7 @@ router.get(
     try {
       const clarification = await Clarification.findOne({
         _id: sanitizedID
-      });
+      }).populate({ path: "questionAskedBy", select: "username" });
       response.render(
         "pages/administrator-dashboard/answer-clarification.ejs",
         {
@@ -149,7 +149,7 @@ router.post(
         return;
       }
 
-      clarification.responseAnsweredBy = request.authentication.username;
+      clarification.responseAnsweredBy = request.authentication._id;
       clarification.response = request.body["response"];
       clarification.timestampOnAnswer = new Date();
 

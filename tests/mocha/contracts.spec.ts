@@ -65,9 +65,12 @@ describe("utility and model contracts", () => {
 
     it("returns identity, role, and solve statistics for a valid token", async () => {
       const solvedAt = new Date();
+      const solvedProblem = await createTestProblem({
+        problemID: "solved-problem"
+      });
       const user = await createTestUser({
         isAdministrator: true,
-        correctAnswers: [{ problemID: "solved-problem", timestamp: solvedAt }]
+        correctAnswers: [{ problem: solvedProblem._id, timestamp: solvedAt }]
       });
       await user.addToken("correct-token");
 
@@ -78,8 +81,8 @@ describe("utility and model contracts", () => {
       assert.equal(result.isAdministrator, true);
       assert.equal(result.statistics.correctAnswers.length, 1);
       assert.equal(
-        result.statistics.correctAnswers[0].problemID,
-        "solved-problem"
+        result.statistics.correctAnswers[0].problem.toString(),
+        solvedProblem._id.toString()
       );
     });
   });
@@ -126,11 +129,19 @@ describe("utility and model contracts", () => {
 
   describe("submission queries", () => {
     it("orders, filters, and paginates submissions", async () => {
+      const [alice, bob] = await Promise.all([
+        createTestUser({ username: "alice" }),
+        createTestUser({ username: "bob" })
+      ]);
+      const [firstProblem, secondProblem] = await Promise.all([
+        createTestProblem({ problemID: "first-problem" }),
+        createTestProblem({ problemID: "second-problem" })
+      ]);
       await Submission.create([
-        submission("alice", "first-problem", 1),
-        submission("bob", "first-problem", 2),
-        submission("alice", "second-problem", 3),
-        submission("alice", "first-problem", 4)
+        submission(alice._id, firstProblem._id, 1),
+        submission(bob._id, firstProblem._id, 2),
+        submission(alice._id, secondProblem._id, 3),
+        submission(alice._id, firstProblem._id, 4)
       ]);
 
       const newestPage = await Submission.getAccordingToQuery(1, 2);
@@ -164,13 +175,16 @@ describe("utility and model contracts", () => {
   });
 });
 
-function submission(username: string, problemID: string, minute: number) {
+function submission(
+  user: mongoose.Types.ObjectId,
+  problem: mongoose.Types.ObjectId,
+  minute: number
+) {
   return {
-    username,
+    user,
+    problem,
     answer: `answer-${minute}`,
     verdict: "wrong answer",
-    problemNumber: 1,
-    problemID,
     timestamp: new Date(2025, 0, 1, 0, minute)
   };
 }

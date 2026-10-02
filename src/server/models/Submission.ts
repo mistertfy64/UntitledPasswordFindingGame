@@ -1,41 +1,57 @@
-import { Model, Schema, model } from "mongoose";
+import { Model, Schema, model, Types } from "mongoose";
+import { Problem, ProblemInterface } from "./Problem";
+import { User, UserInterface } from "./User";
 
 interface SubmissionInterface {
-  username: string;
   answer: string;
   verdict: "correct answer" | "wrong answer" | "ignored";
-  problemNumber: number;
-  problemID: string;
   timestamp: Date;
+  problem: Types.ObjectId;
+  user: Types.ObjectId;
 }
+
+type PopulatedSubmissionInterface = Omit<
+  SubmissionInterface,
+  "problem" | "user"
+> & {
+  user: UserInterface;
+  problem: ProblemInterface;
+};
 
 interface SubmissionModel extends Model<SubmissionInterface, SubmissionModel> {
   getAccordingToQuery(
     page: number,
     amount: number,
     keepOrder?: boolean
-  ): Promise<Array<SubmissionInterface>>;
+  ): Promise<Array<PopulatedSubmissionInterface>>;
   getByProblemIDAccordingToQuery(
     problemID: string,
     page: number,
     amount: number,
     keepOrder?: boolean
-  ): Promise<Array<SubmissionInterface>>;
+  ): Promise<Array<PopulatedSubmissionInterface>>;
   getByUsernameAccordingToQuery(
     username: string,
     page: number,
     amount: number,
     keepOrder?: boolean
-  ): Promise<Array<SubmissionInterface>>;
+  ): Promise<Array<PopulatedSubmissionInterface>>;
 }
 
 const submissionSchema = new Schema({
-  username: String,
   answer: String,
   verdict: String,
-  problemNumber: Number,
-  problemID: String,
-  timestamp: Date
+  problem: {
+    type: Schema.Types.ObjectId,
+    ref: "Problem",
+    required: true
+  },
+  timestamp: Date,
+  user: {
+    type: Schema.Types.ObjectId,
+    ref: "User",
+    required: true
+  }
 });
 
 /**
@@ -46,6 +62,10 @@ submissionSchema.static(
   "getAccordingToQuery",
   async function (page: number, amount: number, keepOrder?: boolean) {
     return await this.find({})
+      .populate([
+        { path: "problem", select: "problemID problemNumber" },
+        { path: "user", select: "username" }
+      ])
       .sort({ timestamp: keepOrder ? 1 : -1 })
       .skip((page - 1) * amount)
       .limit(amount);
@@ -60,7 +80,16 @@ submissionSchema.static(
     amount: number,
     keepOrder?: boolean
   ) {
-    return await this.find({ problemID: problemID })
+    const problem = await Problem.findOne({ problemID }).select("_id").lean();
+    if (!problem) {
+      return [];
+    }
+
+    return await this.find({ problem: problem._id })
+      .populate([
+        { path: "problem", select: "problemID problemNumber" },
+        { path: "user", select: "username" }
+      ])
       .sort({ timestamp: keepOrder ? 1 : -1 })
       .skip((page - 1) * amount)
       .limit(amount);
@@ -75,7 +104,16 @@ submissionSchema.static(
     amount: number,
     keepOrder?: boolean
   ) {
-    return await this.find({ username: username })
+    const user = await User.findOne({ username }).select("_id").lean();
+    if (!user) {
+      return [];
+    }
+
+    return await this.find({ user: user._id })
+      .populate([
+        { path: "problem", select: "problemID problemNumber" },
+        { path: "user", select: "username" }
+      ])
       .sort({ timestamp: keepOrder ? 1 : -1 })
       .skip((page - 1) * amount)
       .limit(amount);
@@ -88,4 +126,9 @@ const Submission = model<SubmissionModel, SubmissionModel>(
   "submissions"
 );
 
-export { Submission, SubmissionInterface, SubmissionModel };
+export {
+  Submission,
+  SubmissionInterface,
+  SubmissionModel,
+  PopulatedSubmissionInterface
+};

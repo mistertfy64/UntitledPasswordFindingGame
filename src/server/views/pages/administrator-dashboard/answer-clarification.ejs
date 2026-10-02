@@ -24,7 +24,7 @@
       Unable to find clarification with this ID.
       <% } else { %>
       <p>
-        Asked by: <span><%= data.questionAskedBy %></span>
+        Asked by: <span><%= data.questionAskedBy?.username ?? "(unknown)" %></span>
         <br>
         Asked on: <span><%= data.timestampOnAsk?.toISOString() %></span>
         <br>

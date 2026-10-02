@@ -46,7 +46,7 @@
         <% for (const correctAnswer of correctAnswers) { %>
         <tr>
           <td><%= order %></td>
-          <td><%= correctAnswer.username %></td>
+          <td><%= correctAnswer.user?.username ?? "(unknown)" %></td>
           <td><%= correctAnswer.timestamp.toISOString() %></td>
         </tr>
         <% order++ %>

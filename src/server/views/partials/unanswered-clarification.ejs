@@ -1,5 +1,5 @@
 <tr>
-  <td><%= clarification.questionAskedBy %></td>
+  <td><%= clarification.questionAskedBy?.username ?? "(unknown)" %></td>
   <td><%= clarification.timestampOnAsk?.toISOString() %></td>
   <td class="monospaced"><%= clarification.question %></td>
   <td class="monospaced"><%= clarification.response %></td>

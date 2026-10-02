@@ -14,6 +14,7 @@ import { doubleCsrf } from "csrf-csrf";
 import { rateLimit } from "express-rate-limit";
 import { UserCorrectAnswerInterface } from "./server/models/User";
 import helmet from "helmet";
+import { Types } from "mongoose";
 const favicon = require("serve-favicon");
 const session = require("cookie-session");
 const mongoSanitize = require("express-mongo-sanitize");
@@ -23,11 +24,12 @@ declare global {
     interface Request {
       authentication: {
         ok: boolean;
-        username: string;
+        username: string | null;
         isAdministrator: boolean;
         statistics: {
           correctAnswers: Array<UserCorrectAnswerInterface>;
         };
+        _id: Types.ObjectId | null;
       };
       session: string;
       generatedCSRFToken: string;

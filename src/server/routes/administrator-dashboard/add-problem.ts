@@ -1,6 +1,7 @@
 import express from "express";
 import { log } from "../../utilities/log";
 import { Problem } from "../../models/Problem";
+import { User } from "../../models/User";
 const router = express.Router();
 import ExpressMongoSanitize from "express-mongo-sanitize";
 import { JSDOM } from "jsdom";
@@ -234,7 +235,16 @@ async function addProblem(request: express.Request) {
   }
   problem.hidden =
     body["problem-hidden"] === "on" || body["problem-hidden"] === true;
-  problem.author = body["problem-author"] || request.authentication.username;
+  const authorUsername =
+    body["problem-author"] || request.authentication.username;
+  const author = await User.findOne({ username: authorUsername }).select("_id");
+  if (!author) {
+    return {
+      ok: false,
+      reason: `Unable to find a user with username ${authorUsername}.`
+    };
+  }
+  problem.author = author._id;
 
   try {
     await problem.save();

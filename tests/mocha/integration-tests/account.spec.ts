@@ -39,8 +39,8 @@ describe("/account", () => {
     await createTestUser({
       isAdministrator: true,
       correctAnswers: [
-        { problemID: "one", timestamp: new Date() },
-        { problemID: "two", timestamp: new Date() }
+        { problem: new mongoose.Types.ObjectId(), timestamp: new Date() },
+        { problem: new mongoose.Types.ObjectId(), timestamp: new Date() }
       ]
     });
     const agent = request.agent(createWebServer());

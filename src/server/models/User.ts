@@ -1,8 +1,8 @@
-import { Model, Schema, model } from "mongoose";
+import { Model, Schema, Types, model } from "mongoose";
 import { sha384 } from "../utilities/hashing";
 
 interface UserCorrectAnswerInterface {
-  problemID: string;
+  problem: Types.ObjectId;
   timestamp: Date;
 }
 interface UserInterface {
@@ -18,9 +18,9 @@ interface UserInterface {
 }
 
 interface UserMethods {
-  addToken(token: string): void;
-  addCorrectAnswer(problemID: string, timestamp: Date): void;
-  setNewEmail(newEmail: string): void;
+  addToken(token: string): Promise<void>;
+  addCorrectAnswer(problem: Types.ObjectId, timestamp: Date): Promise<void>;
+  setNewEmail(newEmail: string): Promise<void>;
 }
 
 interface UserModel extends Model<UserInterface, UserModel, UserMethods> {
@@ -32,13 +32,31 @@ const userSchema = new Schema({
   username: String,
   lowercasedUsername: String,
   passwordHash: String,
-  correctAnswers: Array<UserCorrectAnswerInterface>,
+  correctAnswers: [
+    new Schema<UserCorrectAnswerInterface>(
+      {
+        problem: {
+          type: Schema.Types.ObjectId,
+          ref: "Problem",
+          required: true
+        },
+        timestamp: { type: Date, required: true }
+      },
+      { _id: false }
+    )
+  ],
   tokens: Array<String>,
   email: String,
   creationDateAndTime: Date,
   isAdministrator: Boolean,
   isContributor: Boolean
 });
+
+userSchema.virtual("submissions",{
+  ref: "Submission",
+  localField: "_id",
+  foreignField: "user"
+})
 
 userSchema.static("safeFindByUsername", async function (username: string) {
   return await this.findOne({ username: username }).select({
@@ -69,10 +87,10 @@ userSchema.method("addToken", async function addToken(token) {
 
 userSchema.method(
   "addCorrectAnswer",
-  async function addCorrectAnswer(problemID: string, timestamp: Date) {
+  async function addCorrectAnswer(problem: Types.ObjectId, timestamp: Date) {
     await this.updateOne({
       $push: {
-        correctAnswers: { problemID: problemID, timestamp: timestamp }
+        correctAnswers: { problem, timestamp }
       }
     });
   }
@@ -84,4 +102,4 @@ userSchema.method("setNewEmail", async function setNewEmail(newEmail) {
 
 const User = model<UserInterface, UserModel>("User", userSchema, "users");
 
-export { User, UserCorrectAnswerInterface, UserInterface, UserModel };
+export { User, UserCorrectAnswerInterface, UserInterface, UserModel, UserMethods };
