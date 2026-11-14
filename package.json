@@ -1,6 +1,6 @@
 {
   "name": "untitled-password-finding-game",
-  "version": "0.1.0-alpha.18",
+  "version": "0.1.0-alpha.19",
   "description": "fun password finding game",
   "main": "index.js",
   "private": true,
@@ -31,7 +31,7 @@
     "@types/node": "^22.15.3",
     "@types/supertest": "^7.2.0",
     "cheerio": "^1.2.0",
-    "mocha": "^11.7.5",
+    "mocha": "^12.0.3",
     "mongodb-memory-server": "^11.1.0",
     "nock": "^14.0.15",
     "nyc": "^18.0.0",
